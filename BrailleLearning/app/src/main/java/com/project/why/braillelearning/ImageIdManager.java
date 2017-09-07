@@ -2,7 +2,6 @@ package com.project.why.braillelearning;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * Created by hyuck on 2017-08-29.
@@ -12,8 +11,6 @@ public class ImageIdManager {
     /*
      * 메뉴에 사용될 image들을 관리하는 manager class
      */
-
-
 
     private final int BIGMENU_TUTORIAL = 0; // 사용설명서
     private final int BIGMENU_BASIC_PRACTICE = 1; // 기초과정
@@ -40,7 +37,7 @@ public class ImageIdManager {
     }
 
     public int[] getBigMenu(){ // 대 메뉴의 image id 배열을 반환하는 함수
-        int BigMenu[] = {R.drawable.tutorial, R.drawable.basic_practice, R.drawable.master_practice, R.drawable.translation, R.drawable.quiz, R.drawable.mynote, R.drawable.comunication};
+        int BigMenu[] = {R.drawable.tutorial, R.drawable.basic_practice, R.drawable.master_practice, R.drawable.brailletranslation, R.drawable.quiz, R.drawable.mynote, R.drawable.comunication};
         return BigMenu;
     }
 
@@ -48,19 +45,19 @@ public class ImageIdManager {
         Deque<Integer> DequeAdress = DequeCopy(AdressDeque);
         switch(DequeAdress.pollFirst()){  // 중 메뉴 삽입
             case BIGMENU_BASIC_PRACTICE:
-                int MiddleBasicMenu[] = {R.drawable.middle_init, R.drawable.middle_vowel, R.drawable.middle_last, R.drawable.middle_number, R.drawable.middle_alphabet, R.drawable.middle_sentence, R.drawable.middle_promise};
+                int MiddleBasicMenu[] = {R.drawable.initial_practice, R.drawable.vowel_practice, R.drawable.final_practice, R.drawable.number_practice, R.drawable.alphabet_practice, R.drawable.sentence_practice, R.drawable.promise_practice};
                 return MiddleBasicMenu;
             case BIGMENU_MASTER_PRACTICE:
-                int MiddleMasterMenu[] = {R.drawable.middle_letter, R.drawable.middle_word};
+                int MiddleMasterMenu[] = {R.drawable.letter_practice, R.drawable.word_practice};
                 return MiddleMasterMenu;
             case BIGMENU_QUIZ:
-                int MiddleQuizMenu[] = {R.drawable.middle_init_quiz, R.drawable.middle_vowel_quiz, R.drawable.middle_last_quiz, R.drawable.middle_number_quiz, R.drawable.middle_alphabet_quiz, R.drawable.middle_sentence_quiz, R.drawable.middle_promise_quiz, R.drawable.middle_letter_quiz, R.drawable.middle_word_quiz};
+                int MiddleQuizMenu[] = {R.drawable.initial_quiz, R.drawable.vowel_quiz, R.drawable.final_quiz, R.drawable.number_quiz, R.drawable.alphabet_quiz, R.drawable.sentence_quiz, R.drawable.promise_quiz, R.drawable.letter_quiz, R.drawable.word_quiz};
                 return MiddleQuizMenu;
             case BIGMENU_MYNOTE:
-                int MiddleMynoteMenu[] = {R.drawable.middle_mynote_basic, R.drawable.middle_mynote_master, R.drawable.middle_mynote_communication};
+                int MiddleMynoteMenu[] = {R.drawable.mynote_basic, R.drawable.mynote_master, R.drawable.mynote_communication};
                 return MiddleMynoteMenu;
             case BIGMENU_COMMUNICATION:
-                int MiddleCommunicationMenu[] = {R.drawable.middle_teacher, R.drawable.middle_student};
+                int MiddleCommunicationMenu[] = {R.drawable.teacher_mode, R.drawable.student_mode};
                 return MiddleCommunicationMenu;
             default:
                 return null;
@@ -71,7 +68,7 @@ public class ImageIdManager {
         Deque<Integer> DequeAdress = DequeCopy(AdressDeque);
         switch(DequeAdress.pollFirst()){
             case BIGMENU_QUIZ:
-                int SmallQuizMenu[] = {R.drawable.small_read, R.drawable.small_write};
+                int SmallQuizMenu[] = {R.drawable.reading_quiz, R.drawable.writing_quiz};
                 return SmallQuizMenu;
             default:
                 return null;
