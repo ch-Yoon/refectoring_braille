@@ -1,6 +1,7 @@
 package com.project.why.braillelearning;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,7 +11,8 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import com.project.why.braillelearning.BrailleFactory.*;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -39,6 +41,8 @@ public class BrailleLearningMenu extends Activity {
     private Deque<Integer> MenuAdressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
     private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
     private MediaPlayerModule mediaPlayerModule;
+
+    private JsonFileNameFactory jsonFileNameFactory = new SimpleJsonFileNameFactory();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,12 +277,25 @@ public class BrailleLearningMenu extends Activity {
                 MenuImageView.startAnimation(animation);
                 MenuImageView.setImageDrawable(imageResizeModule.getDrawableImage(MenuNode.getImageId(), MenuImageSize, MenuImageSize)); //현재화면에 이미지 설정
                 mediaPlayerModule.SoundPlay(FingerFunctinoType, MenuNode.getSoundId());
-            } else { // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제
+            } else { // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제 후 점자 학습 화면 이동
                 MenuAdressDeque.removeLast();
                 NowMenuListSize = menuTreeManager.getMenuListSize(MenuAdressDeque);
-                Toast.makeText(this, "하위메뉴가 없습니다.", Toast.LENGTH_SHORT).show();
+
+                String JsonFileName = getJsonFileName(); // 점자 학습 화면으로 전송할 점자 data json file name
+
+                //Toast.makeText(this, "하위메뉴가 없습니다.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public String getJsonFileName(){
+        GettingJsonFileName JsonFileNameObject = jsonFileNameFactory.getJsonFileNameObject(MenuAdressDeque);
+        String JsonFileName="";
+        if(JsonFileNameObject != null)
+            JsonFileName = JsonFileNameObject.getJsonFileName();
+        else
+            JsonFileName = null;
+        return JsonFileName;
     }
 
     public void recycleImage(){     //이미지 메모리 해제 함수
