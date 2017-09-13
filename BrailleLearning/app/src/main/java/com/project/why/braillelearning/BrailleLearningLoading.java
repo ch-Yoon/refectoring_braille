@@ -148,6 +148,7 @@ public class BrailleLearningLoading extends Activity {
                 Log.d("Error",e.getMessage());
             } finally {
                 if(Blind_person == false) {
+
                     Intent i = new Intent(BrailleLearningLoading.this, BrailleLearningMenu.class);
                     startActivity(i);
                     overridePendingTransition(R.anim.fade, R.anim.hold);
