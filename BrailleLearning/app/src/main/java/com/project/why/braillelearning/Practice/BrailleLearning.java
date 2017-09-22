@@ -1,25 +1,37 @@
-package com.project.why.braillelearning;
+package com.project.why.braillelearning.Practice;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Point;
+import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.Window;
 
-import com.project.why.braillelearning.Menu.BrailleLearningLoading;
+import com.project.why.braillelearning.BrailleInformationFactory.BrailleData;
+import com.project.why.braillelearning.BrailleInformationFactory.BrailleDataManager;
 import com.project.why.braillelearning.Module.FullScreenModule;
+import com.project.why.braillelearning.R;
 
-public class MainActivity extends Activity {
+import java.util.ArrayList;
+
+public class BrailleLearning extends Activity {
     private View decorView; // 최상단 BackgroundView
     private int uiOption;
+    private BrailleLearningView view;
+    private BrailleDataManager brailleDataManager;
+    private ArrayList<BrailleData> BrailleDataArray = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InitFullScreen();
-        setContentView(R.layout.activity_main);
+
+        Intent i = getIntent();
+        String JsonFileName = i.getStringExtra("JsonFileName");
+        brailleDataManager = new BrailleDataManager(this, JsonFileName);
+        BrailleDataArray.addAll(brailleDataManager.getBrailleDataArray());
+        view = new BrailleLearningView(this, BrailleDataArray);
+        view.setBackgroundColor(ContextCompat.getColor(this, R.color.AppBasicColor));
+        setContentView(view);
     }
 
     public void InitFullScreen(){ // 전체화면 함수
@@ -30,26 +42,12 @@ public class MainActivity extends Activity {
         decorView.setSystemUiVisibility(uiOption); // 전체화면 적용
     }
 
-
-    public void InitDisplaySize(){  // Display 해상도를 구하기 위한 메소드
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Global.DisplayX = size.x; // Display의 가로값. Global변수에 저장하여 상시 사용
-        Global.DisplayY = size.y; // Display의 세로값. Global변수에 저장하여 상시 사용
-    }
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
             decorView.setSystemUiVisibility(uiOption); // 전체화면 적용
-            InitDisplaySize(); // 화면 해상도 구하기
-            Intent i = new Intent(MainActivity.this, BrailleLearningLoading.class);
-            //startActivity(i);
-            //overridePendingTransition(R.anim.fade, R.anim.hold);
-            //finish();
-            Log.d("onWindowFocus","start");
         }
     }
+
 }

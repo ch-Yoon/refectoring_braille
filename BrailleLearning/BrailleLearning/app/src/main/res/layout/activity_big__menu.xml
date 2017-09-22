@@ -7,7 +7,7 @@
     android:background="@color/AppBasicColor"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.project.why.braillelearning.BrailleLearningMenu">
+    tools:context="com.project.why.braillelearning.Menu.BrailleLearningMenu">
 
     <ImageView
         android:id="@+id/bigmenu_imageview"

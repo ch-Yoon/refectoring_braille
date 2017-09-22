@@ -7,7 +7,7 @@
     android:background="@color/AppBasicColor"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.project.why.braillelearning.BrailleLearningLoading">
+    tools:context="com.project.why.braillelearning.Menu.BrailleLearningLoading">
 
     <LinearLayout
         android:layout_width="wrap_content"
