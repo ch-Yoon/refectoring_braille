@@ -1,5 +1,6 @@
 package com.project.why.braillelearning.BrailleInformationFactory;
 
+import java.util.ArrayList;
 import java.util.Deque;
 
 /**
@@ -7,5 +8,5 @@ import java.util.Deque;
  */
 
 public interface BrailleInformationFactory {
-    Getting getInformationObject(Deque<Integer> MenuAdreeDeque);
+    Getting getInformationObject(String menuName);
 }

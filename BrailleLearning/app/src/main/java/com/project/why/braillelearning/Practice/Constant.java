@@ -5,44 +5,62 @@ package com.project.why.braillelearning.Practice;
  */
 
 public class Constant {
-    public static final int TUTORIAL = 0;
-    public static final int BASIC = 1;
-    public static final int MASTER = 2;
-    public static final int TRANSLATION = 3;
-    public static final int QUIZ = 4;
-    public static final int MYNOTE = 5;
-    public static final int COMMUNICATION = 6;
+    public static final String TUTORIAL = "tutorial";
+    public static final String BASIC = "basic";
+    public static final String MASTER = "master";
+    public static final String TRANSLATION = "translation";
+    public static final String QUIZ = "quiz";
+    public static final String MYNOTE = "mynote";
+    public static final String COMMUNICATION = "communication";
 
-    public static final int BASIC_INITIAL = 0;
-    public static final int BASIC_VOWEL = 1;
-    public static final int BASIC_FINAL = 2;
-    public static final int BASIC_NUMBER = 3;
-    public static final int BASIC_ALPHABET = 4;
-    public static final int BASIC_SENTENCE = 5;
-    public static final int BASIC_ABBREVIATION = 6;
+    public static final String INITIAL_BASIC = "initial_basic";
+    public static final String VOWEL_BASIC = "vowel_basic";
+    public static final String FINAL_BASIC = "final_basic";
+    public static final String NUMBER_BASIC = "number_basic";
+    public static final String ALPHABET_BASIC = "alphabet_basic";
+    public static final String SENTENCE_BASIC = "sentence_basic";
+    public static final String ABBREVIATION_BASIC = "abbreviation_basic";
 
-    public static final int MASTER_LETTER = 0;
-    public static final int MASTER_WORD = 1;
+    public static final String LETTER_MASTER = "letter_master";
+    public static final String WORD_MASTER = "word_master";
 
-    public static final int QUIZ_INITIAL = 0;
-    public static final int QUIZ_VOWEL = 1;
-    public static final int QUIZ_FINAL = 2;
-    public static final int QUIZ_NUMBER = 3;
-    public static final int QUIZ_ALPHABET = 4;
-    public static final int QUIZ_SENTENCE = 5;
-    public static final int QUIZ_ABBREVIATION = 6;
-    public static final int QUIZ_LETTER = 7;
-    public static final int QUIZ_WORD = 8;
+    public static final String INITIAL_QUIZ = "initial_quiz";
+    public static final String VOWEL_QUIZ = "vowel_quiz";
+    public static final String FINAL_QUIZ = "final_quiz";
+    public static final String NUMBER_QUIZ = "number_quiz";
+    public static final String ALPHABET_QUIZ = "alphabet_quiz";
+    public static final String SENTENCE_QUIZ = "sentence_quiz";
+    public static final String ABBREVIATION_QUIZ = "abbreviation_quiz";
+    public static final String LETTER_QUIZ = "letter_quiz";
+    public static final String WORD_QUIZ = "word_quiz";
 
-    public static final int READING_QUIZ = 0;
-    public static final int WRITING_QUIZ = 1;
+    public static final String INITIAL_READINGQUIZ = "initial_readingquiz";
+    public static final String VOWEL_READINGQUIZ = "vowel_readingquiz";
+    public static final String FINAL_READINGQUIZ = "final_readingquiz";
+    public static final String NUMBER_READINGQUIZ = "number_readingquiz";
+    public static final String ALPHABET_READINGQUIZ = "alphabet_readingquiz";
+    public static final String SENTENCE_READINGQUIZ = "sentence_readingquiz";
+    public static final String ABBREVIATION_READINGQUIZ = "abbreviation_readingquiz";
+    public static final String LETTER_READINGQUIZ = "letter_readingquiz";
+    public static final String WORD_READINGQUIZ = "word_readingquiz";
 
-    public static final int MYNOTE_BASIC = 0;
-    public static final int MYNOTE_MASTER = 1;
-    public static final int MYNOTE_COMMUNICATION = 2;
+    public static final String INITIAL_WRITINGQUIZ = "initial_writingquiz";
+    public static final String VOWEL_WRITINGQUIZ = "vowel_writingquiz";
+    public static final String FINAL_WRITINGQUIZ = "final_writingquiz";
+    public static final String NUMBER_WRITINGQUIZ = "number_writingquiz";
+    public static final String ALPHABET_WRITINGQUIZ = "alphabet_writingquiz";
+    public static final String SENTENCE_WRITINGQUIZ = "sentence_writingquiz";
+    public static final String ABBREVIATION_WRITINGQUIZ = "abbreviation_writingquiz";
+    public static final String LETTER_WRITINGQUIZ = "letter_writingquiz";
+    public static final String WORD_WRITINGQUIZ = "word_writingquiz";
 
-    public static final int COMMUNICATION_TEACHER = 0;
-    public static final int COMMUNICATION_STUDENT = 1;
+
+    public static final String BASIC_MYNOTE = "basic_mynote";
+    public static final String MASTER_MYNOTE = "master_mynote";
+    public static final String COMMUNICATION_MYNOTE = "communication_mynote";
+
+    public static final String TEACHER_COMMUNICATION = "teacher_communication";
+    public static final String STUDENT_COMMUNICATION = "student_communication";
 
     public static final int BRAILLE_LENGTH_SHORT = 0;
     public static final int BRAILLE_LENGTH_LONG = 1;
