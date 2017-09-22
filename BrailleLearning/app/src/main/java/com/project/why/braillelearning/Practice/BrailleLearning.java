@@ -9,6 +9,8 @@ import android.view.Window;
 
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleData;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleDataManager;
+import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
+import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.Module.FullScreenModule;
 import com.project.why.braillelearning.R;
 
@@ -20,12 +22,17 @@ public class BrailleLearning extends Activity {
     private BrailleLearningView view;
     private BrailleDataManager brailleDataManager;
     private ArrayList<BrailleData> BrailleDataArray = new ArrayList<>();
+
+    private BrailleInformationFactory jsonFileNameFactory = new BrailleFactory();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InitFullScreen();
-
         Intent i = getIntent();
+        ArrayList<Integer> menuAddress = (ArrayList<Integer>)i.getSerializableExtra("MenuAddress");
+        BrailleInformationFactory brailleInformationFactory = new BrailleFactory();
+
         String JsonFileName = i.getStringExtra("JsonFileName");
         brailleDataManager = new BrailleDataManager(this, JsonFileName);
         BrailleDataArray.addAll(brailleDataManager.getBrailleDataArray());

@@ -45,11 +45,11 @@ public class BrailleLearningMenu extends Activity {
     private ImageView MenuImageView; // 메뉴 이미지뷰
     private MenuTreeManager menuTreeManager; // 메뉴 트리 manager
     private ImageResizeModule imageResizeModule;
-    private Deque<Integer> MenuAdressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
+    private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
     private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
     private MediaPlayerModule mediaPlayerModule;
 
-    private BrailleInformationFactory jsonFileNameFactory = new BrailleFactory();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +99,9 @@ public class BrailleLearningMenu extends Activity {
         imageResizeModule = new ImageResizeModule(getResources());
         mediaPlayerModule = new MediaPlayerModule(this);
         menuTreeManager = new MenuTreeManager();
-        MenuAdressDeque = new LinkedList<>();
-        MenuAdressDeque.addLast(PageNumber);
-        NowMenuListSize = menuTreeManager.getMenuListSize(MenuAdressDeque);
+        menuAddressDeque = new LinkedList<>();
+        menuAddressDeque.addLast(PageNumber);
+        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
 
        // setMenuImage(NONE); // 메뉴 imageview에 image 설정
     }
@@ -236,22 +236,22 @@ public class BrailleLearningMenu extends Activity {
     public void CheckMenuChange(int Type){ // 화면전환 체크 함수
         switch(Type){
             case ENTER: // 메뉴 접속
-                MenuAdressDeque.addLast(0);
-                NowMenuListSize = menuTreeManager.getMenuListSize(MenuAdressDeque); // 현재 메뉴 리스트 숫자 리셋
+                menuAddressDeque.addLast(0);
+                NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
                 setMenuImage(Type);
                 break;
             case BACK: // 상위 메뉴
-                MenuAdressDeque.removeLast();
-                if(!MenuAdressDeque.isEmpty())
-                    NowMenuListSize = menuTreeManager.getMenuListSize(MenuAdressDeque); // 현재 메뉴 리스트 숫자 리셋
+                menuAddressDeque.removeLast();
+                if(!menuAddressDeque.isEmpty())
+                    NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
                 setMenuImage(Type);
                 break;
             case NEXT: // 오른쪽 메뉴
-                MenuAdressDeque.addLast(getPageNumber(MenuAdressDeque.removeLast()+1));
+                menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast()+1));
                 setMenuImage(Type);
                 break;
             case PREVIOUS: // 왼쪽 메뉴
-                MenuAdressDeque.addLast(getPageNumber(MenuAdressDeque.removeLast()-1));
+                menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast()-1));
                 setMenuImage(Type);
                 break;
             case SPECIALFUNCTION: // 특수기능
@@ -274,11 +274,11 @@ public class BrailleLearningMenu extends Activity {
     }
 
     public void setMenuImage(int FingerFunctinoType) { // 메뉴 이미지 설정 함수
-        if(MenuAdressDeque.isEmpty()) { // 메뉴 Adress Deque가 비어있으면 종료
+        if(menuAddressDeque.isEmpty()) { // 메뉴 Adress Deque가 비어있으면 종료
             finish();
         }
         else {
-            TreeNode MenuNode = menuTreeManager.getMenuTreeNode(MenuAdressDeque);
+            TreeNode MenuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
             if (MenuNode != null) {
                 recycleImage();
                 Animation animation = AnimationUtils.loadAnimation(this, R.anim.image_fade);
@@ -286,9 +286,10 @@ public class BrailleLearningMenu extends Activity {
                 MenuImageView.setImageDrawable(imageResizeModule.getDrawableImage(MenuNode.getImageId(), MenuImageSize, MenuImageSize)); //현재화면에 이미지 설정
                 mediaPlayerModule.SoundPlay(FingerFunctinoType, MenuNode.getSoundId());
             } else { // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제 후 점자 학습 화면 이동
-                MenuAdressDeque.removeLast();
-                NowMenuListSize = menuTreeManager.getMenuListSize(MenuAdressDeque);
-                EnterBrailleLearning();
+                menuAddressDeque.removeLast();
+                NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
+                String menuName = menuTreeManager.getMenuName(menuAddressDeque);
+                EnterBrailleLearning(menuName);
 /*
                 String JsonFileName = getJsonFileName(); // 점자 학습 화면으로 전송할 점자 data json file name
                 EnterBrailleLearning(JsonFileName);*/
@@ -297,10 +298,9 @@ public class BrailleLearningMenu extends Activity {
         }
     }
 
-    public void EnterBrailleLearning(){
+    public void EnterBrailleLearning(String menuName){
         Intent i = new Intent(this, BrailleLearning.class);
-        ArrayList<Integer> MenuAdress = new ArrayList<>();
-        MenuAdress.addAll(MenuAdressDeque);
+        i.putExtra("MENUNAME",menuName);
         overridePendingTransition(R.anim.fade, R.anim.hold);
         startActivity(i);
     }
