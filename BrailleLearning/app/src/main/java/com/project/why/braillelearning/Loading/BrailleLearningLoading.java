@@ -1,4 +1,4 @@
-package com.project.why.braillelearning.Menu;
+package com.project.why.braillelearning.Loading;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
 import com.project.why.braillelearning.Global;
+import com.project.why.braillelearning.Menu.BrailleLearningMenu;
 import com.project.why.braillelearning.Module.FullScreenModule;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;

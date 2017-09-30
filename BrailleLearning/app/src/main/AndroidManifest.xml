@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Menu.BrailleLearningLoading"
+            android:name=".Loading.BrailleLearningLoading"
             android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
         <activity
             android:name=".Menu.BrailleLearningMenu"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".Practice.BrailleLearning"
+        <activity android:name=".LearningControl.BrailleLearning"
             android:screenOrientation="sensorLandscape"></activity>
     </application>
 

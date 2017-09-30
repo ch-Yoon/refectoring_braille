@@ -7,20 +7,17 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import com.project.why.braillelearning.BrailleInformationFactory.*;
+import com.project.why.braillelearning.EnumConstant.Menu;
 import com.project.why.braillelearning.Global;
-import com.project.why.braillelearning.Module.FullScreenModule;
+import com.project.why.braillelearning.LearningControl.BrailleLearning;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.Module.MediaPlayerModule;
-import com.project.why.braillelearning.Practice.BrailleLearning;
 import com.project.why.braillelearning.R;
 
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -54,10 +51,8 @@ public class BrailleLearningMenu extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitFullScreen(); // 전체화면
         setContentView(R.layout.activity_braille_learning_menu);
         MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
-
         InitMenu();
     }
 
@@ -82,16 +77,15 @@ public class BrailleLearningMenu extends Activity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
-            decorView.setSystemUiVisibility(uiOption); // 전체화면 적용
+            setFullScreen();
         }
     }
 
-    public void InitFullScreen(){ // 전체화면 함수
-        decorView = getWindow().getDecorView(); // 실제 윈도우의 배경 drawable을 담고있는 decorView
-        FullScreenModule fullScreenModule = new FullScreenModule(this);
-        uiOption = fullScreenModule.getFullScreenOption(); // decorView의 ui를 변경하기 위한 값
-        requestWindowFeature(Window.FEATURE_NO_TITLE); // 액션바 제거
-        decorView.setSystemUiVisibility(uiOption); // 전체화면 적용
+    public void setFullScreen(){ // 전체화면 함수
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     public void InitMenu(){ // 메뉴 초기화 함수
@@ -102,8 +96,6 @@ public class BrailleLearningMenu extends Activity {
         menuAddressDeque = new LinkedList<>();
         menuAddressDeque.addLast(PageNumber);
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-
-       // setMenuImage(NONE); // 메뉴 imageview에 image 설정
     }
 
     public void setMenuImageSize(){ // 이미지 size setting
@@ -255,6 +247,7 @@ public class BrailleLearningMenu extends Activity {
                 setMenuImage(Type);
                 break;
             case SPECIALFUNCTION: // 특수기능
+
                 break;
             default:
                 break;
@@ -288,17 +281,13 @@ public class BrailleLearningMenu extends Activity {
             } else { // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제 후 점자 학습 화면 이동
                 menuAddressDeque.removeLast();
                 NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-                String menuName = menuTreeManager.getMenuName(menuAddressDeque);
-                EnterBrailleLearning(menuName);
-/*
-                String JsonFileName = getJsonFileName(); // 점자 학습 화면으로 전송할 점자 data json file name
-                EnterBrailleLearning(JsonFileName);*/
-                //Toast.makeText(this, "하위메뉴가 없습니다.", Toast.LENGTH_SHORT).show();
+                Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
+                enterBrailleLearning(menuName);
             }
         }
     }
 
-    public void EnterBrailleLearning(String menuName){
+    public void enterBrailleLearning(Menu menuName){
         Intent i = new Intent(this, BrailleLearning.class);
         i.putExtra("MENUNAME",menuName);
         overridePendingTransition(R.anim.fade, R.anim.hold);

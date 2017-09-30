@@ -1,6 +1,10 @@
 package com.project.why.braillelearning.BrailleInformationFactory;
 
-import com.project.why.braillelearning.Practice.Constant;
+import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
+import com.project.why.braillelearning.EnumConstant.BrailleLength;
+import com.project.why.braillelearning.EnumConstant.Database;
+import com.project.why.braillelearning.EnumConstant.Json;
+import com.project.why.braillelearning.EnumConstant.ServerClient;
 
 import java.util.ArrayList;
 
@@ -8,51 +12,23 @@ import java.util.ArrayList;
  * Created by hyuck on 2017-09-21.
  */
 
-public class LetterWritingQuiz extends LearningInformation implements Getting {
+public class LetterWritingQuiz extends LearningInformation implements GettingInformation {
     LetterWritingQuiz(){
-        setBrailleLength(Constant.BRAILLE_LENGTH_LONG);
-        setBrailleDataType(Constant.CLIENT);
-        setJsonFileNameArray(Constant.LETTER_JSON);
-        setBrailleLearningType(Constant.LEARNING_WRITING_QUIZ);
-        setDatabaseTableName(Constant.MASTER_DB);
+        setBrailleLength(BrailleLength.LONG);
+        setServerClientType(ServerClient.CLIENT);
+        setJsonFileNameArray(Json.LETTER);
+        setBrailleLearningType(BrailleLearningType.WRITING_QUIZ);
+        setDatabaseTableName(Database.MASTER);
     }
 
     @Override
-    public void setBrailleLength(int brailleLength) {
-        super.brailleLength = brailleLength;
+    public BrailleLength gettBrailleLength() {
+        return brailleLength;
     }
 
     @Override
-    public void setBrailleDataType(int brailleDataType) {
-        super.brailleDataType = brailleDataType;
-    }
-
-    @Override
-    public void setJsonFileNameArray(String jsonFileName) {
-        if(jsonFileName != null)
-            jsonFileNameArray.add(jsonFileName);
-        else
-            jsonFileNameArray = null;
-    }
-
-    @Override
-    public void setBrailleLearningType(int brailleLearningType) {
-        super.brailleLearningType = brailleLearningType;
-    }
-
-    @Override
-    public void setDatabaseTableName(String databaseTableName) {
-        super.databaseTableName = databaseTableName;
-    }
-
-    @Override
-    public int gettBrailleLength() {
-        return super.brailleLength;
-    }
-
-    @Override
-    public int getBrailleDataType() {
-        return super.brailleDataType;
+    public ServerClient getServerClientType() {
+        return serverClientType;
     }
 
     @Override
@@ -61,12 +37,40 @@ public class LetterWritingQuiz extends LearningInformation implements Getting {
     }
 
     @Override
-    public int getBrailleLearningType() {
+    public BrailleLearningType getBrailleLearningType() {
         return brailleLearningType;
     }
 
     @Override
     public String getDatabaseTableName() {
         return databaseTableName;
+    }
+
+    @Override
+    public void setBrailleLength(BrailleLength brailleLength) {
+        this.brailleLength = brailleLength;
+    }
+
+    @Override
+    public void setServerClientType(ServerClient serverClientType) {
+        this.serverClientType = serverClientType;
+    }
+
+    @Override
+    public void setJsonFileNameArray(Json jsonFileName) {
+        if(jsonFileName != null)
+            jsonFileNameArray.add(jsonFileName.getName());
+        else
+            jsonFileNameArray = null;
+    }
+
+    @Override
+    public void setBrailleLearningType(BrailleLearningType brailleLearningType) {
+        this.brailleLearningType = brailleLearningType;
+    }
+
+    @Override
+    public void setDatabaseTableName(Database databaseTableName) {
+        this.databaseTableName = databaseTableName.getName();
     }
 }

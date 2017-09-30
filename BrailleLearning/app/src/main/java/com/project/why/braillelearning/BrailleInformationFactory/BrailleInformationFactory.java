@@ -1,12 +1,11 @@
 package com.project.why.braillelearning.BrailleInformationFactory;
 
-import java.util.ArrayList;
-import java.util.Deque;
+import com.project.why.braillelearning.EnumConstant.Menu;
 
 /**
  * Created by hyuck on 2017-09-13.
  */
 
 public interface BrailleInformationFactory {
-    Getting getInformationObject(String menuName);
+    GettingInformation getInformationObject(Menu menuName);
 }

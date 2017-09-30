@@ -1,4 +1,4 @@
-package com.project.why.braillelearning;
+package com.project.why.braillelearning.Loading;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,8 +9,9 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 
-import com.project.why.braillelearning.Menu.BrailleLearningLoading;
+import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.Module.FullScreenModule;
+import com.project.why.braillelearning.R;
 
 public class MainActivity extends Activity {
     private View decorView; // 최상단 BackgroundView

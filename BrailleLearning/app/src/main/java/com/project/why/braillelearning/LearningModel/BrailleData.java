@@ -1,4 +1,4 @@
-package com.project.why.braillelearning.BrailleInformationFactory;
+package com.project.why.braillelearning.LearningModel;
 
 /**
  * Created by hyuck on 2017-09-12.

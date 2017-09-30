@@ -1,4 +1,4 @@
-package com.project.why.braillelearning.Practice;
+package com.project.why.braillelearning.LearningView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,66 +10,71 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import com.project.why.braillelearning.BrailleInformationFactory.BrailleData;
-import com.project.why.braillelearning.Global;
 
-import java.util.ArrayList;
+import com.project.why.braillelearning.EnumConstant.BrailleLength;
+import com.project.why.braillelearning.LearningControl.Coordinate;
+import com.project.why.braillelearning.LearningModel.BrailleData;
+import com.project.why.braillelearning.Global;
 
 /**
  * Created by hyuck on 2017-09-14.
  */
 
-public class BrailleLearningView extends View {
+public class BasicView extends View implements Observers{
     private final int BIG_CIRCLE = 1; // 돌출 점자
     private final int MINI_CIRCLE = 0; // 비 돌출 점자
 
-    private ArrayList<BrailleData> BrailleDataArray = new ArrayList<>();
     private Context context;
     private TextView textName;
     private Paint paint;
-    private int BrailleDataIndex = 0;
     private float BigCircleRadiusRatio;
     private float MiniCircleRadiusRatio;
     private float Space;
     private Coordinate Coordinate_XY[][];
+    private BrailleData brailleData;
+    private BrailleLength brailleLength;
 
-
-
-    public BrailleLearningView(Context context, ArrayList<BrailleData> BrailleDataArray){
+    public BasicView(Context context, BrailleLength brailleLength){
         super(context);
         this.context = context;
-        this.BrailleDataArray.addAll(BrailleDataArray);
-        settingPaint();
+        this.brailleLength = brailleLength;
+
+        initPaint();
         initBrailleRatio();
     }
 
-    public void settingPaint(){
+    public void initPaint(){
         paint = new Paint();
         paint.setColor(Color.WHITE);
     }
 
     public void initBrailleRatio(){
-        BigCircleRadiusRatio = (float)0.1;
-        MiniCircleRadiusRatio = (float)0.02;
-        Space = (float)0.1;
+        switch(brailleLength){
+            case SHORT:
+                BigCircleRadiusRatio = (float)0.1;
+                MiniCircleRadiusRatio = (float)0.02;
+                Space = (float)0.1;
+                break;
+            case LONG:
+                BigCircleRadiusRatio = (float)0.05;
+                MiniCircleRadiusRatio = (float)0.01;
+                Space = (float)0.05;
+                break;
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas){
         Log.d("ondraw","ondraw");
-        if(!BrailleDataArray.isEmpty()) {
-            if (BrailleDataIndex <= BrailleDataArray.size()) {
-                BrailleData Data = BrailleDataArray.get(BrailleDataIndex);
-                String LetterName = Data.getLetterName();
-                int BrailleMatrix[][] = Data.getBrailleMatrix();
-
-                setTextName(LetterName);
-                setBraille(canvas, BrailleMatrix);
-            }
+        if(brailleData != null) {
+                setTextName();
+                setBraille(canvas);
         }
     }
 
-    public void setTextName(String LetterName){
+    public void setTextName(){
+        String LetterName = brailleData.getLetterName();
+
         if(textName==null) {
             textName = new TextView(context);
 
@@ -89,7 +94,9 @@ public class BrailleLearningView extends View {
         textName.setText(LetterName);
     }
 
-    public void setBraille(Canvas canvas, int[][] BrailleMatrix) {
+    public void setBraille(Canvas canvas) {
+        int BrailleMatrix[][] = brailleData.getBrailleMatrix();
+
         int Row = 3; // 점자는 3행으로 이루어짐
         int Col = BrailleMatrix[0].length;
         initCoordinateXY(Row, Col); // 점자의 수만큼 행렬 초기화
@@ -134,6 +141,17 @@ public class BrailleLearningView extends View {
     public float getCoordinate_X(int Col){
         // 점자의 띄어쓰기 + 점자 원의 크기 * 열(점자 갯수) + 점자의 반지름 = 점자의 좌표
         return Global.DisplayY*Space*(Col/2) + Global.DisplayY * ((2 * BigCircleRadiusRatio * Col) + BigCircleRadiusRatio);
+    }
+
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public void nodifyBraille(BrailleData brailleData) {
+        this.brailleData = brailleData;
+        notify();
     }
 }
 
