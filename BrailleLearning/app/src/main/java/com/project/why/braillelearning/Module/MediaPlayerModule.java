@@ -42,15 +42,17 @@ public class MediaPlayerModule {
     }
 
     public void SoundPlay(int SoundId){
-        InitMediaPlayer();
-        mediaPlayer = MediaPlayer.create(mContext, SoundId);
-        mediaPlayer.start();
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                InitMediaPlayer();
-            }
-        });
+        if(SoundId != NONE) {
+            InitMediaPlayer();
+            mediaPlayer = MediaPlayer.create(mContext, SoundId);
+            mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    InitMediaPlayer();
+                }
+            });
+        }
     }
 
     public void InitMediaPlayer(){

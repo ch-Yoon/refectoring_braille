@@ -91,7 +91,7 @@ public class BrailleLearningLoading extends Activity {
     }
 
     public void setMenuImageSize(){ // 이미지 size setting
-        MenuImageSize = (int)(Global.DisplayY*0.6); // imageview의 width와 height는 세로 높이의 80%
+        MenuImageSize = (int)(Global.DisplayY*0.4); // imageview의 width와 height는 세로 높이의 80%
         Loading_Animation_imageview.getLayoutParams().height = MenuImageSize;
         Loading_Animation_imageview.getLayoutParams().width = MenuImageSize;
         Loading_Animation_imageview.requestLayout();

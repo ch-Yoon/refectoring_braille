@@ -78,7 +78,6 @@ public class MenuTreeManager {
         TreeNode MynoteMaster = Mynote.addChildTreeNode(Menu.MASTER_MYNOTE, R.drawable.mynote_master, R.raw.mynote_master);
         TreeNode MynoteCommunication = Mynote.addChildTreeNode(Menu.COMMUNICATION_MYNOTE, R.drawable.mynote_communication, R.raw.mynote_communication);
 
-
         // 선생님과의 대화 하위메뉴 트리 등록(중 메뉴) : 선생님 모드, 학생 모드
         TreeNode CommunicationTeacher = Communication.addChildTreeNode(Menu.TEACHER_COMMUNICATION, R.drawable.teacher_mode, R.raw.teacher_mode);
         TreeNode CommunicationStudent = Communication.addChildTreeNode(Menu.STUDENT_COMMUNICATION, R.drawable.student_mode, R.raw.student_mode);

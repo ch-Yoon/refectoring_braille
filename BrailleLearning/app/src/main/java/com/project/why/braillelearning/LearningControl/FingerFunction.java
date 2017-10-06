@@ -1,16 +1,19 @@
 package com.project.why.braillelearning.LearningControl;
 
-import com.project.why.braillelearning.LearningView.Observers;
+import android.view.MotionEvent;
+
+import com.project.why.braillelearning.LearningView.ViewObservers;
 
 /**
  * Created by hyuck on 2017-09-25.
  */
 
 public interface FingerFunction {
-    void addObservers(Observers observers);
+    void addObservers(ViewObservers observers);
+    void initObservers();
     void nodifyObservers();
-
-    void oneFingerFunction();
-    void twoFingerFunction();
-    void threeFingerFunction();
+    boolean oneFinegerFunction();
+    boolean twoFingerFunction();
+    boolean threeFingerFunction();
+    boolean touchEvent(MotionEvent event);
 }

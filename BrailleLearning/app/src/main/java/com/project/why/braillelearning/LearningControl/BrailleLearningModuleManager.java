@@ -5,6 +5,7 @@ import android.content.Context;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
 import com.project.why.braillelearning.BrailleInformationFactory.Tutorial;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
+import com.project.why.braillelearning.EnumConstant.BrailleLength;
 import com.project.why.braillelearning.EnumConstant.ServerClient;
 import com.project.why.braillelearning.LearningModel.BrailleDataManager;
 import com.project.why.braillelearning.LearningModel.GettingBraille;
@@ -16,17 +17,28 @@ import java.util.ArrayList;
  */
 
 public class BrailleLearningModuleManager {
+    Context mContext;
+    ServerClient serverClient;
+    ArrayList<String> jsonFileNameArray;
+    String databaseTableName;
     BrailleLearningType brailleLearningType;
+    BrailleLength brailleLength;
     ArrayList<GettingBraille> brailleArrayList;
 
-    BrailleLearningModuleManager(Context context, ServerClient serverClient, ArrayList<String> jsonFileNameArray, String databaseTableName, BrailleLearningType brailleLearningType){
-        this.brailleArrayList = getBrailleArrayList(context, serverClient, jsonFileNameArray, databaseTableName);
-        this.brailleLearningType = brailleLearningType;
+    BrailleLearningModuleManager(Context context, GettingInformation object){
+        mContext = context;
+        serverClient = object.getServerClientType();
+        jsonFileNameArray = object.getJsonFileNameArray();
+        databaseTableName = object.getDatabaseTableName();
+        brailleLearningType = object.getBrailleLearningType();
+        brailleLength = object.gettBrailleLength();
+
+        initBrailleArrayList();
     }
 
-    public ArrayList<GettingBraille> getBrailleArrayList(Context context, ServerClient serverClient, ArrayList<String> jsonFileNameArray, String databaseTableName){
-        BrailleDataManager brailleDataManager = new BrailleDataManager(context, serverClient, jsonFileNameArray, databaseTableName);
-        return brailleDataManager.getBrailleArrayList();
+    public void initBrailleArrayList(){
+        BrailleDataManager brailleDataManager = new BrailleDataManager(mContext, serverClient, jsonFileNameArray, databaseTableName);
+        brailleArrayList = brailleDataManager.getBrailleArrayList();
     }
 
     public FingerFunction getLearningModule(){
@@ -34,7 +46,7 @@ public class BrailleLearningModuleManager {
             case TUTORIAL:
                 return null;
             case BASIC:
-                return new BasicLearningModule(brailleArrayList);
+                return new BasicLearningModule(mContext, brailleArrayList, brailleLength);
             case TRANSLATION:
                 return null;
             case READING_QUIZ:

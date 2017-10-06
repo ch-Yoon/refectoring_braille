@@ -16,14 +16,30 @@ public class BrailleData {
     }
 
     public int[][] setBrailleMatrix(String brailleMatrix) { // 점자를 의미하는 행렬 셋팅
-        int ROW=3; //3행
-        int COL=2*brailleMatrix.length()/6;; //2열 * 칸수
+        int EXTERNAL_WALL = -2;
+        int DIVISION_LINE = -1;
+
+        int COL=4; //4행
+        int ROW = (brailleMatrix.length()/3)+((brailleMatrix.length()/3)/2);
+        //int ROW=2*brailleMatrix.length()/6; //2열 * 칸수
         int index=0;
 
-        int Matrix[][] = new int[ROW][COL];
-        for(int i=0 ; i<ROW ; i++){
-            for(int j=0 ; j<COL ; j++){
-                Matrix[i][j] = (int)brailleMatrix.charAt(index++)-'0';
+        int Matrix[][] = new int[COL][ROW];
+        for(int i=0 ; i<COL ; i++){
+            for(int j=0 ; j<ROW ; j++){
+                if(i == 0)
+                    Matrix[i][j] = EXTERNAL_WALL;
+                else {
+                    if(j == ROW-1)
+                        Matrix[i][j] = EXTERNAL_WALL;
+                    else {
+                        if((j+1)%3 == 0) {
+                            Matrix[i][j] = DIVISION_LINE;
+                        } else {
+                            Matrix[i][j] = (int) brailleMatrix.charAt(index++) - '0';
+                        }
+                    }
+                }
             }
         }
 

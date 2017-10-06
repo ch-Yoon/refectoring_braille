@@ -11,71 +11,45 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.project.why.braillelearning.EnumConstant.BrailleLength;
-import com.project.why.braillelearning.LearningControl.Coordinate;
 import com.project.why.braillelearning.LearningModel.BrailleData;
-import com.project.why.braillelearning.Global;
+import com.project.why.braillelearning.LearningControl.Coordinate;
+import com.project.why.braillelearning.LearningControl.Data;
 
 /**
  * Created by hyuck on 2017-09-14.
  */
 
-public class BasicView extends View implements Observers{
-    private final int BIG_CIRCLE = 1; // 돌출 점자
-    private final int MINI_CIRCLE = 0; // 비 돌출 점자
-
+public class BasicView extends View implements ViewObservers {
     private Context context;
+    private Data data;
     private TextView textName;
-    private Paint paint;
-    private float BigCircleRadiusRatio;
-    private float MiniCircleRadiusRatio;
-    private float Space;
-    private Coordinate Coordinate_XY[][];
-    private BrailleData brailleData;
-    private BrailleLength brailleLength;
+    private float bigCircle;
+    private float miniCircle;
 
-    public BasicView(Context context, BrailleLength brailleLength){
+
+    public BasicView(Context context){
         super(context);
         this.context = context;
-        this.brailleLength = brailleLength;
-
-        initPaint();
-        initBrailleRatio();
-    }
-
-    public void initPaint(){
-        paint = new Paint();
-        paint.setColor(Color.WHITE);
-    }
-
-    public void initBrailleRatio(){
-        switch(brailleLength){
-            case SHORT:
-                BigCircleRadiusRatio = (float)0.1;
-                MiniCircleRadiusRatio = (float)0.02;
-                Space = (float)0.1;
-                break;
-            case LONG:
-                BigCircleRadiusRatio = (float)0.05;
-                MiniCircleRadiusRatio = (float)0.01;
-                Space = (float)0.05;
-                break;
-        }
     }
 
     @Override
     protected void onDraw(Canvas canvas){
         Log.d("ondraw","ondraw");
-        if(brailleData != null) {
-                setTextName();
-                setBraille(canvas);
+        drawBraille(canvas);
+    }
+
+    public void drawBraille(Canvas canvas){
+        if(data != null) {
+            String letterName = data.getLetterName();
+            Coordinate coordinate_xy[][] = data.getCoordinate_XY();
+
+            setTextName(letterName);
+            setBraille(canvas, coordinate_xy);
         }
     }
 
-    public void setTextName(){
-        String LetterName = brailleData.getLetterName();
-
-        if(textName==null) {
+    public void setTextName(String letterName){
+        if(textName == null) {
             textName = new TextView(context);
 
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
@@ -83,6 +57,7 @@ public class BasicView extends View implements Observers{
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     Gravity.CENTER_HORIZONTAL
             );
+
             textName.setTextColor(Color.WHITE);
             textName.setPadding(0, 50, 0, 0);
             textName.setGravity(Gravity.CENTER);
@@ -91,56 +66,48 @@ public class BasicView extends View implements Observers{
             ((FrameLayout) this.getParent()).addView(textName);
         }
 
-        textName.setText(LetterName);
+        textName.setText(letterName);
     }
 
-    public void setBraille(Canvas canvas) {
-        int BrailleMatrix[][] = brailleData.getBrailleMatrix();
+    public void setBraille(Canvas canvas, Coordinate brailleMatrix[][]) {
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
 
-        int Row = 3; // 점자는 3행으로 이루어짐
-        int Col = BrailleMatrix[0].length;
-        initCoordinateXY(Row, Col); // 점자의 수만큼 행렬 초기화
 
-        for (int i = 0; i < Row; i++) {
-            float coordinate_Y = getCoordinate_Y((Row-1) - i); // Target 점자의 Y 좌표값 setting
-            for (int j = 0; j < Col; j++) {
-                float coordinate_X = getCoordinate_X(j); // Target 점자의 X 좌표값 setting
-                int TargetBraille = BrailleMatrix[i][j]; // Target 점자 돌출 유무  1 or 0
-                float radius = getRadius(TargetBraille); // 점자 돌출 유무에 따른 원의 크기 설정
+        int row = brailleMatrix.length; // 점자는 3행으로 이루어짐
+        int col = brailleMatrix[0].length;
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                float coordinate_X = brailleMatrix[i][j].getX();
+                float coordinate_Y = brailleMatrix[i][j].getY();
+                int dotType = brailleMatrix[i][j].getDotType();
+                float radius = getRadius(dotType);
+                int color = getColor(dotType);
+                paint.setColor(color);
                 canvas.drawCircle(coordinate_X, coordinate_Y, radius, paint); // 점자 그리기
-                CopyCoordinate(i, j, coordinate_X, coordinate_Y, TargetBraille); // 그린 점자 좌표값 행렬에 저장
             }
         }
     }
 
-    public void CopyCoordinate(int Row, int Col, float X, float Y, int TargetBraille){
-        Coordinate_XY[Row][Col] = new Coordinate();
-        Coordinate_XY[Row][Col].setX(X);
-        Coordinate_XY[Row][Col].setY(Y);
-
-        if(TargetBraille==BIG_CIRCLE)
-            Coordinate_XY[Row][Col].setTarget(true);
-    }
-
-    public void initCoordinateXY(int Row, int Col){
-        Coordinate_XY = new Coordinate[Row][Col];
-    }
-
-    public float getRadius(int Braille){
-        if(Braille == 0)
-            return Global.DisplayY*MiniCircleRadiusRatio;
+    public int getColor(int dotType){
+        if(dotType == -1)
+            return Color.CYAN;
+        else if(dotType == -2)
+            return Color.RED;
         else
-            return Global.DisplayY*BigCircleRadiusRatio;
+            return Color.WHITE;
     }
 
-    public float getCoordinate_Y(int Row){
-        // 1 - (점자 원의 크기 * 행(점자 갯수) + 점자의 반지름) = 점자의 좌표
-        return Global.DisplayY * (1 - ((2 * BigCircleRadiusRatio * Row) + BigCircleRadiusRatio));
-    }
-
-    public float getCoordinate_X(int Col){
-        // 점자의 띄어쓰기 + 점자 원의 크기 * 열(점자 갯수) + 점자의 반지름 = 점자의 좌표
-        return Global.DisplayY*Space*(Col/2) + Global.DisplayY * ((2 * BigCircleRadiusRatio * Col) + BigCircleRadiusRatio);
+    public float getRadius(int dotType){
+        if(dotType == 0)
+            return miniCircle;
+        else if( dotType == 1)
+            return bigCircle;
+        else if(dotType == -1)
+            return miniCircle/2;
+        else
+            return miniCircle/2;
     }
 
     @Override
@@ -149,9 +116,16 @@ public class BasicView extends View implements Observers{
     }
 
     @Override
-    public void nodifyBraille(BrailleData brailleData) {
-        this.brailleData = brailleData;
-        notify();
+    public void initCircle(float bigCircle, float miniCircle) {
+        this.bigCircle = bigCircle;
+        this.miniCircle = miniCircle;
+    }
+
+    @Override
+    public void nodifyBraille(Data data) {
+     //   copyBraille(brailleData);
+        this.data = data;
+        invalidate();
     }
 }
 
