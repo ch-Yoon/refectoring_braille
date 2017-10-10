@@ -142,7 +142,7 @@ public class BasicLearningModule implements Control, FingerFunction {
                 if(pageNumber+1 < brailleDataArrayList.size()) {
                     pageNumber++;
                     mediaPlayerModule.SoundPlay(type.getNumber(), "initial_giyeok");
-                    //mediaPlayerModule.SoundPlay(type.getNumber(), FingerFunctionType.NONE.getNumber());
+
 
                     return false;
                 } else
