@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/AppBasicColor"
-    tools:context="com.project.why.braillelearning.MainActivity">
+    tools:context="com.project.why.braillelearning.Loading.MainActivity">
 
 </LinearLayout>

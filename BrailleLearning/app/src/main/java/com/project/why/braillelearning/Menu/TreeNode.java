@@ -1,5 +1,7 @@
 package com.project.why.braillelearning.Menu;
 
+import com.project.why.braillelearning.EnumConstant.Menu;
+
 import java.util.ArrayList;
 
 /**
@@ -11,19 +13,19 @@ public class TreeNode {
     private int SoundId; // sound data id
     private TreeNode ParentTreeNode; // 부모노드
     private ArrayList<TreeNode> ChildTreeNodeArray; // 자식노드 Array
-    private String treeName;
+    private Menu menuName;
 
     TreeNode(){
         ParentTreeNode = null;
         ChildTreeNodeArray = null;
-        treeName = null;
+        menuName = null;
     }
 
-    public TreeNode addChildTreeNode(String treeName, int ImageId, int SoundId){ // 자식노드 등록 함수
+    public TreeNode addChildTreeNode(Menu menuName, int ImageId, int SoundId){ // 자식노드 등록 함수
         TreeNode ChildTreeNode = new TreeNode(); // 자식노드 생성
         ChildTreeNode.setImageId(ImageId); // 자식노드에 Image data 설정
         ChildTreeNode.setSoundId(SoundId); // 자식노드에 Sound data 설정
-        ChildTreeNode.setTreeName(treeName);
+        ChildTreeNode.setTreeName(menuName);
 
         ChildTreeNode.setParentTreeNode(this); // 자식노드의 부모노드를 현재노드로 설정
 
@@ -35,8 +37,8 @@ public class TreeNode {
         return ChildTreeNode; // 등록한 자식노드 반환
     }
 
-    public void setTreeName(String treeName){
-        this.treeName = treeName;
+    public void setTreeName(Menu menuName){
+        this.menuName = menuName;
     }
 
     public void setImageId(int ImageId){
@@ -70,8 +72,8 @@ public class TreeNode {
             return null;
     }
 
-    public String getTreeName(){
-        return treeName;
+    public Menu getTreeName(){
+        return menuName;
     }
 
     public ArrayList<TreeNode> getChildTreeNodeArray(){

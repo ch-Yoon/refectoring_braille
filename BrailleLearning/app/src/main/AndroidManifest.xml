@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.project.why.braillelearning">
 
+    <uses-permission android:name = "android.permission.VIBRATE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Menu.BrailleLearningLoading"
+            android:name=".Loading.BrailleLearningLoading"
             android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +23,7 @@
         <activity
             android:name=".Menu.BrailleLearningMenu"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".Practice.BrailleLearning"
+        <activity android:name=".LearningControl.BrailleLearning"
             android:screenOrientation="sensorLandscape"></activity>
     </application>
 

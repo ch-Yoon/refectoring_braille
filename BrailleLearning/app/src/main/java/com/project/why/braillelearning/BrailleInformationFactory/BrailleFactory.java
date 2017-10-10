@@ -1,16 +1,13 @@
 package com.project.why.braillelearning.BrailleInformationFactory;
 
-import com.project.why.braillelearning.Practice.Constant;
-
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
+import com.project.why.braillelearning.EnumConstant.Menu;
 
 /**
  * Created by hyuck on 2017-09-13.
  */
 
 public class BrailleFactory implements BrailleInformationFactory {
+
     /* 메뉴 구성
      * tutorial
      * basicpractice (initial, vowel, final, number, alphabet, sentence, abbreviation)
@@ -22,71 +19,71 @@ public class BrailleFactory implements BrailleInformationFactory {
      */
 
     @Override
-    public Getting getInformationObject(String menuName) {
+    public GettingInformation getInformationObject(Menu menuName) {
         switch(menuName){
-            case Constant.TUTORIAL:
+            case TUTORIAL:
                 return new Tutorial();
-            case Constant.INITIAL_BASIC:
+            case INITIAL_BASIC:
                 return new Initial();
-            case Constant.VOWEL_BASIC:
+            case VOWEL_BASIC:
                 return new Vowel();
-            case Constant.FINAL_BASIC:
+            case FINAL_BASIC:
                 return new Final();
-            case Constant.NUMBER_BASIC:
+            case NUMBER_BASIC:
                 return new Number();
-            case Constant.ALPHABET_BASIC:
+            case ALPHABET_BASIC:
                 return new Alphabet();
-            case Constant.SENTENCE_BASIC:
+            case SENTENCE_BASIC:
                 return new Sentence();
-            case Constant.ABBREVIATION_BASIC:
+            case ABBREVIATION_BASIC:
                 return new Abbreviation();
-            case Constant.LETTER_MASTER:
+            case LETTER_MASTER:
                 return new Letter();
-            case Constant.WORD_MASTER:
+            case WORD_MASTER:
                 return new Word();
-            case Constant.TRANSLATION:
+            case TRANSLATION:
                 return new Translation();
-            case Constant.INITIAL_READINGQUIZ:
+            case INITIAL_READINGQUIZ:
                 return new InitialReadingQuiz();
-            case Constant.INITIAL_WRITINGQUIZ:
+            case INITIAL_WRITINGQUIZ:
                 return new InitialWritingQuiz();
-            case Constant.VOWEL_READINGQUIZ:
+            case VOWEL_READINGQUIZ:
                 return new VowelReadingQuiz();
-            case Constant.VOWEL_WRITINGQUIZ:
+            case VOWEL_WRITINGQUIZ:
                 return new VowelWritingQuiz();
-            case Constant.FINAL_READINGQUIZ:
+            case FINAL_READINGQUIZ:
                 return new FinalReadingQuiz();
-            case Constant.FINAL_WRITINGQUIZ:
+            case FINAL_WRITINGQUIZ:
                 return new FinalWritingQuiz();
-            case Constant.NUMBER_READINGQUIZ:
+            case NUMBER_READINGQUIZ:
                 return new NumberReadingQuiz();
-            case Constant.NUMBER_WRITINGQUIZ:
+            case NUMBER_WRITINGQUIZ:
                 return new NumberWritingQuiz();
-            case Constant.ALPHABET_READINGQUIZ:
+            case ALPHABET_READINGQUIZ:
                 return new AlphabetReadingQuiz();
-            case Constant.ALPHABET_WRITINGQUIZ:
+            case ALPHABET_WRITINGQUIZ:
                 return new AlphabetWritingQuiz();
-            case Constant.SENTENCE_READINGQUIZ:
+            case SENTENCE_READINGQUIZ:
                 return new SentenceReadingQuiz();
-            case Constant.SENTENCE_WRITINGQUIZ:
+            case SENTENCE_WRITINGQUIZ:
                 return new SentenceWritingQuiz();
-            case Constant.ABBREVIATION_READINGQUIZ:
+            case ABBREVIATION_READINGQUIZ:
                 return new AbbreviationReadingQuiz();
-            case Constant.ABBREVIATION_WRITINGQUIZ:
+            case ABBREVIATION_WRITINGQUIZ:
                 return new AbbreviationWritingQuiz();
-            case Constant.WORD_READINGQUIZ:
+            case WORD_READINGQUIZ:
                 return new WordReadingQuiz();
-            case Constant.WORD_WRITINGQUIZ:
+            case WORD_WRITINGQUIZ:
                 return new WordWritingQuiz();
-            case Constant.BASIC_MYNOTE:
+            case BASIC_MYNOTE:
                 return new BasicNote();
-            case Constant.MASTER_MYNOTE:
+            case MASTER_MYNOTE:
                 return new MasterNote();
-            case Constant.COMMUNICATION_MYNOTE:
+            case COMMUNICATION_MYNOTE:
                 return new CommunicationNote();
-            case Constant.TEACHER_COMMUNICATION:
+            case TEACHER_COMMUNICATION:
                 return new Teacher();
-            case Constant.STUDENT_COMMUNICATION:
+            case STUDENT_COMMUNICATION:
                 return new Student();
             default:
                 return null;

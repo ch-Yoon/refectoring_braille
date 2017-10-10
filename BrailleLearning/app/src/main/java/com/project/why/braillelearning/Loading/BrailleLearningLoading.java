@@ -1,4 +1,4 @@
-package com.project.why.braillelearning.Menu;
+package com.project.why.braillelearning.Loading;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
 import com.project.why.braillelearning.Global;
+import com.project.why.braillelearning.Menu.BrailleLearningMenu;
 import com.project.why.braillelearning.Module.FullScreenModule;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
@@ -90,7 +91,7 @@ public class BrailleLearningLoading extends Activity {
     }
 
     public void setMenuImageSize(){ // 이미지 size setting
-        MenuImageSize = (int)(Global.DisplayY*0.6); // imageview의 width와 height는 세로 높이의 80%
+        MenuImageSize = (int)(Global.DisplayY*0.4); // imageview의 width와 height는 세로 높이의 80%
         Loading_Animation_imageview.getLayoutParams().height = MenuImageSize;
         Loading_Animation_imageview.getLayoutParams().width = MenuImageSize;
         Loading_Animation_imageview.requestLayout();
