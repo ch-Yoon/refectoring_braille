@@ -1,7 +1,9 @@
 package com.project.why.braillelearning.LearningControl;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLength;
+import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.Global;
+import com.project.why.braillelearning.LearningModel.BasicLearningData;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 
 /**
@@ -9,7 +11,6 @@ import com.project.why.braillelearning.LearningModel.BrailleData;
  */
 
 public class BrailleMatrixTranslationModule {
-    private Data data;
     private float BigCircleRadiusRatio;
     private float MiniCircleRadiusRatio;
     private float bigCircleRadius;
@@ -26,17 +27,16 @@ public class BrailleMatrixTranslationModule {
                 MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
                 break;
             case LONG:
-                BigCircleRadiusRatio = (float) 0.042; // 최대 21개의 점 공간이 필요함. 1/21
+                BigCircleRadiusRatio = (float) 0.042; //
                 MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
                 break;
         }
+
         miniCircleRadius = Global.DisplayY*MiniCircleRadiusRatio;
         bigCircleRadius = Global.DisplayY*BigCircleRadiusRatio;
     }
 
-    public void translationBrailleMatrix(BrailleData brailleData) {
-        int EXTERNAL_WALL = -2;
-        int DIVISION_LINE = -1;
+    public BasicLearningData translationBrailleMatrix(BrailleData brailleData) {
         String letterName = brailleData.getLetterName();
         int brailleMatrix[][] = brailleData.getBrailleMatrix();
 
@@ -45,10 +45,7 @@ public class BrailleMatrixTranslationModule {
         int brailleNumber = 1;
         int dotType = 0;
 
-        data = null;
-        data = new Data(col, row, letterName, bigCircleRadius);
-
-
+        BasicLearningData data = new BasicLearningData(col, row, letterName, bigCircleRadius);
 
         for (int i = 0; i < row; i++) {
             float coordinate_X = getCoordinate_X(i); // Target 점자의 X 좌표값 setting
@@ -56,21 +53,22 @@ public class BrailleMatrixTranslationModule {
                 float coordinate_Y = getCoordinate_Y((col-1) - j); // Target 점자의 Y 좌표값 setting
                 int targetBraille = brailleMatrix[j][i]; // 점자 행렬 (0:비돌출, 1:돌출, -1:구분선, -2:경고벽)
 
-                if(targetBraille == EXTERNAL_WALL)
-                    dotType = EXTERNAL_WALL;
-                else if(targetBraille == DIVISION_LINE)
-                    dotType = DIVISION_LINE;
+                if(targetBraille == DotType.EXTERNAL_WALL.getNumber())
+                    dotType = DotType.EXTERNAL_WALL.getNumber();
+                else if(targetBraille == DotType.DEVISION_LINE.getNumber())
+                    dotType = DotType.DEVISION_LINE.getNumber();
                 else {
-                    dotType = brailleNumber;
-                    if(brailleNumber+1 <= 6)
-                        brailleNumber++;
-                    else
-                        brailleNumber = 1;
+                    dotType = brailleNumber++;
+
+                    if(DotType.SIX_DOT.getNumber() < brailleNumber)
+                        brailleNumber = DotType.ONE_DOT.getNumber();
                 }
 
                 data.setCoordinate(j, i, coordinate_X ,coordinate_Y, targetBraille, dotType);
             }
         }
+
+        return data;
     }
 
     public float getCoordinate_Y(int col){ // 1 - (점자 원의 크기 * 행(점자 갯수) + 점자의 반지름) = 점자의 좌표
@@ -79,7 +77,6 @@ public class BrailleMatrixTranslationModule {
 
     public float getCoordinate_X(int row){ // 점자의 띄어쓰기 + 점자 원의 크기 * 열(점자 갯수) + 점자의 반지름 = 점자의 좌표
         return Global.DisplayY * ((2 * BigCircleRadiusRatio * row) + BigCircleRadiusRatio);
-        //Global.DisplayY*Space*(row/2) +
     }
 
     public float getBigCircleRadius(){
@@ -88,9 +85,5 @@ public class BrailleMatrixTranslationModule {
 
     public float getMiniCircleRadius(){
         return miniCircleRadius;
-    }
-
-    public Data getData(){
-        return data;
     }
 }

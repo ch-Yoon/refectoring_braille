@@ -16,12 +16,11 @@ import com.project.why.braillelearning.LearningView.BrailleLearningViewManager;
 import com.project.why.braillelearning.LearningView.ViewObservers;
 import com.project.why.braillelearning.R;
 
-import java.util.ArrayList;
-
 public class BrailleLearning extends Activity {
     private GettingInformation object;
-    private FingerFunction learningModule;
+    private Control learningModule;
     private View view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,13 +28,6 @@ public class BrailleLearning extends Activity {
         Menu menuName = (Menu) i.getSerializableExtra("MENUNAME");
 
         object = getBrailleInformationObject(menuName);
-/*
-        ServerClient serverClient = object.getServerClientType();
-        ArrayList<String> jsonFileNameArray = object.getJsonFileNameArray();
-        String databaseTableName = object.getDatabaseTableName();
-        BrailleLearningType brailleLearningType = object.getBrailleLearningType();
-        BrailleLength brailleLength = object.gettBrailleLength();
-*/
         initBrailleModule(); // 학습 모듈
         initBrailleView(); // 학습 화면
 
@@ -82,6 +74,7 @@ public class BrailleLearning extends Activity {
         boolean finish = learningModule.touchEvent(event);
         if(finish == true)
             finish();
+
         return true;
     }
 }

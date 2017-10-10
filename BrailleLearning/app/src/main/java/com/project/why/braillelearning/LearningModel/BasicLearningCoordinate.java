@@ -1,10 +1,10 @@
-package com.project.why.braillelearning.LearningControl;
+package com.project.why.braillelearning.LearningModel;
 
 /**
  * Created by hyuck on 2017-09-15.
  */
 
-public class Coordinate {
+public class BasicLearningCoordinate {
     private float areaRidus;
     private float x;
     private float serviceArea_X[];
@@ -13,7 +13,7 @@ public class Coordinate {
     private boolean target = false;
     private int dotType;
 
-    Coordinate(float areaRidus) {
+    BasicLearningCoordinate(float areaRidus) {
         this.areaRidus = areaRidus;
     }
 
@@ -31,14 +31,6 @@ public class Coordinate {
 
     public int getDotType() {
         return dotType;
-    }
-
-    public float[] getServiceArea_X() {
-        return serviceArea_X;
-    }
-
-    public float[] getServiceArea_Y() {
-        return serviceArea_Y;
     }
 
     public void setX(float x) {

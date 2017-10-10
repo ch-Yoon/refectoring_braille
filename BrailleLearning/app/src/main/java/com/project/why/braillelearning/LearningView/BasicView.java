@@ -11,9 +11,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.project.why.braillelearning.LearningModel.BrailleData;
-import com.project.why.braillelearning.LearningControl.Coordinate;
-import com.project.why.braillelearning.LearningControl.Data;
+import com.project.why.braillelearning.LearningModel.BasicLearningCoordinate;
+import com.project.why.braillelearning.LearningModel.BasicLearningData;
 
 /**
  * Created by hyuck on 2017-09-14.
@@ -21,7 +20,7 @@ import com.project.why.braillelearning.LearningControl.Data;
 
 public class BasicView extends View implements ViewObservers {
     private Context context;
-    private Data data;
+    private BasicLearningData data;
     private TextView textName;
     private float bigCircle;
     private float miniCircle;
@@ -41,7 +40,7 @@ public class BasicView extends View implements ViewObservers {
     public void drawBraille(Canvas canvas){
         if(data != null) {
             String letterName = data.getLetterName();
-            Coordinate coordinate_xy[][] = data.getCoordinate_XY();
+            BasicLearningCoordinate coordinate_xy[][] = data.getCoordinate_XY();
 
             setTextName(letterName);
             setBraille(canvas, coordinate_xy);
@@ -61,7 +60,7 @@ public class BasicView extends View implements ViewObservers {
             textName.setTextColor(Color.WHITE);
             textName.setPadding(0, 50, 0, 0);
             textName.setGravity(Gravity.CENTER);
-            textName.setTextSize(80);
+            textName.setTextSize(60);
             textName.setLayoutParams(lp);
             ((FrameLayout) this.getParent()).addView(textName);
         }
@@ -69,7 +68,7 @@ public class BasicView extends View implements ViewObservers {
         textName.setText(letterName);
     }
 
-    public void setBraille(Canvas canvas, Coordinate brailleMatrix[][]) {
+    public void setBraille(Canvas canvas, BasicLearningCoordinate brailleMatrix[][]) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
 
@@ -82,7 +81,8 @@ public class BasicView extends View implements ViewObservers {
                 float coordinate_X = brailleMatrix[i][j].getX();
                 float coordinate_Y = brailleMatrix[i][j].getY();
                 int dotType = brailleMatrix[i][j].getDotType();
-                float radius = getRadius(dotType);
+                boolean target = brailleMatrix[i][j].getTarget();
+                float radius = getRadius(dotType, target);
                 int color = getColor(dotType);
                 paint.setColor(color);
                 canvas.drawCircle(coordinate_X, coordinate_Y, radius, paint); // 점자 그리기
@@ -91,23 +91,23 @@ public class BasicView extends View implements ViewObservers {
     }
 
     public int getColor(int dotType){
-        if(dotType == -1)
-            return Color.CYAN;
-        else if(dotType == -2)
+        if(dotType == 7)
             return Color.RED;
+        else if(dotType == 8)
+            return Color.CYAN;
         else
             return Color.WHITE;
     }
 
-    public float getRadius(int dotType){
-        if(dotType == 0)
+    public float getRadius(int dotType, boolean target){
+        if(dotType == 7 || dotType == 8)
             return miniCircle;
-        else if( dotType == 1)
-            return bigCircle;
-        else if(dotType == -1)
-            return miniCircle/2;
-        else
-            return miniCircle/2;
+        else {
+            if(target == true)
+                return bigCircle;
+            else
+                return miniCircle;
+        }
     }
 
     @Override
@@ -122,10 +122,10 @@ public class BasicView extends View implements ViewObservers {
     }
 
     @Override
-    public void nodifyBraille(Data data) {
-     //   copyBraille(brailleData);
+    public void nodifyBraille(BasicLearningData data) {
         this.data = data;
         invalidate();
+
     }
 }
 

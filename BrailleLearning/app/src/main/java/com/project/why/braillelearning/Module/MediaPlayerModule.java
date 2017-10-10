@@ -12,8 +12,9 @@ import com.project.why.braillelearning.R;
 public class MediaPlayerModule {
     private int NONE = -1;
     private Context mContext;
+    private MediaPlayer basicMediaPlayer;
+    private MediaPlayer effectMediaPlyaer;
     private int FingerSound[] = {R.raw.next,R.raw.previous};
-    private MediaPlayer mediaPlayer;
 
     public MediaPlayerModule(Context context){
         mContext = context;
@@ -25,9 +26,32 @@ public class MediaPlayerModule {
 
         if(index != NONE) {
             if (index < FingerSound.length) {
-                mediaPlayer = MediaPlayer.create(mContext, FingerSound[index]);
-                mediaPlayer.start();
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                basicMediaPlayer = MediaPlayer.create(mContext, FingerSound[index]);
+                basicMediaPlayer.start();
+                basicMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        SoundPlay(SoundId);
+                    }
+                });
+            } else
+                SoundPlay(SoundId);
+
+        } else
+            SoundPlay(SoundId);
+    }
+
+    public void SoundPlay(int index, String resName){
+        String packName = mContext.getPackageName();
+        final int SoundId =  mContext.getResources().getIdentifier(resName,"raw",packName);
+
+        InitMediaPlayer();
+
+        if(index != NONE) {
+            if (index < FingerSound.length) {
+                basicMediaPlayer = MediaPlayer.create(mContext, FingerSound[index]);
+                basicMediaPlayer.start();
+                basicMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
                         SoundPlay(SoundId);
@@ -44,9 +68,9 @@ public class MediaPlayerModule {
     public void SoundPlay(int SoundId){
         if(SoundId != NONE) {
             InitMediaPlayer();
-            mediaPlayer = MediaPlayer.create(mContext, SoundId);
-            mediaPlayer.start();
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            basicMediaPlayer = MediaPlayer.create(mContext, SoundId);
+            basicMediaPlayer.start();
+            basicMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     InitMediaPlayer();
@@ -55,15 +79,41 @@ public class MediaPlayerModule {
         }
     }
 
+    public void effectSoundPlay(int soundId){
+        if(soundId != NONE){
+            if(effectMediaPlyaer == null) {
+                effectMediaPlyaer = MediaPlayer.create(mContext, soundId);
+                effectMediaPlyaer.start();
+                effectMediaPlyaer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        InitMediaPlayer();
+                    }
+                });
+            }
+        }
+    }
+
     public void InitMediaPlayer(){
-        if(mediaPlayer != null){
-            if(mediaPlayer.isPlaying()){
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer=null;
+        if(basicMediaPlayer != null){
+            if(basicMediaPlayer.isPlaying()){
+                basicMediaPlayer.stop();
+                basicMediaPlayer.release();
+                basicMediaPlayer = null;
             } else {
-                mediaPlayer.release();
-                mediaPlayer=null;
+                basicMediaPlayer.release();
+                basicMediaPlayer = null;
+            }
+        }
+
+        if(effectMediaPlyaer != null){
+            if(effectMediaPlyaer.isPlaying()){
+                effectMediaPlyaer.stop();
+                effectMediaPlyaer.release();
+                effectMediaPlyaer = null;
+            } else {
+                effectMediaPlyaer.release();
+                effectMediaPlyaer = null;
             }
         }
     }

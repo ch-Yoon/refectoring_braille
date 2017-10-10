@@ -2,8 +2,7 @@ package com.project.why.braillelearning.LearningView;
 
 import android.view.View;
 
-import com.project.why.braillelearning.LearningControl.Data;
-import com.project.why.braillelearning.LearningModel.BrailleData;
+import com.project.why.braillelearning.LearningModel.BasicLearningData;
 
 /**
  * Created by hyuck on 2017-09-26.
@@ -11,6 +10,6 @@ import com.project.why.braillelearning.LearningModel.BrailleData;
 
 public interface ViewObservers {
     void initCircle(float bigCircle, float miniCircle);
-    void nodifyBraille(Data data);
+    void nodifyBraille(BasicLearningData data);
     View getView();
 }

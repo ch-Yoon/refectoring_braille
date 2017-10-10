@@ -3,7 +3,6 @@ package com.project.why.braillelearning.LearningControl;
 import android.content.Context;
 
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
-import com.project.why.braillelearning.BrailleInformationFactory.Tutorial;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.BrailleLength;
 import com.project.why.braillelearning.EnumConstant.ServerClient;
@@ -41,7 +40,7 @@ public class BrailleLearningModuleManager {
         brailleArrayList = brailleDataManager.getBrailleArrayList();
     }
 
-    public FingerFunction getLearningModule(){
+    public Control getLearningModule(){
         switch(brailleLearningType){
             case TUTORIAL:
                 return null;
