@@ -23,8 +23,8 @@ public class BrailleDataManager {
     public BrailleDataManager(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType){
         this.context = context;
         this.jsonFileName = jsonFileName;
-        this.databaseFileName = databaseFileName; 
-        this.brailleLearningType = brailleLearningType;
+        this.databaseFileName = databaseFileName;
+        this.brailleLearningType = brailleLearningType; 
     }
 
     public GettingBraille getBrailleArrayList(){
