@@ -2,6 +2,8 @@ package com.project.why.braillelearning.BrailleInformationFactory;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.BrailleLength;
+import com.project.why.braillelearning.EnumConstant.Database;
+import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.EnumConstant.ServerClient;
 
 import java.util.ArrayList;
@@ -12,8 +14,7 @@ import java.util.ArrayList;
 
 public interface GettingInformation {
     BrailleLength gettBrailleLength();
-    ServerClient getServerClientType();
-    ArrayList<String> getJsonFileNameArray();
+    Json getJsonFileName();
     BrailleLearningType getBrailleLearningType();
-    String getDatabaseTableName();
+    Database getDatabaseTableName();
 }

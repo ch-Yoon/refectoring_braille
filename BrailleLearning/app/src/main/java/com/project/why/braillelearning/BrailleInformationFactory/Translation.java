@@ -15,13 +15,7 @@ import java.util.ArrayList;
 public class Translation extends LearningInformation implements GettingInformation {
     Translation(){
         setBrailleLength(BrailleLength.LONG);
-        setServerClientType(ServerClient.CLIENT);
-        setJsonFileNameArray(Json.INITIAL);
-        setJsonFileNameArray(Json.VOWEL);
-        setJsonFileNameArray(Json.FINAL);
-        setJsonFileNameArray(Json.ABBREVIATION);
-        setJsonFileNameArray(Json.NUMBER);
-        setJsonFileNameArray(Json.ALPHABET);
+        setJsonFileName(null);
         setBrailleLearningType(BrailleLearningType.TRANSLATION);
         setDatabaseTableName(Database.MASTER);
     }
@@ -32,13 +26,8 @@ public class Translation extends LearningInformation implements GettingInformati
     }
 
     @Override
-    public ServerClient getServerClientType() {
-        return serverClientType;
-    }
-
-    @Override
-    public ArrayList<String> getJsonFileNameArray() {
-        return jsonFileNameArray;
+    public Json getJsonFileName() {
+        return jsonFileName;
     }
 
     @Override
@@ -47,7 +36,7 @@ public class Translation extends LearningInformation implements GettingInformati
     }
 
     @Override
-    public String getDatabaseTableName() {
+    public Database getDatabaseTableName() {
         return databaseTableName;
     }
 
@@ -57,16 +46,11 @@ public class Translation extends LearningInformation implements GettingInformati
     }
 
     @Override
-    public void setServerClientType(ServerClient serverClientType) {
-        this.serverClientType = serverClientType;
-    }
-
-    @Override
-    public void setJsonFileNameArray(Json jsonFileName) {
+    public void setJsonFileName(Json jsonFileName){
         if(jsonFileName != null)
-            jsonFileNameArray.add(jsonFileName.getName());
+            this.jsonFileName = jsonFileName;
         else
-            jsonFileNameArray = null;
+            this.jsonFileName = null;
     }
 
     @Override
@@ -76,6 +60,6 @@ public class Translation extends LearningInformation implements GettingInformati
 
     @Override
     public void setDatabaseTableName(Database databaseTableName) {
-        this.databaseTableName = databaseTableName.getName();
+        this.databaseTableName = databaseTableName;
     }
 }

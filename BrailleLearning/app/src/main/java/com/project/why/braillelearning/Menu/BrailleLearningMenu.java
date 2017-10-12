@@ -20,7 +20,7 @@ import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 import com.project.why.braillelearning.LearningControl.FingerFunction;
 import com.project.why.braillelearning.LearningControl.TwoFingerFunction;
 import com.project.why.braillelearning.Module.ImageResizeModule;
-import com.project.why.braillelearning.Module.MediaPlayerModule;
+import com.project.why.braillelearning.Module.MediaPlayerSingleton;
 import com.project.why.braillelearning.R;
 
 import java.util.Deque;
@@ -36,9 +36,11 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
     private ImageResizeModule imageResizeModule;
     private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
     private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
-    private MediaPlayerModule mediaPlayerModule;
+    //private MediaPlayerModule mediaPlayerModule;
+    private MediaPlayerSingleton mediaPlayerModule;
     private TwoFingerFunction twoFinger;
     private FingerCoordinate fingerCoordinate;
+    private FingerFunctionType type = FingerFunctionType.NONE;
 
 
     @Override
@@ -53,13 +55,14 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
     @Override
     protected void onResume(){
         super.onResume();
-        setMenuImage(FingerFunctionType.NONE);
+        refreshData();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         recycleImage();
+        pauseMediaPlayer();
     }
 
     @Override
@@ -85,7 +88,8 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
     public void InitMenu(){ // 메뉴 초기화 함수
         setMenuImageSize(); // 메뉴 imageview 사이즈 조절
         imageResizeModule = new ImageResizeModule(getResources());
-        mediaPlayerModule = new MediaPlayerModule(this);
+        mediaPlayerModule = MediaPlayerSingleton.getInstance();
+        mediaPlayerModule.setContext(this);
         menuTreeManager = new MenuTreeManager();
         menuAddressDeque = new LinkedList<>();
         menuAddressDeque.addLast(PageNumber);
@@ -158,39 +162,38 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
     }
 
     public void CheckMenuType(){ // 화면 전환을 위한 CustomTouchEvent 함수
-        FingerFunctionType type;
-
         if(MultiFinger==false) // 싱글터치
             type = FingerFunctionType.ENTER;
         else  // 멀티터치
             type = twoFinger.getTwoFingerFunctionType(fingerCoordinate.getDownX(), fingerCoordinate.getDownY(), fingerCoordinate.getUpX(), fingerCoordinate.getUpY());
 
         if(type != FingerFunctionType.NONE)
-            CheckMenuChange(type);
+            CheckMenuChange();
     }
 
-    public void CheckMenuChange(FingerFunctionType type){ // 화면전환 체크 함수
+    public void CheckMenuChange(){ // 화면전환 체크 함수
         switch(type){
             case ENTER: // 메뉴 접속
                 menuAddressDeque.addLast(0);
                 NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
-                setMenuImage(type);
+                refreshData();
                 break;
             case BACK: // 상위 메뉴
                 menuAddressDeque.removeLast();
                 if(!menuAddressDeque.isEmpty())
                     NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
-                setMenuImage(type);
+                refreshData();
                 break;
             case NEXT: // 오른쪽 메뉴
                 menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast()+1));
-                setMenuImage(type);
+                refreshData();
                 break;
             case PREVIOUS: // 왼쪽 메뉴
                 menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast()-1));
-                setMenuImage(type);
+                refreshData();
                 break;
             case SPECIAL: // 특수기능
+                refreshSound();
                 break;
             default:
                 break;
@@ -209,34 +212,51 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
         return PageNumber;
     }
 
-    public void setMenuImage(FingerFunctionType fingerFunctinoType) { // 메뉴 이미지 설정 함수
-        if(menuAddressDeque.isEmpty()) { // 메뉴 Adress Deque가 비어있으면 종료
+    public void refreshData() { // 메뉴 이미지 설정 함수
+        if(menuAddressDeque.isEmpty())  // 메뉴 Adress Deque가 비어있으면 종료
             finish();
-        }
         else {
-            TreeNode MenuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
-            if (MenuNode != null) {
-                recycleImage();
-                Animation animation = AnimationUtils.loadAnimation(this, R.anim.image_fade);
-                MenuImageView.startAnimation(animation);
-                MenuImageView.setImageDrawable(imageResizeModule.getDrawableImage(MenuNode.getImageId(), MenuImageSize, MenuImageSize)); //현재화면에 이미지 설정
-                mediaPlayerModule.SoundPlay(fingerFunctinoType.getNumber(), MenuNode.getSoundId());
-            } else { // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제 후 점자 학습 화면 이동
-                menuAddressDeque.removeLast();
-                NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-                Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
-                enterBrailleLearning(menuName);
-            }
+            TreeNode menuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
+            if (menuNode != null) {
+                refreshImage(menuNode);
+                refreshSound(menuNode);
+            } else  // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제 후 점자 학습 화면 이동
+                enterBrailleLearning();
         }
     }
 
-    public void enterBrailleLearning(Menu menuName){
+    public void refreshImage(TreeNode menuNode){
+        recycleImage();
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.image_fade);
+        MenuImageView.startAnimation(animation);
+        MenuImageView.setImageDrawable(imageResizeModule.getDrawableImage(menuNode.getImageId(), MenuImageSize, MenuImageSize)); //현재화면에 이미지 설정
+    }
+
+    public void refreshSound(TreeNode menuNode){
+        mediaPlayerModule.SoundPlay(type.getNumber(), menuNode.getSoundId());
+        type = FingerFunctionType.NONE;
+    }
+
+    public void refreshSound(){
+        TreeNode MenuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
+        mediaPlayerModule.SoundPlay(type.getNumber(), MenuNode.getSoundId());
+        type = FingerFunctionType.NONE;
+    }
+
+    public void enterBrailleLearning(){
+        menuAddressDeque.removeLast();
+        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
+        Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
+
         Intent i = new Intent(this, BrailleLearning.class);
         i.putExtra("MENUNAME",menuName);
         overridePendingTransition(R.anim.fade, R.anim.hold);
         startActivity(i);
     }
 
+    public void pauseMediaPlayer(){
+        mediaPlayerModule.InitMediaPlayer();
+    }
 
     public void recycleImage(){     //이미지 메모리 해제 함수
         if(MenuImageView != null) {

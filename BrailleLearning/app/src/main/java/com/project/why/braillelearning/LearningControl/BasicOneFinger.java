@@ -7,7 +7,7 @@ import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.Vibrate;
 import com.project.why.braillelearning.LearningModel.BasicLearningCoordinate;
 import com.project.why.braillelearning.LearningModel.BasicLearningData;
-import com.project.why.braillelearning.Module.MediaPlayerModule;
+import com.project.why.braillelearning.Module.MediaPlayerSingleton;
 import com.project.why.braillelearning.R;
 
 /**
@@ -16,15 +16,17 @@ import com.project.why.braillelearning.R;
 
 public class BasicOneFinger implements OneFingerFunction {
     private Vibrator vibrator;
-    private MediaPlayerModule mediaPlayerModule;
+    private MediaPlayerSingleton mediaPlayerModule;
     private int previous_i;
     private int previous_j;
 
     BasicOneFinger(Context context){
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        mediaPlayerModule = new MediaPlayerModule(context);
+        mediaPlayerModule = MediaPlayerSingleton.getInstance();
+        mediaPlayerModule.setContext(context);
     }
 
+    @Override
     public void initCoordinate(){
         previous_i = 0;
         previous_j = 0;

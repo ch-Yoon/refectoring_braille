@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import com.project.why.braillelearning.EnumConstant.Json;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,20 +19,20 @@ import java.util.ArrayList;
 
 public class JsonBrailleData implements GettingBraille {
     // 점자 데이터 Manager
-    private String brailleDataName;
-    private ArrayList<BrailleData> BrailleDataArray = new ArrayList<>(); // initial json file read
-    private Context mContext;
+    private Json jsonFileName;
+    private ArrayList<BrailleData> brailleDataArray = new ArrayList<>(); // initial json file read
+    private Context context;
 
-    public JsonBrailleData(Context context, String JsonFileName) {
-        mContext = context;
-        brailleDataName = JsonFileName;
-        readJsonBraillData(JsonFileName);
+    public JsonBrailleData(Context context, Json jsonFileName) {
+        this.context = context;
+        this.jsonFileName = jsonFileName;
+        readJsonBraillData();
     }
 
-    public void readJsonBraillData(String JsonFileName){ // json 읽기
+    public void readJsonBraillData(){ // json 읽기
         try {
-            AssetManager assetManager = mContext.getAssets();
-            AssetManager.AssetInputStream ais = (AssetManager.AssetInputStream) assetManager.open("json/" + JsonFileName + ".json");
+            AssetManager assetManager = context.getAssets();
+            AssetManager.AssetInputStream ais = (AssetManager.AssetInputStream) assetManager.open("json/" + jsonFileName.getName() + ".json");
             BufferedReader br = new BufferedReader(new InputStreamReader(ais));
 
             String ReadText = "";
@@ -41,12 +43,13 @@ public class JsonBrailleData implements GettingBraille {
 
             JSONObject jsonObject = new JSONObject(jsonString);
 
-            JSONArray jArr = new JSONArray(jsonObject.getString(JsonFileName));
+            JSONArray jArr = new JSONArray(jsonObject.getString(jsonFileName.getName()));
             for (int i = 0; i < jArr.length(); i++) {
-                String Lettername = jArr.getJSONObject(i).getString("LetterName").toString();
-                String BrailleMatrix = jArr.getJSONObject(i).getString("BrailleMatrix").toString();
-                String AssistanceLetterName = jArr.getJSONObject(i).getString("AssistanceName").toString();
-                addBrailleDataArray(Lettername, BrailleMatrix, AssistanceLetterName);
+                String lettername = jArr.getJSONObject(i).getString("LetterName").toString();
+                String brailleMatrix = jArr.getJSONObject(i).getString("BrailleMatrix").toString();
+                String assistanceLetterName = jArr.getJSONObject(i).getString("AssistanceName").toString();
+                String rawId = jArr.getJSONObject(i).getString("RawId").toString();
+                addBrailleDataArray(lettername, brailleMatrix, assistanceLetterName, rawId);
             }
         } catch (Exception e) {
             Log.d("JsonBrailleData",e.getMessage());
@@ -54,17 +57,17 @@ public class JsonBrailleData implements GettingBraille {
 
     }
 
-    public void addBrailleDataArray(String LetterName, String BrailleMatrix, String AssistanceLetterName){
-        BrailleData Data = new BrailleData(LetterName, BrailleMatrix, AssistanceLetterName);
-        BrailleDataArray.add(Data);
+    public void addBrailleDataArray(String letterName, String brailleMatrix, String assistanceLetterName, String rawId){
+        BrailleData data = new BrailleData(letterName, brailleMatrix, assistanceLetterName, rawId);
+        brailleDataArray.add(data);
     }
 
-    public String getBrailleDataName(){
-        return brailleDataName;
+    public String getJsonFileName(){
+        return jsonFileName.getName();
     }
 
     @Override
     public ArrayList<BrailleData> getBrailleDataArray(){
-        return BrailleDataArray;
+        return brailleDataArray;
     }
 }

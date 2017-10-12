@@ -15,8 +15,7 @@ import java.util.ArrayList;
 public class FinalReadingQuiz extends LearningInformation implements GettingInformation {
     FinalReadingQuiz(){
         setBrailleLength(BrailleLength.SHORT);
-        setServerClientType(ServerClient.CLIENT);
-        setJsonFileNameArray(Json.FINAL);
+        setJsonFileName(Json.FINAL);
         setBrailleLearningType(BrailleLearningType.READING_QUIZ);
         setDatabaseTableName(Database.BASIC);
     }
@@ -27,13 +26,8 @@ public class FinalReadingQuiz extends LearningInformation implements GettingInfo
     }
 
     @Override
-    public ServerClient getServerClientType() {
-        return serverClientType;
-    }
-
-    @Override
-    public ArrayList<String> getJsonFileNameArray() {
-        return jsonFileNameArray;
+    public Json getJsonFileName() {
+        return jsonFileName;
     }
 
     @Override
@@ -42,7 +36,7 @@ public class FinalReadingQuiz extends LearningInformation implements GettingInfo
     }
 
     @Override
-    public String getDatabaseTableName() {
+    public Database getDatabaseTableName() {
         return databaseTableName;
     }
 
@@ -52,16 +46,11 @@ public class FinalReadingQuiz extends LearningInformation implements GettingInfo
     }
 
     @Override
-    public void setServerClientType(ServerClient serverClientType) {
-        this.serverClientType = serverClientType;
-    }
-
-    @Override
-    public void setJsonFileNameArray(Json jsonFileName) {
+    public void setJsonFileName(Json jsonFileName){
         if(jsonFileName != null)
-            jsonFileNameArray.add(jsonFileName.getName());
+            this.jsonFileName = jsonFileName;
         else
-            jsonFileNameArray = null;
+            this.jsonFileName = null;
     }
 
     @Override
@@ -71,6 +60,6 @@ public class FinalReadingQuiz extends LearningInformation implements GettingInfo
 
     @Override
     public void setDatabaseTableName(Database databaseTableName) {
-        this.databaseTableName = databaseTableName.getName();
+        this.databaseTableName = databaseTableName;
     }
 }
