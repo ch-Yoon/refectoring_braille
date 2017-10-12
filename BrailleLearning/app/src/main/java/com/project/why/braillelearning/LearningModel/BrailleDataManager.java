@@ -24,7 +24,7 @@ public class BrailleDataManager {
         this.context = context;
         this.jsonFileName = jsonFileName;
         this.databaseFileName = databaseFileName;
-        this.brailleLearningType = brailleLearningType;
+        this.brailleLearningType = brailleLearningType; 
     }
 
     public GettingBraille getBrailleArrayList(){
