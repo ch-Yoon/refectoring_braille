@@ -12,5 +12,6 @@ public interface Control {
     void addObservers(ViewObservers observers);
     void initObservers();
     void nodifyObservers();
+    void pause();
     boolean touchEvent(MotionEvent event);
 }

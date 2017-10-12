@@ -9,10 +9,12 @@ import com.project.why.braillelearning.EnumConstant.DotType;
 public class BasicLearningData {
     private String letterName;
     private BasicLearningCoordinate coordinate_XY[][];
+    private String rawId;
     private float radius;
 
-    public BasicLearningData(int col, int row, String letterName, float bigCircleRadius){
+    public BasicLearningData(int col, int row, String letterName, String rawId, float bigCircleRadius){
         this.letterName = letterName;
+        this.rawId = rawId;
         this.coordinate_XY = new BasicLearningCoordinate[col][row];
         this.radius = bigCircleRadius;
     }
@@ -33,6 +35,10 @@ public class BasicLearningData {
 
     public String getLetterName(){
         return letterName;
+    }
+
+    public String getRawId() {
+        return rawId;
     }
 
     public BasicLearningCoordinate[][] getCoordinate_XY(){

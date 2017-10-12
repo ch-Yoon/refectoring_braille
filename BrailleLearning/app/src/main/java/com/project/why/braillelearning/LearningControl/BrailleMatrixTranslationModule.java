@@ -39,13 +39,16 @@ public class BrailleMatrixTranslationModule {
     public BasicLearningData translationBrailleMatrix(BrailleData brailleData) {
         String letterName = brailleData.getLetterName();
         int brailleMatrix[][] = brailleData.getBrailleMatrix();
+        String rawId = brailleData.getRawId();
 
         int col = brailleMatrix.length; // 점자는 3행으로 이루어짐 + 경고벽 1행
         int row = brailleMatrix[0].length;
         int brailleNumber = 1;
-        int dotType = 0;
 
-        BasicLearningData data = new BasicLearningData(col, row, letterName, bigCircleRadius);
+        BasicLearningData data = new BasicLearningData(col, row, letterName, rawId, bigCircleRadius);
+
+
+        int dotType = 0;
 
         for (int i = 0; i < row; i++) {
             float coordinate_X = getCoordinate_X(i); // Target 점자의 X 좌표값 setting

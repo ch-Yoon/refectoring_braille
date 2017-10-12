@@ -2,78 +2,98 @@
   "InitialBrailleData": [{
     "LetterName": "ㄱ",
     "BrailleMatrix": "010000",
-    "AssistanceName": "기역"
+    "AssistanceName": "기역",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "ㄴ",
     "BrailleMatrix": "110000",
-    "AssistanceName": "니은"
+    "AssistanceName": "니은",
+    "RawId": "initial_nieun"
+
   }, {
     "LetterName": "ㄷ",
     "BrailleMatrix": "011000",
-    "AssistanceName": "디귿"
+    "AssistanceName": "디귿",
+    "RawId": "initial_digeud"
   }, {
     "LetterName": "ㄹ",
     "BrailleMatrix": "000100",
-    "AssistanceName": "리을"
+    "AssistanceName": "리을",
+    "RawId": "initial_nieul"
   }, {
     "LetterName": "ㅁ",
     "BrailleMatrix": "100100",
-    "AssistanceName": "미음"
+    "AssistanceName": "미음",
+    "RawId": "initial_mieum"
   }, {
     "LetterName": "ㅂ",
     "BrailleMatrix": "010100",
-    "AssistanceName": "비읍"
+    "AssistanceName": "비읍",
+    "RawId": "initial_bieub"
   }, {
     "LetterName": "ㅅ",
     "BrailleMatrix": "000001",
-    "AssistanceName": "시옷"
+    "AssistanceName": "시옷",
+    "RawId": "initial_siot"
   }, {
     "LetterName": "ㅈ",
     "BrailleMatrix": "010001",
-    "AssistanceName": "지읒"
+    "AssistanceName": "지읒",
+    "RawId": "initial_zieut"
   }, {
     "LetterName": "ㅊ",
     "BrailleMatrix": "000101",
-    "AssistanceName": "치읓"
+    "AssistanceName": "치읓",
+    "RawId": "initial_chieut"
   }, {
     "LetterName": "ㅋ",
     "BrailleMatrix": "111000",
-    "AssistanceName": "키읔"
+    "AssistanceName": "키읔",
+    "RawId": "initial_kieuk"
   }, {
     "LetterName": "ㅌ",
     "BrailleMatrix": "101100",
-    "AssistanceName": "티읕"
+    "AssistanceName": "티읕",
+    "RawId": "initial_tieut"
   }, {
     "LetterName": "ㅍ",
     "BrailleMatrix": "110100",
-    "AssistanceName": "피읖"
+    "AssistanceName": "피읖",
+    "RawId": "initial_pieup"
   }, {
     "LetterName": "ㅎ",
     "BrailleMatrix": "011100",
-    "AssistanceName": "히읗"
+    "AssistanceName": "히읗",
+    "RawId": "initial_hieut"
   }, {
     "LetterName": "된소리표",
     "BrailleMatrix": "000001",
-    "AssistanceName": "된소리표"
+    "AssistanceName": "된소리표",
+    "RawId": "initial_fortis"
   }, {
     "LetterName": "ㄲ",
     "BrailleMatrix": "000100000100",
-    "AssistanceName": "쌍기억"
+    "AssistanceName": "쌍기억",
+    "RawId": "initial_fortis_giyeok"
   }, {
     "LetterName": "ㄸ",
     "BrailleMatrix": "000100100100",
-    "AssistanceName": "쌍디귿"
+    "AssistanceName": "쌍디귿",
+    "RawId": "initial_fortis_digeud"
   }, {
     "LetterName": "ㅃ",
     "BrailleMatrix": "000100010100",
-    "AssistanceName": "쌍비읍"
+    "AssistanceName": "쌍비읍",
+    "RawId": "initial_fortis_bieub"
   }, {
     "LetterName": "ㅆ",
     "BrailleMatrix": "000000000101",
-    "AssistanceName": "쌍시옷"
+    "AssistanceName": "쌍시옷",
+    "RawId": "initial_fortis_siot"
   }, {
     "LetterName": "ㅉ",
     "BrailleMatrix": "000100000101",
-    "AssistanceName": "쌍지읒"
+    "AssistanceName": "쌍지읒",
+    "RawId": "initial_fortis_zieut"
   }]
 }

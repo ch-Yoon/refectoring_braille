@@ -7,15 +7,16 @@ import com.project.why.braillelearning.EnumConstant.DotType;
  */
 
 public class BrailleData {
-    private String LetterName = ""; // 점자 이름
-    private int[][] BrailleMatrix; // 점자 행렬
-    private String AssistanceLetterName = ""; // 퀴즈메뉴를 위한 점자 보조 이름.
+    private String letterName = ""; // 점자 이름
+    private int[][] brailleMatrix; // 점자 행렬
+    private String assistanceLetterName = ""; // 퀴즈메뉴를 위한 점자 보조 이름.
     private String rawId = "";
 
-    BrailleData(String LetterName, String BrailleMatrix, String AssistanceLetterName){
-        this.LetterName = LetterName;
-        this.BrailleMatrix = setBrailleMatrix(BrailleMatrix);
-        this.AssistanceLetterName = AssistanceLetterName;
+    BrailleData(String letterName, String brailleMatrix, String assistanceLetterName, String rawId){
+        this.letterName = letterName;
+        this.brailleMatrix = setBrailleMatrix(brailleMatrix);
+        this.assistanceLetterName = assistanceLetterName;
+        this.rawId = rawId;
     }
 
     public int[][] setBrailleMatrix(String brailleMatrix) { // 점자를 의미하는 행렬 셋팅
@@ -47,15 +48,19 @@ public class BrailleData {
 
 
     public String getLetterName(){
-        return LetterName;
+        return letterName;
     }
 
     public int[][] getBrailleMatrix(){
-        return BrailleMatrix;
+        return brailleMatrix;
     }
 
     public String getAssistanceLetterName(){
-        return AssistanceLetterName;
+        return assistanceLetterName;
+    }
+
+    public String getRawId() {
+        return rawId;
     }
 
 }

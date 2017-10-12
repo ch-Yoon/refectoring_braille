@@ -6,69 +6,45 @@ import android.media.MediaPlayer;
 import com.project.why.braillelearning.R;
 
 /**
- * Created by hyuck on 2017-09-04.
+ * Created by hyuck on 2017-10-11.
  */
 
-public class MediaPlayerModule {
+public class MediaPlayerSingleton {
     private int NONE = -1;
-    private Context mContext;
+    private Context context;
     private MediaPlayer basicMediaPlayer;
     private MediaPlayer effectMediaPlyaer;
     private int FingerSound[] = {R.raw.next,R.raw.previous};
 
-    public MediaPlayerModule(Context context){
-        mContext = context;
+    private static final MediaPlayerSingleton ourInstance = new MediaPlayerSingleton();
+
+    public static MediaPlayerSingleton getInstance() {
+        return ourInstance;
     }
 
-    public void SoundPlay(int index, int id){
-        final int SoundId = id;
+    private MediaPlayerSingleton() {
+    }
+
+    public void setContext(Context context){
+        this.context = context;
+    }
+
+    public void SoundPlay(int index, int soundId){
         InitMediaPlayer();
-
-        if(index != NONE) {
-            if (index < FingerSound.length) {
-                basicMediaPlayer = MediaPlayer.create(mContext, FingerSound[index]);
-                basicMediaPlayer.start();
-                basicMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        SoundPlay(SoundId);
-                    }
-                });
-            } else
-                SoundPlay(SoundId);
-
-        } else
-            SoundPlay(SoundId);
+        fingerSoundPlay(index, soundId);
     }
 
     public void SoundPlay(int index, String resName){
-        String packName = mContext.getPackageName();
-        final int SoundId =  mContext.getResources().getIdentifier(resName,"raw",packName);
-
+        String packName = context.getPackageName();
+        int soundId =  context.getResources().getIdentifier(resName,"raw",packName);
         InitMediaPlayer();
-
-        if(index != NONE) {
-            if (index < FingerSound.length) {
-                basicMediaPlayer = MediaPlayer.create(mContext, FingerSound[index]);
-                basicMediaPlayer.start();
-                basicMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        SoundPlay(SoundId);
-                    }
-                });
-            } else {
-                SoundPlay(SoundId);
-            }
-        } else {
-            SoundPlay(SoundId);
-        }
+        fingerSoundPlay(index, soundId);
     }
 
     public void SoundPlay(int SoundId){
         if(SoundId != NONE) {
             InitMediaPlayer();
-            basicMediaPlayer = MediaPlayer.create(mContext, SoundId);
+            basicMediaPlayer = MediaPlayer.create(context, SoundId);
             basicMediaPlayer.start();
             basicMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -79,10 +55,29 @@ public class MediaPlayerModule {
         }
     }
 
+    public void fingerSoundPlay(int index, final int soundId){
+        if(index != NONE) {
+            if (index < FingerSound.length) {
+                basicMediaPlayer = MediaPlayer.create(context, FingerSound[index]);
+                basicMediaPlayer.start();
+                basicMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        SoundPlay(soundId);
+                    }
+                });
+            } else {
+                SoundPlay(soundId);
+            }
+        } else {
+            SoundPlay(soundId);
+        }
+    }
+
     public void effectSoundPlay(int soundId){
         if(soundId != NONE){
             if(effectMediaPlyaer == null) {
-                effectMediaPlyaer = MediaPlayer.create(mContext, soundId);
+                effectMediaPlyaer = MediaPlayer.create(context, soundId);
                 effectMediaPlyaer.start();
                 effectMediaPlyaer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
