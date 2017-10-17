@@ -195,7 +195,7 @@ public class BasicLearning implements Control, FingerFunction {
     }
 
     public void startMediaPlayer(){
-//        mediaPlayerModule.SoundPlay(type.getNumber(), data.getRawId());
-//        type = FingerFunctionType.NONE;
+        mediaPlayerModule.SoundPlay(type.getNumber(), data.getRawId());
+        type = FingerFunctionType.NONE;
     }
 }
