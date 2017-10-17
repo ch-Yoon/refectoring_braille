@@ -33,36 +33,38 @@ public class BasicOneFinger implements OneFingerFunction {
     }
 
     public void oneFingerFunction(BasicLearningData data, float downX, float downY){
-        BasicLearningCoordinate coordinateXY[][] = data.getCoordinate_XY();
-        int col = coordinateXY.length;
-        int row = coordinateXY[0].length;
-        float x = downX;
-        float y = downY;
+        if(data != null) {
+            BasicLearningCoordinate coordinateXY[][] = data.getCoordinate_XY();
+            int col = coordinateXY.length;
+            int row = coordinateXY[0].length;
+            float x = downX;
+            float y = downY;
 
-        if(data.checkCoordinateInside(x, y)){
-            for (int i = 0; i < col; i++) {
-                for (int j = 0; j < row; j++) {
-                    BasicLearningCoordinate targetCoordinate = coordinateXY[i][j];
-                    if (targetCoordinate.checkSatisfyArea_Y(y)) {
-                        if (targetCoordinate.checkSatisfyArea_X(x)) {
-                            int dotType = targetCoordinate.getDotType();
+            if (data.checkCoordinateInside(x, y)) {
+                for (int i = 0; i < col; i++) {
+                    for (int j = 0; j < row; j++) {
+                        BasicLearningCoordinate targetCoordinate = coordinateXY[i][j];
+                        if (targetCoordinate.checkSatisfyArea_Y(y)) {
+                            if (targetCoordinate.checkSatisfyArea_X(x)) {
+                                int dotType = targetCoordinate.getDotType();
 
-                            if(targetCoordinate.getTarget()){
-                                if(i != previous_i || j != previous_j)
-                                    startEffect(dotType, true);
-                            } else {
-                                if(dotType == DotType.EXTERNAL_WALL.getNumber() || dotType == DotType.DEVISION_LINE.getNumber())
-                                    startEffect(dotType, false);
-                                else{
-                                    if(i != previous_i || j != previous_j)
+                                if (targetCoordinate.getTarget()) {
+                                    if (i != previous_i || j != previous_j)
+                                        startEffect(dotType, true);
+                                } else {
+                                    if (dotType == DotType.EXTERNAL_WALL.getNumber() || dotType == DotType.DEVISION_LINE.getNumber())
                                         startEffect(dotType, false);
+                                    else {
+                                        if (i != previous_i || j != previous_j)
+                                            startEffect(dotType, false);
+                                    }
                                 }
+                                previous_i = i;
+                                previous_j = j;
                             }
-                            previous_i = i;
-                            previous_j = j;
-                        }
-                    } else
-                        break;
+                        } else
+                            break;
+                    }
                 }
             }
         }

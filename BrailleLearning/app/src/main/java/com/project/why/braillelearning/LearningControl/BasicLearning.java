@@ -22,8 +22,8 @@ import java.util.ArrayList;
  * Created by hyuck on 2017-09-25.
  */
 
-public class BasicLearningModule implements Control, FingerFunction {
-    private final int ONE_FINGER = FingerFunctionType.ONE_FINGER.getNumber(); //손가락 1개
+public class BasicLearning implements Control, FingerFunction {
+    private final int ONE_FINGER = FingerFunctionType.ONE_FINGER.getNumber(); // 손가락 1개
     private final int TWO_FINGER = FingerFunctionType.TWO_FINGER.getNumber(); // 손가락 2개
     private final int THREE_FINGER = FingerFunctionType.THREE_FINGER.getNumber(); // 손가락 3개
     private final int MAX_FINGER = THREE_FINGER;
@@ -37,21 +37,27 @@ public class BasicLearningModule implements Control, FingerFunction {
     private FingerCoordinate fingerCoordinate;
     private OneFingerFunction oneFingerFunction;
     private TwoFingerFunction twoFingerFunction;
+    private ThreeFIngerFunction threeFIngerFunction;
     private FingerFunctionType type = FingerFunctionType.NONE;
 
-    BasicLearningModule(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, BrailleLength brailleLength) {
+    BasicLearning(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, BrailleLength brailleLength) {
         mediaPlayerModule.setContext(context);
         brailleMatrixTranslationModule = new BrailleMatrixTranslationModule(brailleLength);
         brailleDataArrayList = getBrailleDataArray(context, jsonFileName, databaseFileName, brailleLearningType);
         fingerCoordinate = new FingerCoordinate(MAX_FINGER);
         oneFingerFunction = new BasicOneFinger(context);
         twoFingerFunction = new BasicTwoFinger();
+        threeFIngerFunction = new TranslationThreeFinger(context);
     }
 
     public ArrayList<BrailleData> getBrailleDataArray(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType) {
         BrailleDataManager brailleDataManager = new BrailleDataManager(context, jsonFileName, databaseFileName, brailleLearningType);
         GettingBraille gettingBraille = brailleDataManager.getBrailleArrayList();
-        return gettingBraille.getBrailleDataArray();
+
+        if(gettingBraille != null)
+            return gettingBraille.getBrailleDataArray();
+        else
+            return new ArrayList<>();
     }
 
     @Override
@@ -116,7 +122,7 @@ public class BasicLearningModule implements Control, FingerFunction {
                     if(pointer_Count == TWO_FINGER)
                         return twoFingerFunction();
                     else if(pointer_Count == THREE_FINGER){
-
+                        return threeFingerFunction();
                     }
                     break;
             }
@@ -169,6 +175,17 @@ public class BasicLearningModule implements Control, FingerFunction {
 
     @Override
     public boolean threeFingerFunction() {
+        int downX[] = fingerCoordinate.getDownX();
+        int downY[] = fingerCoordinate.getDownY();
+        int upX[] = fingerCoordinate.getUpX();
+        int upY[] = fingerCoordinate.getUpY();
+
+        BrailleData brailleData = threeFIngerFunction.getThreeFingerFunctionType(downX, downY, upX, upY);
+        if(brailleData != null) {
+            brailleDataArrayList.clear();
+            brailleDataArrayList.add(brailleData);
+            nodifyObservers();
+        }
         return false;
     }
 
@@ -178,7 +195,7 @@ public class BasicLearningModule implements Control, FingerFunction {
     }
 
     public void startMediaPlayer(){
-        mediaPlayerModule.SoundPlay(type.getNumber(), data.getRawId());
-        type = FingerFunctionType.NONE;
+//        mediaPlayerModule.SoundPlay(type.getNumber(), data.getRawId());
+//        type = FingerFunctionType.NONE;
     }
 }

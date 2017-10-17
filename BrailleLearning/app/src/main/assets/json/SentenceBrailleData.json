@@ -2,70 +2,87 @@
   "SentenceBrailleData": [{
     "LetterName": "\"",
     "BrailleMatrix": "001011",
-    "AssistanceName": "큰따옴표 열기"
+    "AssistanceName": "큰따옴표 열기",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "\"",
     "BrailleMatrix": "000111",
-    "AssistanceName": "큰따옴표 닫기"
+    "AssistanceName": "큰따옴표 닫기",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "(",
     "BrailleMatrix": "000011",
-    "AssistanceName": "괄호"
+    "AssistanceName": "괄호",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": ")",
     "BrailleMatrix": "000011",
-    "AssistanceName": "괄호"
+    "AssistanceName": "괄호",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "!",
     "BrailleMatrix": "001110",
-    "AssistanceName": "느낌표"
+    "AssistanceName": "느낌표",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": ".",
     "BrailleMatrix": "001101",
-    "AssistanceName": "마침표"
+    "AssistanceName": "마침표",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": ",",
     "BrailleMatrix": "000100",
-    "AssistanceName": "쉼표"
+    "AssistanceName": "쉼표",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "+",
     "BrailleMatrix": "001001",
-    "AssistanceName": "더하기"
+    "AssistanceName": "더하기",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "-",
     "BrailleMatrix": "000110",
-    "AssistanceName": "빼기"
+    "AssistanceName": "빼기",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "*",
     "BrailleMatrix": "100001",
-    "AssistanceName": "곱하기"
+    "AssistanceName": "곱하기",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "\/",
     "BrailleMatrix": "010010010010",
-    "AssistanceName": "나누기"
+    "AssistanceName": "나누기",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "=",
     "BrailleMatrix": "001100001100",
-    "AssistanceName": "같다"
+    "AssistanceName": "같다",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "'",
     "BrailleMatrix": "000001001011",
-    "AssistanceName": "작은 따옴표 열기"
+    "AssistanceName": "작은 따옴표 열기",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "'",
     "BrailleMatrix": "000111000001",
-    "AssistanceName": "작음 따옴표 닫기"
+    "AssistanceName": "작음 따옴표 닫기",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "~",
     "BrailleMatrix": "000011000011",
-    "AssistanceName": "물결"
+    "AssistanceName": "물결",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": ":",
     "BrailleMatrix": "000100001000",
-    "AssistanceName": "쌍점"
+    "AssistanceName": "쌍점",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "※",
     "BrailleMatrix": "000110000110",
-    "AssistanceName": "참고표"
+    "AssistanceName": "참고표",
+    "RawId": "initial_giyeok"
   }]
 }

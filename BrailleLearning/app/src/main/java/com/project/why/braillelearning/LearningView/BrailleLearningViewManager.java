@@ -21,6 +21,8 @@ public class BrailleLearningViewManager{
         switch(brailleLearningType){
             case BASIC:
                 return new BasicView(context);
+            case TRANSLATION:
+                return new BasicView(context);
             default:
                 return null;
         }

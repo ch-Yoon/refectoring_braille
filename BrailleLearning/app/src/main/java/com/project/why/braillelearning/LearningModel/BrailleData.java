@@ -1,20 +1,31 @@
 package com.project.why.braillelearning.LearningModel;
 
 import com.project.why.braillelearning.EnumConstant.DotType;
+import com.project.why.braillelearning.LearningControl.BrailleLearning;
 
 /**
  * Created by hyuck on 2017-09-12.
  */
 
 public class BrailleData {
-    private String letterName = ""; // 점자 이름
-    private int[][] brailleMatrix; // 점자 행렬
-    private String assistanceLetterName = ""; // 퀴즈메뉴를 위한 점자 보조 이름.
-    private String rawId = "";
+    protected String letterName = ""; // 점자 이름
+    protected int[][] brailleMatrix; // 점자 행렬
+    protected String assistanceLetterName = ""; // 퀴즈메뉴를 위한 점자 보조 이름.
+    protected String rawId = "";
 
-    BrailleData(String letterName, String brailleMatrix, String assistanceLetterName, String rawId){
+    public BrailleData(){
+    }
+
+    public BrailleData(String letterName, String brailleMatrix, String assistanceLetterName, String rawId){
         this.letterName = letterName;
         this.brailleMatrix = setBrailleMatrix(brailleMatrix);
+        this.assistanceLetterName = assistanceLetterName;
+        this.rawId = rawId;
+    }
+
+    public BrailleData(String letterName, int brailleMatrix[][], String assistanceLetterName, String rawId){
+        this.letterName = letterName;
+        this.brailleMatrix = brailleMatrix;
         this.assistanceLetterName = assistanceLetterName;
         this.rawId = rawId;
     }

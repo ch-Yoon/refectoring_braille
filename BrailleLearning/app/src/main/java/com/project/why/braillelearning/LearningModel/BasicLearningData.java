@@ -6,11 +6,15 @@ import com.project.why.braillelearning.EnumConstant.DotType;
  * Created by hyuck on 2017-10-05.
  */
 
-public class BasicLearningData {
-    private String letterName;
+public class BasicLearningData extends BrailleData {
     private BasicLearningCoordinate coordinate_XY[][];
-    private String rawId;
     private float radius;
+
+    public BasicLearningData(String letterName, int brailleMatrix[][], String assistanceLetterName ,String rawId, float radius){
+        super(letterName, brailleMatrix, assistanceLetterName, rawId);
+        this.radius = radius;
+        this.coordinate_XY = new BasicLearningCoordinate[brailleMatrix.length][brailleMatrix[0].length];
+    }
 
     public BasicLearningData(int col, int row, String letterName, String rawId, float bigCircleRadius){
         this.letterName = letterName;
@@ -33,10 +37,21 @@ public class BasicLearningData {
             coordinate_XY[col][row].setTarget(false);
     }
 
+    @Override
     public String getLetterName(){
-        return letterName;
+        return super.letterName;
     }
 
+    public int[][] getBrailleMatrix(){
+        return brailleMatrix;
+    }
+
+    @Override
+    public String getAssistanceLetterName(){
+        return assistanceLetterName;
+    }
+
+    @Override
     public String getRawId() {
         return rawId;
     }
