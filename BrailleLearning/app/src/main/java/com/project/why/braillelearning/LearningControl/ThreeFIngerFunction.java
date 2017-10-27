@@ -1,5 +1,6 @@
 package com.project.why.braillelearning.LearningControl;
 
+import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 
 /**
@@ -8,4 +9,5 @@ import com.project.why.braillelearning.LearningModel.BrailleData;
 
 public interface ThreeFIngerFunction {
     BrailleData getThreeFingerFunctionType(int downX[], int downY[], int upX[], int upY[]);
+    FingerFunctionType getType();
 }

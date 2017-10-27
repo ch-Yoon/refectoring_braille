@@ -219,7 +219,7 @@ public class BrailleTranslationLearning {
             return null;
     }
 
-    public String getTextToSpeachText(String text, int brailleMatrix[][]){
+    public String getBrailleToText(String text, int brailleMatrix[][]){
         String ttsText = "번역된 단어, "+text+", ";
 
         int dotCount = brailleMatrix[0].length/3;
@@ -249,23 +249,23 @@ public class BrailleTranslationLearning {
 
         int col = brailleMatrix.length;
         int row = brailleMatrix[0].length;
-        for(int i=1 ; i<row ; i++){
-            for(int j=0 ; j<col ; j++){
+        for(int i=0 ; i<row ; i++){
+            for(int j=1 ; j<col ; j++){
                 if(brailleMatrix[j][i] == DotType.PROJECTED.getNumber()) {
                     switch (j) {
-                        case 0:
+                        case 1:
                             if (i % 3 == 0)
                                 ttsText += "1 ";
                             else
                                 ttsText += "4 ";
                             break;
-                        case 1:
+                        case 2:
                             if (i % 3 == 0)
                                 ttsText += "2 ";
                             else
                                 ttsText += "5 ";
                             break;
-                        case 2:
+                        case 3:
                             if (i % 3 == 0)
                                 ttsText += "3 ";
                             else

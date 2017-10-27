@@ -19,7 +19,6 @@ import com.project.why.braillelearning.Menu.BrailleLearningMenu;
 import com.project.why.braillelearning.Module.FullScreenModule;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
-
 import java.util.Timer;
 import java.util.TimerTask;
 

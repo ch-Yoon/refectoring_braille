@@ -1,5 +1,6 @@
 package com.project.why.transalationtest;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -16,13 +17,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textvew = (TextView) findViewById(R.id.textview);
+        Intent i = new Intent(this, Main2Activity.class);
+        startActivity(i);
+        finish();
 
-        String text = "고";
-        int finalcode = get_final(text);                                   //종성의 배열 인덱스를 산출
-        int vowelcode = get_vowel(text, finalcode);                      //모음의 배열 인덱스를 산출
-        int initcode = get_initial(text, vowelcode, finalcode);          //초성의 배열 인덱스를 산출
-        textvew.setText(initcode+" "+vowelcode+" "+finalcode+" "+get_vowel_final(text, finalcode, vowelcode));
+//        TextView textvew = (TextView) findViewById(R.id.textview);
+//
+//        String text = "고";
+//        int finalcode = get_final(text);                                   //종성의 배열 인덱스를 산출
+//        int vowelcode = get_vowel(text, finalcode);                      //모음의 배열 인덱스를 산출
+//        int initcode = get_initial(text, vowelcode, finalcode);          //초성의 배열 인덱스를 산출
+//        textvew.setText(initcode+" "+vowelcode+" "+finalcode+" "+get_vowel_final(text, finalcode, vowelcode));
     }
 
 

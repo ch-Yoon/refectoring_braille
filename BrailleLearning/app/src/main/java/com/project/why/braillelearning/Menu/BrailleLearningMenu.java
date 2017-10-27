@@ -36,7 +36,6 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
     private ImageResizeModule imageResizeModule;
     private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
     private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
-    //private MediaPlayerModule mediaPlayerModule;
     private MediaPlayerSingleton mediaPlayerModule;
     private TwoFingerFunction twoFinger;
     private FingerCoordinate fingerCoordinate;
@@ -167,8 +166,10 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
         else  // 멀티터치
             type = twoFinger.getTwoFingerFunctionType(fingerCoordinate.getDownX(), fingerCoordinate.getDownY(), fingerCoordinate.getUpX(), fingerCoordinate.getUpY());
 
-        if(type != FingerFunctionType.NONE)
+        if(type != FingerFunctionType.NONE) {
             CheckMenuChange();
+            refreshData();
+        }
     }
 
     public void CheckMenuChange(){ // 화면전환 체크 함수
@@ -176,24 +177,19 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
             case ENTER: // 메뉴 접속
                 menuAddressDeque.addLast(0);
                 NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
-                refreshData();
                 break;
             case BACK: // 상위 메뉴
                 menuAddressDeque.removeLast();
                 if(!menuAddressDeque.isEmpty())
                     NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
-                refreshData();
                 break;
             case NEXT: // 오른쪽 메뉴
                 menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast()+1));
-                refreshData();
                 break;
             case PREVIOUS: // 왼쪽 메뉴
                 menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast()-1));
-                refreshData();
                 break;
             case SPECIAL: // 특수기능
-                refreshSound();
                 break;
             default:
                 break;
@@ -234,12 +230,6 @@ public class BrailleLearningMenu extends Activity implements FingerFunction {
 
     public void refreshSound(TreeNode menuNode){
         mediaPlayerModule.SoundPlay(type.getNumber(), menuNode.getSoundId());
-        type = FingerFunctionType.NONE;
-    }
-
-    public void refreshSound(){
-        TreeNode MenuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
-        mediaPlayerModule.SoundPlay(type.getNumber(), MenuNode.getSoundId());
         type = FingerFunctionType.NONE;
     }
 

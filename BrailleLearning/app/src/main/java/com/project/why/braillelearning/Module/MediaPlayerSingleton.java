@@ -2,7 +2,10 @@ package com.project.why.braillelearning.Module;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 
+import com.project.why.braillelearning.EnumConstant.DotType;
+import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.R;
 
 /**
@@ -35,10 +38,14 @@ public class MediaPlayerSingleton {
     }
 
     public void SoundPlay(int index, String resName){
-        String packName = context.getPackageName();
-        int soundId =  context.getResources().getIdentifier(resName,"raw",packName);
-        InitMediaPlayer();
-        fingerSoundPlay(index, soundId);
+        if(index == FingerFunctionType.TRANSLATION.getNumber()){
+            Toast.makeText(context, resName, Toast.LENGTH_LONG).show();
+        } else {
+            String packName = context.getPackageName();
+            int soundId = context.getResources().getIdentifier(resName, "raw", packName);
+            InitMediaPlayer();
+            fingerSoundPlay(index, soundId);
+        }
     }
 
     public void SoundPlay(int SoundId){

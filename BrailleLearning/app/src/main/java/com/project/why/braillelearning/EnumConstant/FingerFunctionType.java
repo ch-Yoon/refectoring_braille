@@ -5,7 +5,7 @@ package com.project.why.braillelearning.EnumConstant;
  */
 
 public enum FingerFunctionType {
-    NONE(-1), NEXT(0), PREVIOUS(1), ENTER(2), BACK(3), SPECIAL(4),
+    NONE(-1), NEXT(0), PREVIOUS(1), ENTER(2), BACK(3), SPECIAL(4), TRANSLATION(5),
     ONE_FINGER(1), TWO_FINGER(2), THREE_FINGER(3);
 
     int number;

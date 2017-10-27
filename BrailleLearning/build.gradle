@@ -15,6 +15,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+
+        mavenCentral()      // kakao api
+        maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' } // 추가
     }
 }
 

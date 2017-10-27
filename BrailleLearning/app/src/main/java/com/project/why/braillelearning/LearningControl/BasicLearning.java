@@ -1,5 +1,6 @@
 package com.project.why.braillelearning.LearningControl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.MotionEvent;
 
@@ -40,14 +41,14 @@ public class BasicLearning implements Control, FingerFunction {
     private ThreeFIngerFunction threeFIngerFunction;
     private FingerFunctionType type = FingerFunctionType.NONE;
 
-    BasicLearning(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, BrailleLength brailleLength) {
+    BasicLearning(Context context, Activity activity, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, BrailleLength brailleLength) {
         mediaPlayerModule.setContext(context);
         brailleMatrixTranslationModule = new BrailleMatrixTranslationModule(brailleLength);
         brailleDataArrayList = getBrailleDataArray(context, jsonFileName, databaseFileName, brailleLearningType);
         fingerCoordinate = new FingerCoordinate(MAX_FINGER);
         oneFingerFunction = new BasicOneFinger(context);
         twoFingerFunction = new BasicTwoFinger();
-        threeFIngerFunction = new TranslationThreeFinger(context);
+        threeFIngerFunction = new TranslationThreeFinger(context, activity);
     }
 
     public ArrayList<BrailleData> getBrailleDataArray(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType) {
@@ -181,11 +182,14 @@ public class BasicLearning implements Control, FingerFunction {
         int upY[] = fingerCoordinate.getUpY();
 
         BrailleData brailleData = threeFIngerFunction.getThreeFingerFunctionType(downX, downY, upX, upY);
+
         if(brailleData != null) {
             brailleDataArrayList.clear();
             brailleDataArrayList.add(brailleData);
+            type = threeFIngerFunction.getType();
             nodifyObservers();
         }
+
         return false;
     }
 
@@ -195,7 +199,9 @@ public class BasicLearning implements Control, FingerFunction {
     }
 
     public void startMediaPlayer(){
-        mediaPlayerModule.SoundPlay(type.getNumber(), data.getRawId());
-        type = FingerFunctionType.NONE;
+        if(data != null) {
+            mediaPlayerModule.SoundPlay(type.getNumber(), data.getRawId());
+            type = FingerFunctionType.NONE;
+        }
     }
 }

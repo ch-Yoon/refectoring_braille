@@ -1,5 +1,6 @@
 package com.project.why.braillelearning.LearningControl;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class BrailleLearning extends Activity {
 
         initBrailleModule(); // 학습 모듈
         initBrailleView(); // 학습 화면
+
     }
 
     @Override
@@ -73,7 +75,7 @@ public class BrailleLearning extends Activity {
     }
 
     public void initBrailleModule(){
-        BrailleLearningModuleManager brailleLearningModuleManager = new BrailleLearningModuleManager(this, jsonFileName, databaseTableName, brailleLearningType, brailleLength);
+        BrailleLearningModuleManager brailleLearningModuleManager = new BrailleLearningModuleManager(this, this, jsonFileName, databaseTableName, brailleLearningType, brailleLength);
         learningModule = brailleLearningModuleManager.getLearningModule();
     }
 
