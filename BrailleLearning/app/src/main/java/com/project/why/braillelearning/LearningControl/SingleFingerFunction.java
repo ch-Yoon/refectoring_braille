@@ -4,10 +4,10 @@ import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 
 /**
- * Created by hyuck on 2017-10-16.
+ * Created by User on 2017-10-09.
  */
 
-public interface ThreeFIngerFunction {
-    BrailleData getThreeFingerFunctionType(int downX[], int downY[], int upX[], int upY[]);
-    FingerFunctionType getType();
+public interface SingleFingerFunction {
+    void init();
+    FingerFunctionType oneFingerFunction(BrailleData data, FingerCoordinate fingerCoordinate);
 }

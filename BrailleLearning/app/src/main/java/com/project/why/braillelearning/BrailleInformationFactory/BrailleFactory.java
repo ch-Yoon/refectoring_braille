@@ -6,18 +6,20 @@ import com.project.why.braillelearning.EnumConstant.Menu;
  * Created by hyuck on 2017-09-13.
  */
 
+
+/**
+ * 점자 정보 factory class
+ *
+ * 메뉴 구성
+ * tutorial : x
+ * basicpractice : initial, vowel, final, number, alphabet, sentence, abbreviation
+ * masterpractce : letter, word
+ * translation : x
+ * quiz : initial_quiz, vowel_quiz, final_quiz, number_quiz, alphabet_quiz, sentence_quiz, abbreviation_quiz, letter_quiz, word_quiz
+ * mynote : basic_note, master_note, communication_note
+ * communication : teacher_mode, student_mode
+ */
 public class BrailleFactory implements BrailleInformationFactory {
-
-    /* 메뉴 구성
-     * tutorial
-     * basicpractice (initial, vowel, final, number, alphabet, sentence, abbreviation)
-     * masterpractce (letter, word)
-     * translation
-     * quiz (initial_quiz, vowel_quiz, final_quiz, number_quiz, alphabet_quiz, sentence_quiz, abbreviation_quiz, letter_quiz, word_quiz)
-     * mynote (basic_note, master_note, communication_note)
-     * communication (teacher_mode, student_mode)
-     */
-
     @Override
     public GettingInformation getInformationObject(Menu menuName) {
         switch(menuName){

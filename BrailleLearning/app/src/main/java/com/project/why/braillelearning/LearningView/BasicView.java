@@ -11,20 +11,21 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.project.why.braillelearning.LearningModel.BasicLearningCoordinate;
-import com.project.why.braillelearning.LearningModel.BasicLearningData;
+import com.project.why.braillelearning.LearningModel.Dot;
+import com.project.why.braillelearning.LearningModel.BrailleData;
 
 /**
  * Created by hyuck on 2017-09-14.
  */
 
+/**
+ * 점자를 화면에 출력하는 view class
+ * observer로 관찰하는 brailleData를 활용하여 화면에 점자를 그림
+ */
 public class BasicView extends View implements ViewObservers {
     private Context context;
-    private BasicLearningData data;
+    private BrailleData data;
     private TextView textName;
-    private float bigCircle;
-    private float miniCircle;
-
 
     public BasicView(Context context){
         super(context);
@@ -40,10 +41,9 @@ public class BasicView extends View implements ViewObservers {
     public void drawBraille(Canvas canvas){
         if(data != null) {
             String letterName = data.getLetterName();
-            BasicLearningCoordinate coordinate_xy[][] = data.getCoordinate_XY();
-
+            Dot brailleMatrix[][] = data.getBrailleMatrix();
             setTextName(letterName);
-            setBraille(canvas, coordinate_xy);
+            setBraille(canvas, brailleMatrix);
         }
     }
 
@@ -68,21 +68,20 @@ public class BasicView extends View implements ViewObservers {
         textName.setText(letterName);
     }
 
-    public void setBraille(Canvas canvas, BasicLearningCoordinate brailleMatrix[][]) {
+    public void setBraille(Canvas canvas, Dot brailleMatrix[][]) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
 
 
-        int row = brailleMatrix.length; // 점자는 3행으로 이루어짐
-        int col = brailleMatrix[0].length;
+        int col = brailleMatrix.length; // 점자는 4행으로 이루어짐
+        int row = brailleMatrix[0].length;
 
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
+        for (int i=0; i<col; i++) {
+            for (int j=0; j<row; j++) {
                 float coordinate_X = brailleMatrix[i][j].getX();
                 float coordinate_Y = brailleMatrix[i][j].getY();
                 int dotType = brailleMatrix[i][j].getDotType();
-                boolean target = brailleMatrix[i][j].getTarget();
-                float radius = getRadius(dotType, target);
+                float radius = brailleMatrix[i][j].getViewAreaRidus();
                 int color = getColor(dotType);
                 paint.setColor(color);
                 canvas.drawCircle(coordinate_X, coordinate_Y, radius, paint); // 점자 그리기
@@ -90,6 +89,11 @@ public class BasicView extends View implements ViewObservers {
         }
     }
 
+    /**
+     * 점자 번호에 따라 점의 색을 구분
+     * @param dotType : 점자 번호
+     * @return
+     */
     public int getColor(int dotType){
         if(dotType == 7)
             return Color.RED;
@@ -99,33 +103,25 @@ public class BasicView extends View implements ViewObservers {
             return Color.WHITE;
     }
 
-    public float getRadius(int dotType, boolean target){
-        if(dotType == 7 || dotType == 8)
-            return miniCircle;
-        else {
-            if(target == true)
-                return bigCircle;
-            else
-                return miniCircle;
-        }
-    }
-
     @Override
     public View getView() {
         return this;
     }
 
     @Override
-    public void initCircle(float bigCircle, float miniCircle) {
-        this.bigCircle = bigCircle;
-        this.miniCircle = miniCircle;
+    public void onPause() {
+        data = null;
+        textName = null;
     }
 
+    /**
+     * brailleData를 callback받는 함수
+     * @param brailleData
+     */
     @Override
-    public void nodifyBraille(BasicLearningData data) {
-        this.data = data;
+    public void nodifyBraille(BrailleData brailleData) {
+        this.data = brailleData;
         invalidate();
-
     }
 }
 

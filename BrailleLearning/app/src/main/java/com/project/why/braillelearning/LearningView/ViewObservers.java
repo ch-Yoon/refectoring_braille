@@ -2,14 +2,17 @@ package com.project.why.braillelearning.LearningView;
 
 import android.view.View;
 
-import com.project.why.braillelearning.LearningModel.BasicLearningData;
+import com.project.why.braillelearning.LearningModel.BrailleData;
 
 /**
  * Created by hyuck on 2017-09-26.
  */
 
+/**
+ * 점자 data를 관찰하기 위한 observer interface
+ */
 public interface ViewObservers {
-    void initCircle(float bigCircle, float miniCircle);
-    void nodifyBraille(BasicLearningData data);
+    void nodifyBraille(BrailleData brailleData);
     View getView();
+    void onPause();
 }

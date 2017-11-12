@@ -4,6 +4,9 @@ package com.project.why.braillelearning.EnumConstant;
  * Created by hyuck on 2017-09-24.
  */
 
+/**
+  Menu의 이름들을 정의해논 enum
+ */
 public enum Menu {
     TUTORIAL,
     BASIC,

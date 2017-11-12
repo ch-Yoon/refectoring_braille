@@ -1,28 +1,22 @@
 package com.project.why.braillelearning.BrailleInformationFactory;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
-import com.project.why.braillelearning.EnumConstant.BrailleLength;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.EnumConstant.ServerClient;
-
-import java.util.ArrayList;
 
 /**
  * Created by hyuck on 2017-09-21.
  */
 
+
+/**
+ * 학생모드 정보 class
+ */
 public class Student extends LearningInformation implements GettingInformation {
     Student(){
-        setBrailleLength(BrailleLength.LONG);
         setJsonFileName(null);
         setBrailleLearningType(BrailleLearningType.STUDENT);
         setDatabaseTableName(Database.COMMUNICATION);
-    }
-
-    @Override
-    public BrailleLength gettBrailleLength() {
-        return brailleLength;
     }
 
     @Override
@@ -38,11 +32,6 @@ public class Student extends LearningInformation implements GettingInformation {
     @Override
     public Database getDatabaseTableName() {
         return databaseTableName;
-    }
-
-    @Override
-    public void setBrailleLength(BrailleLength brailleLength) {
-        this.brailleLength = brailleLength;
     }
 
     @Override

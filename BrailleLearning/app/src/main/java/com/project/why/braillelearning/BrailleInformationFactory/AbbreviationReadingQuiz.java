@@ -1,28 +1,22 @@
 package com.project.why.braillelearning.BrailleInformationFactory;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
-import com.project.why.braillelearning.EnumConstant.BrailleLength;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.EnumConstant.ServerClient;
-
-import java.util.ArrayList;
 
 /**
- * Created by hyuck on 2017-09-21.
+ * 약자 및 약어 연습 점자 정보 클래스
  */
 
+
+/**
+ * 약자 및 약어 읽기 퀴즈 점자 정보 class
+ */
 public class AbbreviationReadingQuiz extends LearningInformation implements GettingInformation {
     AbbreviationReadingQuiz(){
-        setBrailleLength(BrailleLength.SHORT);
         setJsonFileName(Json.ABBREVIATION);
         setBrailleLearningType(BrailleLearningType.READING_QUIZ);
         setDatabaseTableName(Database.BASIC);
-    }
-
-    @Override
-    public BrailleLength gettBrailleLength() {
-        return brailleLength;
     }
 
     @Override
@@ -38,11 +32,6 @@ public class AbbreviationReadingQuiz extends LearningInformation implements Gett
     @Override
     public Database getDatabaseTableName() {
         return databaseTableName;
-    }
-
-    @Override
-    public void setBrailleLength(BrailleLength brailleLength) {
-        this.brailleLength = brailleLength;
     }
 
     @Override
