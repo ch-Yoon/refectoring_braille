@@ -3,6 +3,7 @@ package com.project.why.braillelearning.MediaPlayer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -94,10 +95,12 @@ public class MediaSoundManager {
             soundIdQueue.add(rawId);
             soundIdQueue.addAll(getTranslationQueue(tempQueue));
             mediaPlayerSingleton.start(soundIdQueue);
+            Log.d("test","basicstart");
         } else {
             String ttsText = tempQueue.poll();
             soundIdQueue = getTranslationQueue(tempQueue);
             mediaPlayerSingleton.start(soundIdQueue, ttsText);
+            Log.d("test","translationstart");
         }
     }
 
@@ -144,6 +147,9 @@ public class MediaSoundManager {
                 break;
             case SPEECH:
                 soundIdQueue.add(R.raw.speechrecognition_start);
+                break;
+            case NONE:
+                soundIdQueue.add(R.raw.retry);
                 break;
         }
 
@@ -235,7 +241,15 @@ public class MediaSoundManager {
         mediaPlayerSingleton.initializeAll();
     }
 
+    public void allStop(){
+        mediaPlayerSingleton.initializeMediaPlayer();
+    }
+
     public MediaPlayer getMediaPlayer() {
         return mediaPlayerSingleton.getMediaPlayer();
+    }
+
+    public boolean checkTTSPlaying(){
+        return mediaPlayerSingleton.checkTTSPlay();
     }
 }

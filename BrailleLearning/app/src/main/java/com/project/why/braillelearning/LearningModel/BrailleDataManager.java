@@ -5,6 +5,7 @@ import android.content.Context;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
+import com.project.why.braillelearning.MynoteDB.SingletonDB;
 
 /**
  * Created by hyuck on 2017-09-25.
@@ -43,7 +44,7 @@ public class BrailleDataManager {
             case WRITING_QUIZ:
                 return null;
             case MYNOTE:
-                return null;
+                return SingletonDB.getInstance(context, databaseFileName);
             case TEACHER:
                 return null;
             case STUDENT:

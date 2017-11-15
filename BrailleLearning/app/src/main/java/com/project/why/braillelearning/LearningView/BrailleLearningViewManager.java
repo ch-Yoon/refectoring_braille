@@ -22,6 +22,8 @@ public class BrailleLearningViewManager{
                 return new BasicView(context);
             case TRANSLATION:
                 return new BasicView(context);
+            case MYNOTE:
+                return new BasicView(context);
             default:
                 return null;
         }

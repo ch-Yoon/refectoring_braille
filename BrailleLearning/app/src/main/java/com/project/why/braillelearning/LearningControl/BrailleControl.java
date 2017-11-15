@@ -3,7 +3,6 @@ package com.project.why.braillelearning.LearningControl;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -13,6 +12,8 @@ import com.project.why.braillelearning.LearningModel.BrailleDataManager;
 import com.project.why.braillelearning.LearningModel.GettingBraille;
 import com.project.why.braillelearning.LearningView.ViewObservers;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
+import com.project.why.braillelearning.MynoteDB.DBManager;
+import com.project.why.braillelearning.R;
 
 import java.util.ArrayList;
 
@@ -31,6 +32,7 @@ import java.util.ArrayList;
  */
 
 public class BrailleControl implements Control {
+    private ControlListener controlListener;
     private final int ONE_FINGER = FingerFunctionType.ONE_FINGER.getNumber(); // 손가락 1개
     private final int TWO_FINGER = FingerFunctionType.TWO_FINGER.getNumber(); // 손가락 2개
     private final int THREE_FINGER = FingerFunctionType.THREE_FINGER.getNumber(); // 손가락 3개
@@ -40,7 +42,6 @@ public class BrailleControl implements Control {
     private ViewObservers viewObservers;
     private ArrayList<BrailleData> brailleDataArrayList;
     private BrailleData data;
-
     private int pageNumber = 0;
     private FingerCoordinate fingerCoordinate; // touch된 손가락들의 좌표 저장 class
     private SingleFingerFunction oneFingerFunction;
@@ -48,8 +49,10 @@ public class BrailleControl implements Control {
     private MultiFingerFunction threeFIngerFunction;
     private SpeechRecognition speechRecognitionFunction; // 음성인식 모듈
     private FingerFunctionType type = FingerFunctionType.NONE;
+    private DBManager dbManager;
 
-    BrailleControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType) {
+    BrailleControl(Context context, ControlListener controlListener, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType) {
+        this.controlListener = controlListener;
         mediaSoundManager = new MediaSoundManager(context);
         brailleDataArrayList = getBrailleDataArray(context, jsonFileName, databaseFileName, brailleLearningType);
         fingerCoordinate = new FingerCoordinate(THREE_FINGER);
@@ -57,6 +60,7 @@ public class BrailleControl implements Control {
         twoFingerFunction = new MultiFinger(context, FingerFunctionType.TWO_FINGER);
         threeFIngerFunction = new MultiFinger(context, FingerFunctionType.THREE_FINGER);
         speechRecognitionFunction = getSpeechRecognitionFunction(context, brailleLearningType);
+        dbManager = new DBManager(context, databaseFileName, brailleLearningType, databaseCallBackMethod);
     }
 
     /**
@@ -96,9 +100,8 @@ public class BrailleControl implements Control {
         if(gettingBraille != null)
             return gettingBraille.getBrailleDataArray();
         else
-            return new ArrayList<>();
+            return null;
     }
-
 
     /**
      * 점자를 화면에 그리는 view를 현재 class의 Observer로 등록
@@ -117,18 +120,33 @@ public class BrailleControl implements Control {
      */
     public void refreshData(){
         Log.d("BrailleControl","refreshData");
+        if(brailleDataArrayList == null){
+            if(data != null) // 점자 번역의 경우
+                mediaSoundManager.start(data.getRawId());
+        } else {
+            if(brailleDataArrayList.isEmpty()){ // 나만의 단어장의 경우
+                exit();
+            } else { // 그외
+                if(0 <= pageNumber && pageNumber < brailleDataArrayList.size()){
+                    Log.d("test","refreshData");
+                    data = brailleDataArrayList.get(pageNumber);
+                    mediaSoundManager.start(data.getRawId());
+                    Log.d("refreshData","refressh");
+
+                }
+            }
+        }
+        /*
         if(brailleDataArrayList != null) {
             if (!brailleDataArrayList.isEmpty() && pageNumber < brailleDataArrayList.size()) {
                 data = brailleDataArrayList.get(pageNumber);
                 mediaSoundManager.start(data.getRawId());
-                type = FingerFunctionType.NONE;
             } else {
-                if(data != null){
+                if(data != null)
                     mediaSoundManager.start(data.getRawId());
-                    type = FingerFunctionType.NONE;
-                }
             }
         }
+        */
     }
 
     /**
@@ -147,7 +165,7 @@ public class BrailleControl implements Control {
      * @return : true(점자 학습 종료), false(변화 없음)
      */
     @Override
-    public boolean touchEvent(MotionEvent event) {
+    public void touchEvent(MotionEvent event) {
         int pointer_Count = event.getPointerCount(); // 현재 발생된 터치 event의 수
 
         if(pointer_Count > THREE_FINGER) // 발생된 터치 이벤트가 3개를 초과하여도 3개까지만 인식
@@ -169,6 +187,7 @@ public class BrailleControl implements Control {
             }
         } else if(pointer_Count > ONE_FINGER) {
             multiTouch = true;
+
             switch(event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
                     fingerCoordinate.setDownCoordinate(event, pointer_Count);
@@ -178,15 +197,13 @@ public class BrailleControl implements Control {
                     if(functionLock == false) {
                         functionLock = true;
                         if (pointer_Count == TWO_FINGER)
-                            return twoFingerFunction();
+                            twoFingerFunction();
                         else if (pointer_Count == THREE_FINGER)
-                            return threeFingerFunction();
+                            threeFingerFunction();
                     }
                     break;
             }
         }
-
-        return false;
     }
 
     /**
@@ -194,29 +211,37 @@ public class BrailleControl implements Control {
      * BACK(상위메뉴), RIGHT(오른쪽 화면), LEFT(왼쪽 화면), REFRESH(다시듣기)
      * @return true(학습 종료), false(변화 없음)
      */
-    public boolean twoFingerFunction() {
+    public void twoFingerFunction() {
         type = twoFingerFunction.fingerFunctionType(fingerCoordinate);
         switch (type) {
             case BACK:
-                return true;
+                exit();
+                break;
             case RIGHT:
-                if (pageNumber + 1 < brailleDataArrayList.size()) {
+                if (pageNumber < brailleDataArrayList.size()-1) {
                     pageNumber++;
                     nodifyObservers();
-                    return false;
-                } else
-                    return true;
+                }
+                else {
+                    mediaSoundManager.allStop();
+                    mediaSoundManager.start(R.raw.last_page);
+                }
+                break;
             case LEFT:
-                if (0 <= pageNumber - 1) {
+                if (0 < pageNumber) {
                     pageNumber--;
                     nodifyObservers();
                 }
-                return false;
+                else {
+                    mediaSoundManager.allStop();
+                    mediaSoundManager.start(R.raw.first_page);
+                }
+                break;
             case REFRESH:
                 nodifyObservers();
-                return false;
+                break;
             default:
-                return false;
+                break;
         }
     }
 
@@ -225,29 +250,46 @@ public class BrailleControl implements Control {
      * SPEECH(음성인식), MYNOTE(나만의 단어장 저장 및 삭제)
      * @return true(학습 종료), false(변화 없음)
      */
-    public boolean threeFingerFunction() {
+    public void threeFingerFunction() {
         type = threeFIngerFunction.fingerFunctionType(fingerCoordinate);
 
         switch (type) {
             case SPEECH: // 점자번역 퀴즈 선생님과의 대화
                 if (speechRecognitionFunction != null)
                     speechRecognitionFunction.startSpecialFunction(speechRecognitionCallbackMethod);
-                return false;
+                break;
             case MYNOTE: // 추가 삭제
-                return false;
+                dbManager.startSpecialFunction(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+                break;
             default:
-                return false;
+                break;
         }
     }
 
     /**
-     * 음성인식에 대한 callback listener
+     * 음성인식에 대한 callback method
      * 음성인식으로 인해 가공되어진 braille data가 전달되어짐
      */
     private CallBack speechRecognitionCallbackMethod = new CallBack() {
         @Override
         public void objectCallBackMethod(Object obj) {
             data = (BrailleData) obj;
+            nodifyObservers();
+        }
+    };
+
+    /**
+     * 단어장 삭제에 대한 callback method
+     * db에서 delete후 database에 있는 데이터 동기화 됨
+     */
+    private CallBack databaseCallBackMethod = new CallBack() {
+        @Override
+        public void objectCallBackMethod(Object obj) {
+            brailleDataArrayList = (ArrayList<BrailleData>) obj;
+
+            while(brailleDataArrayList.size() <= pageNumber)
+                pageNumber = brailleDataArrayList.size() - 1;
+
             nodifyObservers();
         }
     };
@@ -259,5 +301,9 @@ public class BrailleControl implements Control {
     @Override
     public void onPause() {
         mediaSoundManager.stop();
+    }
+
+    public void exit(){
+        controlListener.exit();
     }
 }

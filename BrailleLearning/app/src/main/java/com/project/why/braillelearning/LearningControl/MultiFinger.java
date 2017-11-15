@@ -63,6 +63,9 @@ public class MultiFinger implements MultiFingerFunction {
                 type = getThreeFingerFunction(DragX, DragY, Drag_countY);
         }
 
+        if(mediaSoundManager.checkTTSPlaying() == true)
+            type = FingerFunctionType.NONE;
+
         mediaSoundManager.start(type);
 
         return type;

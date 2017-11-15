@@ -1,6 +1,7 @@
 package com.project.why.braillelearning.Module;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
+import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningModel.Dot;
@@ -19,6 +20,11 @@ public class DataConversionModule {
     private float BigCircleRadiusRatio;
     private float MiniCircleRadiusRatio;
     private float touchAreaRidus;
+
+    public DataConversionModule(Database databaseFileName, String brailleText){
+        initBrailleRatio(databaseFileName);
+        initMatrixInfo(brailleText);
+    }
 
     public DataConversionModule(BrailleLearningType brailleLearningType, String brailleText){
         initBrailleRatio(brailleLearningType);
@@ -40,6 +46,19 @@ public class DataConversionModule {
         ROW = brailleMatrix[0].length;
     }
 
+    private void initBrailleRatio(Database databaseFileName) {
+        switch(databaseFileName){
+            case BASIC:
+                BigCircleRadiusRatio = (float) 0.1;
+                MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
+                break;
+            default:
+                BigCircleRadiusRatio = (float) 0.042; //
+                MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
+                break;
+        }
+        touchAreaRidus = Global.DisplayY * BigCircleRadiusRatio;
+    }
 
     private void initBrailleRatio(BrailleLearningType brailleLearningType) {
         switch(brailleLearningType){
@@ -52,7 +71,6 @@ public class DataConversionModule {
                 MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
                 break;
         }
-
         touchAreaRidus = Global.DisplayY * BigCircleRadiusRatio;
     }
 
@@ -104,6 +122,24 @@ public class DataConversionModule {
         }
 
         return rawId;
+    }
+
+    public String getConversionBrailleText(Dot[][] brailleMatrix){
+        String brailleText = "";
+        for(int i=0 ; i<COL ; i++){
+            for(int j=0 ; j<ROW ; j++){
+                Dot dot = brailleMatrix[i][j];
+                int dotType = dot.getDotType();
+                if(dotType != DotType.DEVISION_LINE.getNumber() && dotType != DotType.EXTERNAL_WALL.getNumber()){
+                    boolean target = dot.getTarget();
+                    if(target == true)
+                        brailleText += "1";
+                    else
+                        brailleText += "0";
+                }
+            }
+        }
+        return brailleText;
     }
 
     /**

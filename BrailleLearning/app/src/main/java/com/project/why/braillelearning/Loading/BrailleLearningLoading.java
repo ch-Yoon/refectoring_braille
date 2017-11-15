@@ -107,7 +107,7 @@ public class BrailleLearningLoading extends Activity {
         decorView = getWindow().getDecorView(); // 실제 윈도우의 배경 drawable을 담고있는 decorView
         FullScreenModule fullScreenModule = new FullScreenModule(this);
         uiOption = fullScreenModule.getFullScreenOption(); // decorView의 ui를 변경하기 위한 값
-        requestWindowFeature(Window.FEATURE_NO_TITLE); // 액션바 제거
+//        requestWindowFeature(Window.FEATURE_NO_TITLE); // 액션바 제거
         decorView.setSystemUiVisibility(uiOption); // 전체화면 적용
     }
 

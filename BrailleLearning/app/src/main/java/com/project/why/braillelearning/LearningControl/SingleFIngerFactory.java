@@ -14,10 +14,11 @@ import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 public class SingleFIngerFactory {
     private Context context;
     private BrailleLearningType brailleLearningType;
-
+    private CallBack callBackMethod;
     public SingleFIngerFactory(Context context, BrailleLearningType brailleLearningType){
         this.context = context;
         this.brailleLearningType = brailleLearningType;
+        this.callBackMethod = callBackMethod;
     }
 
     /**
@@ -32,8 +33,10 @@ public class SingleFIngerFactory {
                 return new BrailleSingleFinger(context);
             case TRANSLATION:
                 return new BrailleSingleFinger(context);
+            case MYNOTE:
+                return new BrailleSingleFinger(context);
             case TEACHER:
-                return null;
+                return new TeacherSingleFinger(context, callBackMethod);
             default:
                 return null;
         }

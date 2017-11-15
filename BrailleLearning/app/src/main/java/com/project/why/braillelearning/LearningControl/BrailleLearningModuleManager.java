@@ -12,13 +12,14 @@ import com.project.why.braillelearning.EnumConstant.Json;
 
 public class BrailleLearningModuleManager {
     private Context context;
+    private ControlListener controlListener;
     private Json jsonFileName;
     private Database databaseTableName;
     private BrailleLearningType brailleLearningType;
 
-
-    BrailleLearningModuleManager(Context context, Json jsonFileName, Database databaseTableName, BrailleLearningType brailleLearningType){
+    BrailleLearningModuleManager(Context context, ControlListener controlListener, Json jsonFileName, Database databaseTableName, BrailleLearningType brailleLearningType){
         this.context = context;
+        this.controlListener = controlListener;
         this.jsonFileName = jsonFileName;
         this.databaseTableName = databaseTableName;
         this.brailleLearningType = brailleLearningType;
@@ -29,9 +30,11 @@ public class BrailleLearningModuleManager {
             case TUTORIAL:
                 return null;
             case BASIC:
-                return new BrailleControl(context, jsonFileName, databaseTableName, brailleLearningType);
+                return new BrailleControl(context, controlListener, jsonFileName, databaseTableName, brailleLearningType);
             case TRANSLATION:
-                return new BrailleControl(context, jsonFileName, databaseTableName, brailleLearningType);
+                return new BrailleControl(context, controlListener,  jsonFileName, databaseTableName, brailleLearningType);
+            case MYNOTE:
+                return new BrailleControl(context, controlListener,  jsonFileName, databaseTableName, brailleLearningType);
             case READING_QUIZ:
                 return null;
             case WRITING_QUIZ:

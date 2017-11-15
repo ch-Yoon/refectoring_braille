@@ -19,11 +19,11 @@ import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
  * 점자 학습에 사용되는 손가락 1개 event 모듈
  */
 public class BrailleSingleFinger implements SingleFingerFunction {
-    private Vibrator vibrator;
-    private MediaSoundManager mediaSoundManager;
-    private int previous_i;
-    private int previous_j;
-
+    protected Vibrator vibrator;
+    protected MediaSoundManager mediaSoundManager;
+    protected int previous_i;
+    protected int previous_j;
+    protected int dotType;
     BrailleSingleFinger(Context context){
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mediaSoundManager = new MediaSoundManager(context);
@@ -60,7 +60,7 @@ public class BrailleSingleFinger implements SingleFingerFunction {
                         Dot targetCoordinate = brailleMatrix[i][j];
                         if (targetCoordinate.checkSatisfyArea_Y(y)) {
                             if (targetCoordinate.checkSatisfyArea_X(x)) {
-                                int dotType = targetCoordinate.getDotType();
+                                dotType = targetCoordinate.getDotType();
 
                                 if (targetCoordinate.getTarget()) {
                                     if (i != previous_i || j != previous_j) { //직전 좌표와 동일하지 않으면서 target일 경우

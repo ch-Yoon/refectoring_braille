@@ -24,7 +24,7 @@ import com.project.why.braillelearning.R;
  * 점자 학습 Activity
  * 점자 정보를 담고 있는 Object의 값들로 화면에 점자를 그리는 View와 점자 학습 Control을 결정함
  */
-public class BrailleLearningActivity extends Activity {
+public class BrailleLearningActivity extends Activity implements ControlListener {
     private GettingInformation object;
     private Control learningModule;
     private ViewObservers learningView;
@@ -95,7 +95,7 @@ public class BrailleLearningActivity extends Activity {
      * 점자 학습 모듈을 setting하는 함수
      */
     public void initBrailleControl(){
-        BrailleLearningModuleManager brailleLearningModuleManager = new BrailleLearningModuleManager(this, jsonFileName, databaseTableName, brailleLearningType);
+        BrailleLearningModuleManager brailleLearningModuleManager = new BrailleLearningModuleManager(this, this, jsonFileName, databaseTableName, brailleLearningType);
         learningModule = brailleLearningModuleManager.getLearningModule();
     }
 
@@ -129,10 +129,15 @@ public class BrailleLearningActivity extends Activity {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean finish = learningModule.touchEvent(event);
-        if(finish == true)
-            finish();
-
+        learningModule.touchEvent(event);
         return true;
+    }
+
+    /**
+     * 학습 종료 함수
+     */
+    @Override
+    public void exit() {
+        finish();
     }
 }

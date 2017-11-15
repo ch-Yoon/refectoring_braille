@@ -108,7 +108,7 @@ public class BrailleTranslation implements SpeechRecognition, SpeechRecognizeLis
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            final int MAX_COUNT = 100;
+            final int MAX_COUNT = 100; // 총 5초
             int count = 0;
 
             while(true){

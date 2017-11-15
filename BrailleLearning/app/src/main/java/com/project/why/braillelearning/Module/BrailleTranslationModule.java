@@ -1,6 +1,7 @@
 package com.project.why.braillelearning.Module;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Json;
@@ -258,7 +259,11 @@ public class BrailleTranslationModule {
             }
 
             String rawId = conversionModule.getConversionRawId(realTranslationmatrix, letterName);
-            BrailleData translationBrailleData = new BrailleData(letterName, realTranslationmatrix, null, rawId); // 가공된 brailleData생성
+            String brailleText = conversionModule.getConversionBrailleText(realTranslationmatrix);
+            Log.d("brailleText",brailleText);
+            BrailleData translationBrailleData = new BrailleData(letterName, brailleText, realTranslationmatrix, null, rawId); // 가공된 brailleData생성
+
+
             return translationBrailleData;
 
         } else

@@ -1,6 +1,7 @@
 package com.project.why.braillelearning.LearningModel;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
+import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.Module.DataConversionModule;
 
 /**
@@ -19,17 +20,29 @@ public class BrailleData {
     private Dot brailleMatrix[][]; // 점자 행렬
     private String assistanceLetterName = ""; // 퀴즈메뉴를 위한 점자 보조 이름.
     private String rawId = ""; // 점자 음성 파일
+    private String strBrailleMatrix = "";
+
+    public BrailleData(String letterName, String brailleText, String assistanceLetterName, String rawId, Database databaseFileName){
+        DataConversionModule conversionModule = new DataConversionModule(databaseFileName, brailleText); // 학습에 사용 될 수 있도록 점자 data를 가공하는 class
+        this.letterName = letterName;
+        this.strBrailleMatrix = brailleText;
+        this.brailleMatrix = conversionModule.getConversionBrailleMatrix(brailleText);
+        this.assistanceLetterName = assistanceLetterName;
+        this.rawId = rawId;
+    }
 
     public BrailleData(String letterName, String brailleText, String assistanceLetterName, String rawId, BrailleLearningType brailleLearningType){
         DataConversionModule conversionModule = new DataConversionModule(brailleLearningType, brailleText); // 학습에 사용 될 수 있도록 점자 data를 가공하는 class
         this.letterName = letterName;
+        this.strBrailleMatrix = brailleText;
         this.brailleMatrix = conversionModule.getConversionBrailleMatrix(brailleText);
         this.assistanceLetterName = assistanceLetterName;
         this.rawId = conversionModule.getConversionRawId(brailleMatrix, rawId);
     }
 
-    public BrailleData(String letterName, Dot brailleMatrix[][], String assistanceLetterName, String rawId){
+    public BrailleData(String letterName, String brailleText, Dot brailleMatrix[][], String assistanceLetterName, String rawId){
         this.letterName = letterName;
+        this.strBrailleMatrix = brailleText;
         this.brailleMatrix = brailleMatrix;
         this.assistanceLetterName = assistanceLetterName;
         this.rawId = rawId;
@@ -66,5 +79,7 @@ public class BrailleData {
         else
             return false;
     }
-
+    public String getStrBrailleMatrix(){
+        return strBrailleMatrix;
+    }
 }
