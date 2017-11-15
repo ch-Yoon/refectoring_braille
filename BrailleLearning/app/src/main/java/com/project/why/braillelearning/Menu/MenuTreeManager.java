@@ -10,8 +10,12 @@ import java.util.LinkedList;
  * Created by User on 2017-09-02.
  */
 
+/**
+ * 메뉴 정보를 유지하는 menuTreeManager class
+ * 하위메뉴를 등록해가는 방식으로 구현 됨
+ */
 public class MenuTreeManager {
-    TreeNode RootNode;
+    private TreeNode RootNode; // 최상단 rootnode
 
 
     MenuTreeManager(){
@@ -19,6 +23,9 @@ public class MenuTreeManager {
         setImageTree();
     }
 
+    /**
+     * menu들을 tree구조로 등록하는 함수
+     */
     public void setImageTree(){
         // 점자 학습 메뉴 트리 등록 (대 메뉴) : 사용설명서, 기초과정, 숙련과정, 점자번역, 퀴즈, 나만의 단어장, 선생님과의 대화
         TreeNode Tutorial = RootNode.addChildTreeNode(Menu.TUTORIAL, R.drawable.tutorial, R.raw.tutorial);
@@ -87,7 +94,7 @@ public class MenuTreeManager {
         RootNode = TargetNode;
     }
 
-    /*
+    /**
      * 현재 내가 위치하고 있는 메뉴 리스트의 길이를 구하는 함수
      * RootMenuItem의 SubMenu가 대 메뉴
      */
@@ -106,7 +113,11 @@ public class MenuTreeManager {
         return targetNode.getTreeName();
     }
 
-    // Deque 안에 있는 MenuIndex 정보를 이용하여 RootNode부터 탐색 후 해당 TreeNode 반환하는 함수
+    /**
+     * Deque 안에 있는 MenuIndex 정보를 이용하여 RootNode부터 탐색 후 해당 TreeNode 반환하는 함수
+     * @param deque
+     * @return
+     */
     public TreeNode getMenuTreeNode(Deque<Integer> deque){
         Deque<Integer> MenuAddressDeque = DequeCopy(deque);
 
@@ -118,7 +129,9 @@ public class MenuTreeManager {
         return TargetNode;
     }
 
-    //Deque copy 함수
+    /**
+     *Deque copy 함수
+     */
     public Deque<Integer> DequeCopy(Deque<Integer> Deque){
         Deque<Integer> CopyDeque = new LinkedList<>();
         CopyDeque.addAll(Deque);

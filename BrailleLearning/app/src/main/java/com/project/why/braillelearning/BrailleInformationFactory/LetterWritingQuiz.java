@@ -1,28 +1,22 @@
 package com.project.why.braillelearning.BrailleInformationFactory;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
-import com.project.why.braillelearning.EnumConstant.BrailleLength;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.EnumConstant.ServerClient;
-
-import java.util.ArrayList;
 
 /**
  * Created by hyuck on 2017-09-21.
  */
 
+
+/**
+ * 글자 쓰기 퀴즈 점자 정보 class
+ */
 public class LetterWritingQuiz extends LearningInformation implements GettingInformation {
     LetterWritingQuiz(){
-        setBrailleLength(BrailleLength.LONG);
         setJsonFileName(Json.LETTER);
         setBrailleLearningType(BrailleLearningType.WRITING_QUIZ);
         setDatabaseTableName(Database.MASTER);
-    }
-
-    @Override
-    public BrailleLength gettBrailleLength() {
-        return brailleLength;
     }
 
     @Override
@@ -38,11 +32,6 @@ public class LetterWritingQuiz extends LearningInformation implements GettingInf
     @Override
     public Database getDatabaseTableName() {
         return databaseTableName;
-    }
-
-    @Override
-    public void setBrailleLength(BrailleLength brailleLength) {
-        this.brailleLength = brailleLength;
     }
 
     @Override

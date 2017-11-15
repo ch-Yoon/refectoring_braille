@@ -15,11 +15,10 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
 import com.project.why.braillelearning.Global;
-import com.project.why.braillelearning.Menu.BrailleLearningMenu;
+import com.project.why.braillelearning.Menu.MenuActivity;
 import com.project.why.braillelearning.Module.FullScreenModule;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -155,7 +154,7 @@ public class BrailleLearningLoading extends Activity {
                 Log.d("Error",e.getMessage());
             } finally {
                 if(Blind_person == false) {
-                    Intent i = new Intent(BrailleLearningLoading.this, BrailleLearningMenu.class);
+                    Intent i = new Intent(BrailleLearningLoading.this, MenuActivity.class);
                     startActivity(i);
                     overridePendingTransition(R.anim.fade, R.anim.hold);
                     finish();

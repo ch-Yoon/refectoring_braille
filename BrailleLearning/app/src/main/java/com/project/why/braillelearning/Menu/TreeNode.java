@@ -8,6 +8,10 @@ import java.util.ArrayList;
  * Created by User on 2017-09-02.
  */
 
+/**
+ * 각각의 메뉴정보를 저장하고 있는 treeNode
+ * image id, soundid, menu name을 갖고 있으며, 다수의 자식노드를 갖음.
+ */
 public class TreeNode {
     private int ImageId; // image data id
     private int SoundId; // sound data id
@@ -21,6 +25,14 @@ public class TreeNode {
         menuName = null;
     }
 
+    /**
+     * 자식노드 등록 함수
+     * 등록된 자식노드를 반환함
+     * @param menuName : 자식노드에 저장할 메뉴 이름
+     * @param ImageId : 자식노드에 저장할 이미지 file id
+     * @param SoundId : 자식 노드에 저장할 음성 file id
+     * @return 등록한 자식노드 반환
+     */
     public TreeNode addChildTreeNode(Menu menuName, int ImageId, int SoundId){ // 자식노드 등록 함수
         TreeNode ChildTreeNode = new TreeNode(); // 자식노드 생성
         ChildTreeNode.setImageId(ImageId); // 자식노드에 Image data 설정
@@ -65,7 +77,12 @@ public class TreeNode {
         return ParentTreeNode;
     }
 
-    public TreeNode getChildTreeNode(int index){ // 하위 메뉴 리스트 중 특정 index의 TreeNode를 반환하는 함수
+    /**
+     * 하위 메뉴 리스트 중 특정 index의 TreeNode를 반환하는 함수
+     * @param index
+     * @return
+     */
+    public TreeNode getChildTreeNode(int index){
         if(ChildTreeNodeArray != null)
             return ChildTreeNodeArray.get(index);
         else
@@ -80,7 +97,11 @@ public class TreeNode {
         return ChildTreeNodeArray;
     }
 
-    public int getChildTreeNodeListSize(){ // 하위 메뉴 리스트의 사이즈를 반환하는 함수
+    /**
+     * 하위 메뉴 리스트의 사이즈를 반환하는 함수
+     * @return
+     */
+    public int getChildTreeNodeListSize(){
         if(ChildTreeNodeArray == null)
             return 0;
         else

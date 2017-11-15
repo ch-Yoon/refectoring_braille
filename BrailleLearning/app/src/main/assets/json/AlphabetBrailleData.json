@@ -2,218 +2,272 @@
   "AlphabetBrailleData": [{
     "LetterName": "로마자표",
     "BrailleMatrix": "000111",
-    "AssistanceName": "로마자표"
+    "AssistanceName": "로마자표",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "a",
     "BrailleMatrix": "001001001100",
-    "AssistanceName": "a"
+    "AssistanceName": "a",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "b",
     "BrailleMatrix": "001001101100",
-    "AssistanceName": "b"
+    "AssistanceName": "b",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "c",
     "BrailleMatrix": "001101001100",
-    "AssistanceName": "c"
+    "AssistanceName": "c",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "d",
     "BrailleMatrix": "001101011100",
-    "AssistanceName": "d"
+    "AssistanceName": "d",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "e",
     "BrailleMatrix": "001001011100",
-    "AssistanceName": "e"
+    "AssistanceName": "e",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "f",
     "BrailleMatrix": "001101101100",
-    "AssistanceName": "f"
+    "AssistanceName": "f",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "g",
     "BrailleMatrix": "001101111100",
-    "AssistanceName": "g"
+    "AssistanceName": "g",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "h",
     "BrailleMatrix": "001001111100",
-    "AssistanceName": "h"
+    "AssistanceName": "h",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "i",
     "BrailleMatrix": "000101101100",
-    "AssistanceName": "i"
+    "AssistanceName": "i",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "j",
     "BrailleMatrix": "000101111100",
-    "AssistanceName": "j"
+    "AssistanceName": "j",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "k",
     "BrailleMatrix": "001001001110",
-    "AssistanceName": "k"
+    "AssistanceName": "k",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "l",
     "BrailleMatrix": "001001101110",
-    "AssistanceName": "l"
+    "AssistanceName": "l",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "m",
     "BrailleMatrix": "001101001110",
-    "AssistanceName": "m"
+    "AssistanceName": "m",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "n",
     "BrailleMatrix": "001101011110",
-    "AssistanceName": "n"
+    "AssistanceName": "n",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "o",
     "BrailleMatrix": "001001011110",
-    "AssistanceName": "o"
+    "AssistanceName": "o",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "p",
     "BrailleMatrix": "001101101110",
-    "AssistanceName": "p"
+    "AssistanceName": "p",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "q",
     "BrailleMatrix": "001101111110",
-    "AssistanceName": "q"
+    "AssistanceName": "q",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "r",
     "BrailleMatrix": "001001111110",
-    "AssistanceName": "r"
+    "AssistanceName": "r",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "s",
     "BrailleMatrix": "000101101110",
-    "AssistanceName": "s"
+    "AssistanceName": "s",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "t",
     "BrailleMatrix": "000101111110",
-    "AssistanceName": "t"
+    "AssistanceName": "t",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "u",
     "BrailleMatrix": "001001001111",
-    "AssistanceName": "u"
+    "AssistanceName": "u",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "v",
     "BrailleMatrix": "001001101111",
-    "AssistanceName": "v"
+    "AssistanceName": "v",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "w",
     "BrailleMatrix": "000101111101",
-    "AssistanceName": "w"
+    "AssistanceName": "w",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "x",
     "BrailleMatrix": "001101001111",
-    "AssistanceName": "x"
+    "AssistanceName": "x",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "y",
     "BrailleMatrix": "001101011111",
-    "AssistanceName": "y"
+    "AssistanceName": "y",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "z",
     "BrailleMatrix": "001001011111",
-    "AssistanceName": "z"
+    "AssistanceName": "z",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "대문자표",
-    "BrailleMatrix": "010101100110",
-    "AssistanceName": "대문자표"
+    "BrailleMatrix": "000001001101",
+    "AssistanceName": "대문자표",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "A",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "a"
+    "BrailleMatrix": "000010010000110100",
+    "AssistanceName": "a",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "B",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "b"
+    "BrailleMatrix": "000010010010110100",
+    "AssistanceName": "b",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "C",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "c"
+    "BrailleMatrix": "000011010000110100",
+    "AssistanceName": "c",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "D",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "d"
+    "BrailleMatrix": "000011010001110100",
+    "AssistanceName": "d",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "E",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "e"
+    "BrailleMatrix": "000010010001110100",
+    "AssistanceName": "e",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "F",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "f"
+    "BrailleMatrix": "000011010010110100",
+    "AssistanceName": "f",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "G",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "g"
+    "BrailleMatrix": "000011010011110100",
+    "AssistanceName": "g",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "H",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "h"
+    "BrailleMatrix": "000010010011110100",
+    "AssistanceName": "h",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "I",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "l"
+    "BrailleMatrix": "000001010010110100",
+    "AssistanceName": "l",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "J",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "j"
+    "BrailleMatrix": "000001010011110100",
+    "AssistanceName": "j",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "K",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "k"
+    "BrailleMatrix": "000010010000110110",
+    "AssistanceName": "k",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "L",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "l"
+    "BrailleMatrix": "000010010010110110",
+    "AssistanceName": "l",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "M",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "m"
+    "BrailleMatrix": "000011010000110110",
+    "AssistanceName": "m",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "N",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "n"
+    "BrailleMatrix": "000011010001110110",
+    "AssistanceName": "n",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "O",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "o"
+    "BrailleMatrix": "000010010001110110",
+    "AssistanceName": "o",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "P",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "p"
+    "BrailleMatrix": "000011010010110110",
+    "AssistanceName": "p",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "Q",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "q"
+    "BrailleMatrix": "000011010011110110",
+    "AssistanceName": "q",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "R",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "r"
+    "BrailleMatrix": "000010010011110110",
+    "AssistanceName": "r",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "S",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "s"
+    "BrailleMatrix": "000001010010110110",
+    "AssistanceName": "s",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "T",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "t"
+    "BrailleMatrix": "000001010011110110",
+    "AssistanceName": "t",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "U",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "u"
+    "BrailleMatrix": "000010010000110111",
+    "AssistanceName": "u",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "V",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "v"
+    "BrailleMatrix": "000010010010110111",
+    "AssistanceName": "v",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "W",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "w"
+    "BrailleMatrix": "000001010011110101",
+    "AssistanceName": "w",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "X",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "x"
+    "BrailleMatrix": "000011010000110111",
+    "AssistanceName": "x",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "Y",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "y"
+    "BrailleMatrix": "000011010001110111",
+    "AssistanceName": "y",
+    "RawId": "initial_giyeok"
   }, {
     "LetterName": "Z",
-    "BrailleMatrix": "100100100010",
-    "AssistanceName": "z"
+    "BrailleMatrix": "000010010001110110",
+    "AssistanceName": "z",
+    "RawId": "initial_giyeok"
   }]
 }

@@ -1,28 +1,22 @@
 package com.project.why.braillelearning.BrailleInformationFactory;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
-import com.project.why.braillelearning.EnumConstant.BrailleLength;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.EnumConstant.ServerClient;
-
-import java.util.ArrayList;
 
 /**
  * Created by hyuck on 2017-09-21.
  */
 
+
+/**
+ * 사용설명서 정보 class
+ */
 public class Tutorial extends LearningInformation implements GettingInformation {
     Tutorial(){
-        setBrailleLength(BrailleLength.SHORT);
         setJsonFileName(Json.INITIAL);
         setBrailleLearningType(BrailleLearningType.TUTORIAL);
         setDatabaseTableName(Database.BASIC);
-    }
-
-    @Override
-    public BrailleLength gettBrailleLength() {
-        return brailleLength;
     }
 
     @Override
@@ -38,11 +32,6 @@ public class Tutorial extends LearningInformation implements GettingInformation 
     @Override
     public Database getDatabaseTableName() {
         return databaseTableName;
-    }
-
-    @Override
-    public void setBrailleLength(BrailleLength brailleLength) {
-        this.brailleLength = brailleLength;
     }
 
     @Override

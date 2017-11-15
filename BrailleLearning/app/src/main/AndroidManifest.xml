@@ -3,6 +3,10 @@
     package="com.project.why.braillelearning">
 
     <uses-permission android:name = "android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -21,10 +25,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Menu.BrailleLearningMenu"
+            android:name=".Menu.MenuActivity"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".LearningControl.BrailleLearning"
+        <activity android:name=".LearningControl.BrailleLearningActivity"
             android:screenOrientation="sensorLandscape"></activity>
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_app_key" />
     </application>
 
 </manifest>

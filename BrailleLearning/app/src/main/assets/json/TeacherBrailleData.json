@@ -2,6 +2,7 @@
   "TeacherBrailleData": [{
     "LetterName": "",
     "BrailleMatrix": "000000000000000000000000000000000000000000",
-    "AssistanceName": ""
+    "AssistanceName": "",
+    "RawId": "initial_giyeok"
   }]
 }

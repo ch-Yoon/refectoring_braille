@@ -2,7 +2,6 @@ package com.project.why.braillelearning.LearningView;
 
 import android.content.Context;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
-import com.project.why.braillelearning.EnumConstant.BrailleLength;
 
 /**
  * Created by hyuck on 2017-09-25.
@@ -20,6 +19,8 @@ public class BrailleLearningViewManager{
     public ViewObservers getView(){
         switch(brailleLearningType){
             case BASIC:
+                return new BasicView(context);
+            case TRANSLATION:
                 return new BasicView(context);
             default:
                 return null;

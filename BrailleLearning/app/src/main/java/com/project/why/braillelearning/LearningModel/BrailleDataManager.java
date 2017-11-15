@@ -5,15 +5,14 @@ import android.content.Context;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.EnumConstant.ServerClient;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by hyuck on 2017-09-25.
  */
 
+/**
+ * 점자 data를 불러오는 모듈들을 관리하는 manager class
+ */
 public class BrailleDataManager {
     private Context context;
     private Json jsonFileName;
@@ -27,12 +26,16 @@ public class BrailleDataManager {
         this.brailleLearningType = brailleLearningType; 
     }
 
+    /**
+     * brailleLearningType에 따라, 점자 data를 불러오는 class가 선택됨
+     * @return json 읽어오는 class, database에서 읽어오는 class, server로부터 읽어오는 class
+     */
     public GettingBraille getBrailleArrayList(){
         switch(brailleLearningType){
             case TUTORIAL:
                 return null;
             case BASIC:
-                return new JsonBrailleData(context, jsonFileName);
+                return new JsonBrailleData(context, jsonFileName, brailleLearningType);
             case TRANSLATION:
                 return null;
             case READING_QUIZ:

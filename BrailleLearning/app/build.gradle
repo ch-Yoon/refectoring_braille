@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.project.why.braillelearning"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -26,5 +26,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.kakao.sdk:newtone:6.0.1'
+    compile group: 'com.kakao.sdk', name: 'newtone', version: project.KAKAO_SPEECH_VERSION
     testCompile 'junit:junit:4.12'
 }
