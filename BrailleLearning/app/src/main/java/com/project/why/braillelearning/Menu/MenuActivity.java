@@ -16,7 +16,6 @@ import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Menu;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningControl.MultiFinger;
-import com.project.why.braillelearning.LearningControl.MultiFingerFunction;
 import com.project.why.braillelearning.LearningControl.BrailleLearningActivity;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 import com.project.why.braillelearning.LearningControl.SingleFIngerFactory;
@@ -47,8 +46,8 @@ public class MenuActivity extends Activity {
     private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
     private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
     private MediaSoundManager mediaSoundManager;
-    private SingleFingerFunction oneFingerFunction;
-    private MultiFingerFunction twoFingerFunction;
+    private SingleFingerFunction singleFingerFunction;
+    private MultiFinger multiFingerFunction;
     private FingerCoordinate fingerCoordinate;
     private FingerFunctionType type = FingerFunctionType.NONE;
 
@@ -101,8 +100,8 @@ public class MenuActivity extends Activity {
         menuAddressDeque = new LinkedList<>();
         menuAddressDeque.addLast(PageNumber);
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-        oneFingerFunction = getSingleFingerFunction();
-        twoFingerFunction = new MultiFinger(this, FingerFunctionType.TWO_FINGER);
+        singleFingerFunction = getSingleFingerFunction();
+        multiFingerFunction = new MultiFinger(this);
         fingerCoordinate = new FingerCoordinate(THREE_FINGER);
     }
 
@@ -158,15 +157,8 @@ public class MenuActivity extends Activity {
                     break;
                 case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
                     fingerCoordinate.setUpCoordinate(event, pointer_Count);
-
-                    if(pointer_Count == TWO_FINGER) {
-                        CheckMenuType();
-                        functionLock = true;
-                    } else if(pointer_Count == THREE_FINGER) {
-                        //mediaPlayerModule.SoundPlay("현재 화면에서는 손가락 3개를 이용하는 기능이 존재하지 않습니다.");
-                        functionLock = true;
-                    }
-
+                    CheckMenuType();
+                    functionLock = true;
                     break;
             }
         }
@@ -181,9 +173,9 @@ public class MenuActivity extends Activity {
     public void CheckMenuType(){ // 화면 전환을 위한 CustomTouchEvent 함수
         if(functionLock == false) {
             if (multiFinger == false) // 싱글터치
-                type = oneFingerFunction.oneFingerFunction(null, fingerCoordinate);
+                type = singleFingerFunction.oneFingerFunction(null, fingerCoordinate);
             else  // 멀티터치
-                type = twoFingerFunction.fingerFunctionType(fingerCoordinate);
+                type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
 
             switch (type) {
                 case ENTER: // 메뉴 접속
@@ -207,6 +199,12 @@ public class MenuActivity extends Activity {
                     break;
                 case REFRESH: // 특수기능
                     refreshData();
+                    break;
+                case SPEECH:
+                    mediaSoundManager.start(R.raw.impossble_function);
+                    break;
+                case MYNOTE:
+                    mediaSoundManager.start(R.raw.impossble_function);
                     break;
                 default:
                     break;

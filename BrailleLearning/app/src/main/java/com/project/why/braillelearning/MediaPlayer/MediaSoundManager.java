@@ -91,16 +91,12 @@ public class MediaSoundManager {
 
         int rawId = checkRawId(tempQueue.peek());
         if(rawId != 0){
-            tempQueue.poll();
-            soundIdQueue.add(rawId);
             soundIdQueue.addAll(getTranslationQueue(tempQueue));
             mediaPlayerSingleton.start(soundIdQueue);
-            Log.d("test","basicstart");
         } else {
             String ttsText = tempQueue.poll();
             soundIdQueue = getTranslationQueue(tempQueue);
             mediaPlayerSingleton.start(soundIdQueue, ttsText);
-            Log.d("test","translationstart");
         }
     }
 
@@ -112,6 +108,39 @@ public class MediaSoundManager {
         Queue<Integer> soundIdQueue = getFingerFunctionQueue(fingerFunctionType);
         stop();
         mediaPlayerSingleton.start(soundIdQueue);
+    }
+
+    /**
+     * 퀴즈 음성 출력을 위한 함수
+     * @param result : 정답 여부
+     * @param quizCount : 현재 퀴즈의 문제 수
+     * @param rawId : 현재 문제의 정답 음성 id
+     */
+    public void start(boolean result, int quizCount, String rawId){
+        String text = "";
+        if(result == true){
+            text += "answer";
+        } else {
+            text += "wronganswer";
+
+            StringTokenizer st = new StringTokenizer(rawId,",");
+            while(st.hasMoreTokens()) {
+                text += ","+st.nextToken();
+                break;
+            }
+
+            text += ",end";
+        }
+
+        switch(quizCount){
+            case 2:
+                text += ",quizexit";
+                break;
+            default:
+                text += ",nextquiz";
+        }
+
+        start(text);
     }
 
     /**
@@ -144,9 +173,6 @@ public class MediaSoundManager {
                 break;
             case BACK:
                 soundIdQueue.add(R.raw.back);
-                break;
-            case SPEECH:
-                soundIdQueue.add(R.raw.speechrecognition_start);
                 break;
             case NONE:
                 soundIdQueue.add(R.raw.retry);
@@ -229,6 +255,9 @@ public class MediaSoundManager {
                         soundIdQueue.add(R.raw.translation_six_finish);
                         break;
                     default:
+                        int temp = checkRawId(targetText);
+                        if(temp != 0)
+                            soundIdQueue.add(temp);
                         break;
                 }
             }
@@ -247,6 +276,13 @@ public class MediaSoundManager {
 
     public MediaPlayer getMediaPlayer() {
         return mediaPlayerSingleton.getMediaPlayer();
+    }
+
+    public int getMediaQueueSize(){
+        return mediaPlayerSingleton.getMediaQueueSize();
+    }
+    public boolean getMediaPlaying(){
+        return mediaPlayerSingleton.getMediaPlaying();
     }
 
     public boolean checkTTSPlaying(){

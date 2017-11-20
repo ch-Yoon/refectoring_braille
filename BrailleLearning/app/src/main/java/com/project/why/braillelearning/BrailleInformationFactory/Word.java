@@ -15,7 +15,7 @@ import com.project.why.braillelearning.EnumConstant.Json;
 public class Word extends LearningInformation implements GettingInformation {
     Word(){
         setJsonFileName(Json.WORD);
-        setBrailleLearningType(BrailleLearningType.BASIC);
+        setBrailleLearningType(BrailleLearningType.MASTER);
         setDatabaseTableName(Database.MASTER);
     }
 

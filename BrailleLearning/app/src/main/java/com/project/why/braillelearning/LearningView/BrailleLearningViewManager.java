@@ -20,9 +20,13 @@ public class BrailleLearningViewManager{
         switch(brailleLearningType){
             case BASIC:
                 return new BasicView(context);
+            case MASTER:
+                return new BasicView(context);
             case TRANSLATION:
                 return new BasicView(context);
             case MYNOTE:
+                return new BasicView(context);
+            case QUIZ:
                 return new BasicView(context);
             default:
                 return null;

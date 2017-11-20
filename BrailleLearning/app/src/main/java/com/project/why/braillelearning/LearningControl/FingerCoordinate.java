@@ -11,6 +11,7 @@ public class FingerCoordinate {
     private int downY[];
     private int upX[];
     private int upY[];
+    private int fingerCount;
 
     public FingerCoordinate(int fingerCount){
         downX = new int[fingerCount]; // 손가락 2개 down 좌표
@@ -20,6 +21,8 @@ public class FingerCoordinate {
     }
 
     public void setDownCoordinate(MotionEvent event, int count){
+        this.fingerCount = count;
+
         for (int i = 0 ; i<count ; i++) {
             downX[i] = (int) event.getX(i);
             downY[i] = (int) event.getY(i);
@@ -27,10 +30,27 @@ public class FingerCoordinate {
     }
 
     public void setUpCoordinate(MotionEvent event, int count){
+        this.fingerCount = count;
+
         for (int i = 0 ; i<count ; i++) {
             upX[i] = (int) event.getX(i);
             upY[i] = (int) event.getY(i);
         }
+    }
+
+    public void initialize(){
+        for(int i=0 ; i<downX.length ; i++){
+            downX[i] = 0;
+            downY[i] = 0;
+            upX[i] = 0;
+            upY[i] = 0;
+        }
+
+        fingerCount = 0;
+    }
+
+    public int getFingerCount(){
+        return fingerCount;
     }
 
     public int[] getDownX() {

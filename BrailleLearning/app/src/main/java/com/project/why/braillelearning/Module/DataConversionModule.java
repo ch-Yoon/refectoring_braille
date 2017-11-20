@@ -21,6 +21,8 @@ public class DataConversionModule {
     private float MiniCircleRadiusRatio;
     private float touchAreaRidus;
 
+    public DataConversionModule(){}
+
     public DataConversionModule(Database databaseFileName, String brailleText){
         initBrailleRatio(databaseFileName);
         initMatrixInfo(brailleText);
@@ -74,6 +76,24 @@ public class DataConversionModule {
         touchAreaRidus = Global.DisplayY * BigCircleRadiusRatio;
     }
 
+    public String getConversionQuizRawId(Dot brailleMatrix[][], int quizCount){
+        String rawId = "";
+        switch(quizCount){
+            case 0 :
+                rawId += "firstquiz";
+                break;
+            case 1:
+                rawId += "secondquiz";
+                break;
+            default :
+                rawId += "lastquiz";
+                break;
+        }
+
+        rawId += ",quizinfo";
+        return getConversionRawId(brailleMatrix, rawId);
+    }
+
     /**
      * 점자 행렬정보를 문자열로 분해함
      * 초성 니은을 의미하는 점자는 한 칸중, 1점과 4점이 돌출되어 있음.
@@ -83,6 +103,8 @@ public class DataConversionModule {
      * @return 변환된 음성 file string
      */
     public String getConversionRawId(Dot brailleMatrix[][], String rawId){
+        COL = brailleMatrix.length; //4행
+        ROW = brailleMatrix[0].length;
         int dotCount = ROW/3;
         switch(dotCount){
             case 1:

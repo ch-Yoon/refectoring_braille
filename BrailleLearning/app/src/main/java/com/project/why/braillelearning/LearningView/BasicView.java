@@ -24,8 +24,9 @@ import com.project.why.braillelearning.LearningModel.BrailleData;
  */
 public class BasicView extends View implements ViewObservers {
     private Context context;
-    private BrailleData data;
     private TextView textName;
+    private String letterName;
+    private Dot[][] brailleMatrix;
 
     public BasicView(Context context){
         super(context);
@@ -39,15 +40,13 @@ public class BasicView extends View implements ViewObservers {
     }
 
     public void drawBraille(Canvas canvas){
-        if(data != null) {
-            String letterName = data.getLetterName();
-            Dot brailleMatrix[][] = data.getBrailleMatrix();
-            setTextName(letterName);
-            setBraille(canvas, brailleMatrix);
+        if(brailleMatrix != null){
+            setTextName();
+            setBraille(canvas);
         }
     }
 
-    public void setTextName(String letterName){
+    public void setTextName(){
         if(textName == null) {
             textName = new TextView(context);
 
@@ -68,7 +67,7 @@ public class BasicView extends View implements ViewObservers {
         textName.setText(letterName);
     }
 
-    public void setBraille(Canvas canvas, Dot brailleMatrix[][]) {
+    public void setBraille(Canvas canvas) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
 
@@ -110,17 +109,20 @@ public class BasicView extends View implements ViewObservers {
 
     @Override
     public void onPause() {
-        data = null;
+        letterName = "";
+        brailleMatrix = null;
         textName = null;
     }
 
     /**
      * brailleData를 callback받는 함수
-     * @param brailleData
+     * @param letterName : 점자를 의미하는 글자
+     * @param brailleMatrix : 점자의 모든 좌표값
      */
     @Override
-    public void nodifyBraille(BrailleData brailleData) {
-        this.data = brailleData;
+    public void nodifyBraille(String letterName, Dot[][] brailleMatrix) {
+        this.letterName = letterName;
+        this.brailleMatrix = brailleMatrix;
         invalidate();
     }
 }

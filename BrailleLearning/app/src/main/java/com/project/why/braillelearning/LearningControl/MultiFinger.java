@@ -10,22 +10,20 @@ import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
  * Created by User on 2017-10-09.
  */
 
-public class MultiFinger implements MultiFingerFunction {
-    private int FINGER;
+public class MultiFinger{
     private MediaSoundManager mediaSoundManager;
 
-    public MultiFinger(Context context, FingerFunctionType type){
+    public MultiFinger(Context context){
         mediaSoundManager = new MediaSoundManager(context);
-        FINGER = type.getNumber();
     }
 
-    @Override
-    public FingerFunctionType fingerFunctionType(FingerCoordinate fingerCoordinate) {
+    public FingerFunctionType getFingerFunctionType(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = FingerFunctionType.NONE;
+        int fingerCount = fingerCoordinate.getFingerCount();
 
-        if(FingerFunctionType.TWO_FINGER.getNumber() <= FINGER && FINGER <= FingerFunctionType.THREE_FINGER.getNumber()) {
-            double Finger_gapX[] = new double[FINGER]; // 첫번째와 두번째 손가락의 downX 좌표와 upX좌표의 격차
-            double Finger_gapY[] = new double[FINGER]; // 첫번째와 두번째 손가락의 downY 좌표와 upY좌표의 격차
+        if(FingerFunctionType.TWO_FINGER.getNumber() <= fingerCount && fingerCount <= FingerFunctionType.THREE_FINGER.getNumber()) {
+            double Finger_gapX[] = new double[fingerCount]; // 첫번째와 두번째 손가락의 downX 좌표와 upX좌표의 격차
+            double Finger_gapY[] = new double[fingerCount]; // 첫번째와 두번째 손가락의 downY 좌표와 upY좌표의 격차
             int Drag_countX = 0; // 좌측 이동인지 우측 이동인지를 확인하기 위한 변수
             int Drag_countY = 0; // 뒤로가기인지 특수기능인지를 확인하기 위한 변수
             double DragSpace = Global.DisplayX * (0.2); // 화면전환 범위는 해상도 가로축의 20%
@@ -34,7 +32,7 @@ public class MultiFinger implements MultiFingerFunction {
             int upX[] = fingerCoordinate.getUpX();
             int upY[] = fingerCoordinate.getUpY();
 
-            for (int i = 0; i < FINGER; i++) {
+            for (int i = 0; i < fingerCount; i++) {
                 Finger_gapX[i] = downX[i] - upX[i]; //손가락 2개의 X좌표 격차
                 Finger_gapY[i] = downY[i] - upY[i]; //손가락 2개의 Y좌표 격차
 
@@ -52,14 +50,14 @@ public class MultiFinger implements MultiFingerFunction {
             boolean DragX = false; // 화면 전환을 충족했다면 true
             boolean DragY = false;
 
-            if (Drag_countX == FINGER || Drag_countX == FINGER*(-1))
+            if (Drag_countX == fingerCount || Drag_countX == fingerCount*(-1))
                 DragX = true;
-            else if (Drag_countY == FINGER || Drag_countY == FINGER*(-1))
+            else if (Drag_countY == fingerCount || Drag_countY == fingerCount*(-1))
                 DragY = true;
 
-            if (FINGER == FingerFunctionType.TWO_FINGER.getNumber())
+            if (fingerCount == FingerFunctionType.TWO_FINGER.getNumber())
                 type = getTwoFingerFunction(DragX, DragY, Drag_countX, Drag_countY, Finger_gapX, Finger_gapY);
-            else if (FINGER == FingerFunctionType.THREE_FINGER.getNumber())
+            else if (fingerCount == FingerFunctionType.THREE_FINGER.getNumber())
                 type = getThreeFingerFunction(DragX, DragY, Drag_countY);
         }
 
@@ -71,7 +69,7 @@ public class MultiFinger implements MultiFingerFunction {
         return type;
     }
 
-    public FingerFunctionType getTwoFingerFunction(boolean DragX, boolean DragY, int Drag_countX, int Drag_countY, double Finger_gapX[], double Finger_gapY[]){
+    private FingerFunctionType getTwoFingerFunction(boolean DragX, boolean DragY, int Drag_countX, int Drag_countY, double Finger_gapX[], double Finger_gapY[]){
         FingerFunctionType type = FingerFunctionType.NONE;
 
         if (DragX == false && DragY == false) { // x과 y축 모두 화면전환 조건을 충족하지 못했을 경우
@@ -90,7 +88,7 @@ public class MultiFinger implements MultiFingerFunction {
             double gapX = 0;
             double gapY = 0;
 
-            for (int i = 0; i < FINGER; i++) {
+            for (int i = 0; i < Finger_gapX.length; i++) {
                 gapX = gapX + Finger_gapX[i];
                 gapY = gapY + Finger_gapY[i];
             }
@@ -111,7 +109,7 @@ public class MultiFinger implements MultiFingerFunction {
         return type;
     }
 
-    public FingerFunctionType getThreeFingerFunction(boolean DragX, boolean DragY, int Drag_countY){
+    private FingerFunctionType getThreeFingerFunction(boolean DragX, boolean DragY, int Drag_countY){
         FingerFunctionType type = FingerFunctionType.NONE;
 
         if (DragX == false && DragY == false) { // x과 y축 모두 화면전환 조건을 충족하지 못했을 경우

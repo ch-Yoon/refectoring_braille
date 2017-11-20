@@ -45,38 +45,24 @@ public class BrailleFactory implements BrailleInformationFactory {
                 return new Word();
             case TRANSLATION:
                 return new Translation();
-            case INITIAL_READINGQUIZ:
-                return new InitialReadingQuiz();
-            case INITIAL_WRITINGQUIZ:
-                return new InitialWritingQuiz();
-            case VOWEL_READINGQUIZ:
-                return new VowelReadingQuiz();
-            case VOWEL_WRITINGQUIZ:
-                return new VowelWritingQuiz();
-            case FINAL_READINGQUIZ:
-                return new FinalReadingQuiz();
-            case FINAL_WRITINGQUIZ:
-                return new FinalWritingQuiz();
-            case NUMBER_READINGQUIZ:
-                return new NumberReadingQuiz();
-            case NUMBER_WRITINGQUIZ:
-                return new NumberWritingQuiz();
-            case ALPHABET_READINGQUIZ:
-                return new AlphabetReadingQuiz();
-            case ALPHABET_WRITINGQUIZ:
-                return new AlphabetWritingQuiz();
-            case SENTENCE_READINGQUIZ:
-                return new SentenceReadingQuiz();
-            case SENTENCE_WRITINGQUIZ:
-                return new SentenceWritingQuiz();
-            case ABBREVIATION_READINGQUIZ:
-                return new AbbreviationReadingQuiz();
-            case ABBREVIATION_WRITINGQUIZ:
-                return new AbbreviationWritingQuiz();
-            case WORD_READINGQUIZ:
-                return new WordReadingQuiz();
-            case WORD_WRITINGQUIZ:
-                return new WordWritingQuiz();
+            case INITIAL_QUIZ:
+                return new InitialQuiz();
+            case VOWEL_QUIZ:
+                return new VowelQuiz();
+            case FINAL_QUIZ:
+                return new FinalQuiz();
+            case NUMBER_QUIZ:
+                return new NumberQuiz();
+            case ALPHABET_QUIZ:
+                return new AlphabetQuiz();
+            case SENTENCE_QUIZ:
+                return new SentenceQuiz();
+            case ABBREVIATION_QUIZ:
+                return new AbbreviationQuiz();
+            case LETTER_QUIZ:
+                return new LetterQuiz();
+            case WORD_QUIZ:
+                return new WordQuiz();
             case BASIC_MYNOTE:
                 return new BasicNote();
             case MASTER_MYNOTE:

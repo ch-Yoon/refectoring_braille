@@ -1,48 +1,45 @@
 package com.project.why.braillelearning.LearningControl;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener;
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient;
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager;
-import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
-import com.project.why.braillelearning.LearningModel.Dot;
-import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
-import com.project.why.braillelearning.Module.BrailleTranslationModule;
+import com.project.why.braillelearning.R;
 
 import java.util.ArrayList;
 
-
 /**
- * Created by hyuck on 2017-10-16.
+ * Created by hyuck on 2017-11-16.
  */
 
-public class BrailleTranslation implements SpeechRecognition, SpeechRecognizeListener{
-    private BrailleTranslationModule brailleTranslationLearning;
+public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
+    private SpeechRecognitionListener listener;
     private SpeechRecognizerClient client;
     private MediaSoundManager mediaSoundManager;
-    private CallBack callBackMethod;
+    private CheckMediaTask checkMediaTask;
 
-    BrailleTranslation(Context context){
-        mediaSoundManager = new MediaSoundManager(context);
-        brailleTranslationLearning = new BrailleTranslationModule(context);
+    SpeechRecognitionMoudle(Context context, SpeechRecognitionListener listener){
         SpeechRecognizerManager.getInstance().initializeLibrary(context); // SDK 초기화
+        this.listener = listener;
+        mediaSoundManager = new MediaSoundManager(context);
     }
 
-    @Override
-    public void startSpecialFunction(CallBack callBackMethod) {
-        this.callBackMethod = callBackMethod;
+    public void start(){
         try {
-            CheckMediaTask checkMediaTask = new CheckMediaTask();
+            mediaSoundManager.start(R.raw.speechrecognition_start);
+            checkMediaTask = new CheckMediaTask();
             checkMediaTask.execute();
         } catch (Exception e){
-            onError(0,"SpeechRecognition error");
+            mediaSoundManager.start("speechrecognition_fail");
         }
     }
 
-    public void startSpeechRecognition(){
+    private void startSpeechRecognition(){
         SpeechRecognizerClient.Builder builder = new SpeechRecognizerClient.Builder().
                 setServiceType(SpeechRecognizerClient.SERVICE_TYPE_WORD);
 
@@ -53,51 +50,46 @@ public class BrailleTranslation implements SpeechRecognition, SpeechRecognizeLis
 
     @Override
     public void onReady() {
+
     }
 
     @Override
     public void onBeginningOfSpeech() {
+
     }
 
     @Override
     public void onEndOfSpeech() {
+
     }
 
     @Override
     public void onError(int errorCode, String errorMsg) {
         mediaSoundManager.start("speechrecognition_fail");
+        listener.speechRecogntionResult(null);
     }
 
     @Override
     public void onPartialResult(String partialResult) {
+
     }
 
     @Override
     public void onResults(Bundle results) {
+        Log.d("test","onResult");
         client = null;
-
         ArrayList<String> sttArray = results.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS);
-        String letterName = sttArray.get(0);
-        startBrailleTranslation(letterName);
-    }
-
-    public void startBrailleTranslation(String letterName){
-        BrailleData translationBrailleData = brailleTranslationLearning.translation(letterName);
-
-        if(translationBrailleData != null)
-            callBackMethod.objectCallBackMethod(translationBrailleData);
-        else
-            mediaSoundManager.start("brailletranslation_fail");
+        listener.speechRecogntionResult(sttArray);
     }
 
     @Override
     public void onAudioLevel(float audioLevel) {
+
     }
 
     @Override
     public void onFinished() {
-        Log.d("stt","stt finish");
-        client = null;
+
     }
 
     private class CheckMediaTask extends AsyncTask<Void, Void, Boolean> {
@@ -113,9 +105,10 @@ public class BrailleTranslation implements SpeechRecognition, SpeechRecognizeLis
 
             while(true){
                 if(count <= MAX_COUNT) {
-                    if (mediaSoundManager.getMediaPlayer() == null)
-                        return true;
-                    else {
+                    if(mediaSoundManager.getMediaQueueSize() == 0){
+                        if(mediaSoundManager.getMediaPlaying() == false)
+                            return true;
+                    } else {
                         try {
                             count++;
                             Thread.sleep(50);
@@ -140,10 +133,3 @@ public class BrailleTranslation implements SpeechRecognition, SpeechRecognizeLis
         }
     }
 }
-
-
-
-
-
-
-

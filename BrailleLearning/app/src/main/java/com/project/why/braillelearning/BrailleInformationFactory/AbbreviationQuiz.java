@@ -5,18 +5,18 @@ import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
 
 /**
- * Created by hyuck on 2017-09-21.
+ * 약자 및 약어 연습 점자 정보 클래스
  */
 
 
 /**
- * 단어 읽기 퀴즈 점자 정보 class
+ * 약자 및 약어 읽기 퀴즈 점자 정보 class
  */
-public class WordReadingQuiz extends LearningInformation implements GettingInformation {
-    WordReadingQuiz(){
-        setJsonFileName(Json.WORD);
-        setBrailleLearningType(BrailleLearningType.READING_QUIZ);
-        setDatabaseTableName(Database.MASTER);
+public class AbbreviationQuiz extends LearningInformation implements GettingInformation {
+    AbbreviationQuiz(){
+        setJsonFileName(Json.ABBREVIATION);
+        setBrailleLearningType(BrailleLearningType.QUIZ);
+        setDatabaseTableName(Database.BASIC);
     }
 
     @Override

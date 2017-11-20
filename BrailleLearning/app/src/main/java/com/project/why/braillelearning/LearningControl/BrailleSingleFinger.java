@@ -33,7 +33,6 @@ public class BrailleSingleFinger implements SingleFingerFunction {
     /**
      * 손가락의 직전 좌표를 초기화하는 함수
      */
-    @Override
     public void init(){
         previous_i = 0;
         previous_j = 0;
@@ -41,20 +40,22 @@ public class BrailleSingleFinger implements SingleFingerFunction {
 
     /**
      * 1개의 손가락으로 점자를 읽기위한 event함수
-     * @param data : 현재 화면의 점자 data
+     * @param brailleMatrix : 현재 화면의 점자 data 좌표
      * @param fingerCoordinate : 손가락 1개의 좌표가 저장되어 있는 클래스
      * @return null;
      */
     @Override
-    public FingerFunctionType oneFingerFunction(BrailleData data, FingerCoordinate fingerCoordinate){
-        if(data != null) {
-            Dot brailleMatrix[][] = data.getBrailleMatrix();
+    public FingerFunctionType oneFingerFunction(Dot[][] brailleMatrix, FingerCoordinate fingerCoordinate){
+        if(brailleMatrix != null) {
             int col = brailleMatrix.length;
             int row = brailleMatrix[0].length;
             float x = fingerCoordinate.getDownX()[0];
             float y = fingerCoordinate.getDownY()[0];
 
-            if (data.checkCoordinateInside(x, y)) {
+            if(x == 0 && y == 0)
+                init();
+
+            if (checkCoordinateInside(brailleMatrix, x, y)) {
                 for (int i = 0; i < col; i++) {
                     for (int j = 0; j < row; j++) {
                         Dot targetCoordinate = brailleMatrix[i][j];
@@ -92,6 +93,24 @@ public class BrailleSingleFinger implements SingleFingerFunction {
         }
 
         return null;
+    }
+
+
+    /**
+     * touch된 손가락의 좌표가 점자 영역 안쪽인지, 바깥쪽인지 check하는 함수
+     * @param brailleMatrix : 점자 행렬
+     * @param x : 손가락 1개의 x 좌표
+     * @param y : 손가락 1개의 y 좌표
+     * @return true(점자 영역 안쪽), false(점자 영역 아님)
+     */
+    public boolean checkCoordinateInside(Dot[][] brailleMatrix, float x, float y){
+        int row = brailleMatrix[0].length;
+        float maxY = brailleMatrix[0][0].getY() - brailleMatrix[0][0].getTouchAreaRidus();
+        float maxX = brailleMatrix[0][row-1].getX() + brailleMatrix[0][row-1].getTouchAreaRidus();
+        if(maxY <= y && x <= maxX)  // 터치 좌표가 점자 영역 안쪽일경우
+            return true;
+        else
+            return false;
     }
 
     /**

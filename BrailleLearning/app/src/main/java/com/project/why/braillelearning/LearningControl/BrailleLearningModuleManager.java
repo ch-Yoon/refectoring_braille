@@ -30,15 +30,15 @@ public class BrailleLearningModuleManager {
             case TUTORIAL:
                 return null;
             case BASIC:
-                return new BrailleControl(context, controlListener, jsonFileName, databaseTableName, brailleLearningType);
+                return new BasicControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
+            case MASTER:
+                return new BasicControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
             case TRANSLATION:
-                return new BrailleControl(context, controlListener,  jsonFileName, databaseTableName, brailleLearningType);
+                return new TranslationControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
             case MYNOTE:
-                return new BrailleControl(context, controlListener,  jsonFileName, databaseTableName, brailleLearningType);
-            case READING_QUIZ:
-                return null;
-            case WRITING_QUIZ:
-                return null;
+                return new MynoteControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
+            case QUIZ:
+                return new QuizControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
             case TEACHER:
                 return null;
             case STUDENT:

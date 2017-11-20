@@ -60,26 +60,6 @@ public class MenuTreeManager {
         TreeNode LetterQuiz = Quiz.addChildTreeNode(Menu.LETTER_QUIZ, R.drawable.letter_quiz, R.raw.letter_quiz);
         TreeNode WordQuiz = Quiz.addChildTreeNode(Menu.WORD_QUIZ, R.drawable.word_quiz, R.raw.word_quiz);
 
-        // 퀴즈 하위메뉴의 하위메뉴 트리 등록 (소 메뉴) : 읽기퀴즈, 쓰기퀴즈
-        TreeNode InitialReadingQuiz = InitialQuiz.addChildTreeNode(Menu.INITIAL_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode InitialWritingQuiz = InitialQuiz.addChildTreeNode(Menu.INITIAL_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-        TreeNode VowelReadingQuiz = VowelQuiz.addChildTreeNode(Menu.VOWEL_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode VowelWritingQuiz = VowelQuiz.addChildTreeNode(Menu.VOWEL_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-        TreeNode FinalReadingQuiz = FinalQuiz.addChildTreeNode(Menu.FINAL_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode FinalWritingQuiz = FinalQuiz.addChildTreeNode(Menu.FINAL_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-        TreeNode NumberReadingQuiz = NumberQuiz.addChildTreeNode(Menu.NUMBER_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode NumberWritingQuiz = NumberQuiz.addChildTreeNode(Menu.NUMBER_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-        TreeNode AlphabetReadingQuiz = AlphabetQuiz.addChildTreeNode(Menu.ALPHABET_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode AlphabetWritingQuiz = AlphabetQuiz.addChildTreeNode(Menu.ALPHABET_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-        TreeNode SentenceReadingQuiz = SentenceQuiz.addChildTreeNode(Menu.SENTENCE_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode SentenceWritingQuiz = SentenceQuiz.addChildTreeNode(Menu.SENTENCE_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-        TreeNode PromiseReadingQuiz = abbreviationQuiz.addChildTreeNode(Menu.ABBREVIATION_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode PromiseWritingQuiz = abbreviationQuiz.addChildTreeNode(Menu.ABBREVIATION_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-        TreeNode LetterReadingQuiz = LetterQuiz.addChildTreeNode(Menu.LETTER_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode LetterWritingQuiz = LetterQuiz.addChildTreeNode(Menu.LETTER_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-        TreeNode WordReadingQuiz = WordQuiz.addChildTreeNode(Menu.WORD_READINGQUIZ, R.drawable.reading_quiz, R.raw.reading_quiz);
-        TreeNode WordWritingQuiz = WordQuiz.addChildTreeNode(Menu.WORD_WRITINGQUIZ, R.drawable.writing_quiz, R.raw.writing_quiz);
-
         // 나만의 단어장 하위메뉴 트리 등록(중 메뉴) : 기초단어장, 숙련단어장, 선생님의단어장
         TreeNode MynoteBasic = Mynote.addChildTreeNode(Menu.BASIC_MYNOTE, R.drawable.mynote_basic, R.raw.mynote_basic);
         TreeNode MynoteMaster = Mynote.addChildTreeNode(Menu.MASTER_MYNOTE, R.drawable.mynote_master, R.raw.mynote_master);

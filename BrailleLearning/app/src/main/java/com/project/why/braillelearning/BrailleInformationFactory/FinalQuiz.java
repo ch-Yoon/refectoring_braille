@@ -11,8 +11,8 @@ import com.project.why.braillelearning.EnumConstant.Json;
 /**
  * 종성 읽기 퀴즈 점자 정보 class
  */
-public class FinalReadingQuiz extends LearningInformation implements GettingInformation {
-    FinalReadingQuiz(){
+public class FinalQuiz extends LearningInformation implements GettingInformation {
+    FinalQuiz(){
         setJsonFileName(Json.FINAL);
         setBrailleLearningType(BrailleLearningType.READING_QUIZ);
         setDatabaseTableName(Database.BASIC);

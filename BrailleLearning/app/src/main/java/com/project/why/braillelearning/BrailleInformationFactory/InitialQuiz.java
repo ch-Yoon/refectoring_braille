@@ -11,13 +11,13 @@ import com.project.why.braillelearning.EnumConstant.Json;
 
 
 /**
- * 글자 읽기 퀴즈 점자 정보 class
+ * 초성 읽기 퀴즈 점자 정보 class
  */
-public class LetterReadingQuiz extends LearningInformation implements GettingInformation {
-    LetterReadingQuiz(){
-        setJsonFileName(Json.LETTER);
-        setBrailleLearningType(BrailleLearningType.READING_QUIZ);
-        setDatabaseTableName(Database.MASTER);
+public class InitialQuiz extends LearningInformation implements GettingInformation {
+    InitialQuiz(){
+        setJsonFileName(Json.INITIAL);
+        setBrailleLearningType(BrailleLearningType.QUIZ);
+        setDatabaseTableName(Database.BASIC);
     }
 
     @Override

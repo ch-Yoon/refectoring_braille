@@ -64,21 +64,6 @@ public class BrailleData {
         return brailleMatrix;
     }
 
-    /**
-     * touch된 손가락의 좌표가 점자 영역 안쪽인지, 바깥쪽인지 check하는 함수
-     * @param x : 손가락 1개의 x 좌표
-     * @param y : 손가락 1개의 y 좌표
-     * @return true(점자 영역 안쪽), false(점자 영역 아님)
-     */
-    public boolean checkCoordinateInside(float x, float y){
-        int row = brailleMatrix[0].length;
-        float maxY = brailleMatrix[0][0].getY() - brailleMatrix[0][0].getTouchAreaRidus();
-        float maxX = brailleMatrix[0][row-1].getX() + brailleMatrix[0][row-1].getTouchAreaRidus();
-        if(maxY <= y && x <= maxX)  // 터치 좌표가 점자 영역 안쪽일경우
-            return true;
-        else
-            return false;
-    }
     public String getStrBrailleMatrix(){
         return strBrailleMatrix;
     }

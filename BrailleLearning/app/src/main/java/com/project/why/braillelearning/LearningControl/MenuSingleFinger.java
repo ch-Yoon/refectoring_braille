@@ -5,6 +5,7 @@ import android.content.Context;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningModel.BrailleData;
+import com.project.why.braillelearning.LearningModel.Dot;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 
 /**
@@ -17,18 +18,14 @@ import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 public class MenuSingleFinger implements SingleFingerFunction {
     private MediaSoundManager mediaSoundManager;
     private double serviceArea;
+
     MenuSingleFinger(Context context){
         mediaSoundManager = new MediaSoundManager(context);
-        init();
-    }
-
-    @Override
-    public void init() {
         serviceArea = Global.DisplayX * (0.1); // 메뉴선택 허용 범위는 해상도 가로축의 10%
     }
 
     @Override
-    public FingerFunctionType oneFingerFunction(BrailleData data, FingerCoordinate fingerCoordinate) {
+    public FingerFunctionType oneFingerFunction(Dot[][] brailleMatrix, FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = FingerFunctionType.NONE;
 
         int downX = fingerCoordinate.getDownX()[0];

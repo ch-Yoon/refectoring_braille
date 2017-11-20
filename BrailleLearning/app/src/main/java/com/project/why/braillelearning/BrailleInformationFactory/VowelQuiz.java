@@ -4,18 +4,19 @@ import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
 
+
 /**
  * Created by hyuck on 2017-09-21.
  */
 
 
 /**
- * 알파벳 읽기 퀴즈 점자 정보 class
+ * 모음 읽기 퀴즈 점자 정보 class
  */
-public class AlphabetReadingQuiz extends LearningInformation implements GettingInformation {
-    AlphabetReadingQuiz(){
-        setJsonFileName(Json.ALPHABET);
-        setBrailleLearningType(BrailleLearningType.READING_QUIZ);
+public class VowelQuiz extends LearningInformation implements GettingInformation {
+    VowelQuiz(){
+        setJsonFileName(Json.VOWEL);
+        setBrailleLearningType(BrailleLearningType.QUIZ);
         setDatabaseTableName(Database.BASIC);
     }
 

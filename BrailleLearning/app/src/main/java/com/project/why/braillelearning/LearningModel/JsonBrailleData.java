@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class JsonBrailleData implements GettingBraille {
     // 점자 데이터 Manager
     private Json jsonFileName;
-    private ArrayList<BrailleData> brailleDataArray = new ArrayList<>(); // initial json file read
+    protected ArrayList<BrailleData> brailleDataArray = new ArrayList<>(); // initial json file read
     private Context context;
     private BrailleLearningType brailleLearningType;
 

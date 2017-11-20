@@ -31,6 +31,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     private Queue<Integer> queue = new LinkedList<>();
     private Queue<Integer> tempQueue = new LinkedList<>();
     private int shieldId; // 특정 음성들이 종료되지 않도록 방어하는 변수
+    private boolean mediaPlaying = false;
 
     public static MediaPlayerSingleton getInstance(Context context) {
         ourInstance.setContext(context);
@@ -52,7 +53,6 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     public void start(Queue<Integer> soundIdQueue){
         queue.addAll(soundIdQueue);
         checkMediaPlayer();
-        Log.d("test","start");
     }
 
     /**
@@ -80,14 +80,12 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
                 .build();
 
         ttsClient.play(ttsText);
-        Log.d("test","ttsstart");
     }
 
     /**
      * 다수의 곳에서 접근할 때, race contidion을 방지하기 위한 동기화 함수
      */
     private synchronized void checkMediaPlayer(){
-        Log.d("test","checkmediaplayer");
         Log.d("media","queue size : "+ queue.size());
         if(mediaPlayer != null){
             if(!mediaPlayer.isPlaying()){
@@ -102,7 +100,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
      * queue에 저장되어 있는 음성들을 순차적으로 출력함
      */
     private void startMediaPlayer(){
-        Log.d("test","startmediaplayer");
+        mediaPlaying = true;
         if(queue.peek() != null){
             Log.d("MediaPlayer","queue size : "+queue.size());
             int id = queue.poll();
@@ -117,7 +115,8 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
                     checkMediaPlayer();
                 }
             });
-        }
+        } else
+            mediaPlaying = false;
     }
 
     public MediaPlayer getMediaPlayer(){
@@ -142,6 +141,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     public void initializeQueue(){
         tempQueue.clear();
         queue.clear();
+        mediaPlaying = false;
     }
 
     /**
@@ -180,7 +180,6 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     @Override
     public void onFinished() {
         ttsClient = null;
-        Log.d("test","ttsend");
         queue.clear();
         queue.addAll(tempQueue);
         checkMediaPlayer();
@@ -191,6 +190,13 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     public void onError(int code, String message) {
         Log.d("tts","ttserror");
         ttsClient = null;
+    }
+
+    public int getMediaQueueSize(){
+        return queue.size();
+    }
+    public boolean getMediaPlaying(){
+        return mediaPlaying;
     }
 
     public boolean checkTTSPlay(){

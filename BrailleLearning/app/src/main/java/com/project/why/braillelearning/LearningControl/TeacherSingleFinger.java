@@ -6,6 +6,7 @@ import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Vibrate;
 import com.project.why.braillelearning.LearningModel.BrailleData;
+import com.project.why.braillelearning.LearningModel.Dot;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,23 +21,22 @@ public class TeacherSingleFinger extends BrailleSingleFinger {
     private int threadTimeCount = 0;
     private int check_i;
     private int check_j;
-    private CallBack callBackMethod;
 
-    TeacherSingleFinger(Context context, CallBack callBackMethmod) {
+    TeacherSingleFinger(Context context) {
         super(context);
-        init(callBackMethmod);
+//        init(callBackMethmod);
     }
-
-    public void init(CallBack callBackMethod){
-        check_i = 0;
-        check_j = 0;
-        this.callBackMethod = callBackMethod;
-    }
+//
+//    public void init(CallBack callBackMethod){
+//        check_i = 0;
+//        check_j = 0;
+//        this.callBackMethod = callBackMethod;
+//    }
 
     @Override
-    public FingerFunctionType oneFingerFunction(BrailleData data, FingerCoordinate fingerCoordinate){
-        super.oneFingerFunction(data, fingerCoordinate);
-        checkCoordinate(data);
+    public FingerFunctionType oneFingerFunction(Dot[][] brailleMatrix, FingerCoordinate fingerCoordinate){
+        super.oneFingerFunction(brailleMatrix, fingerCoordinate);
+        //checkCoordinate(data);
         return null;
     }
     public void checkCoordinate(BrailleData data){
