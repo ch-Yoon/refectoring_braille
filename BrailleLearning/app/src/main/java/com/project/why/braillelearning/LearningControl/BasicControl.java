@@ -46,10 +46,12 @@ public class BasicControl implements Control{
     protected ArrayList<BrailleData> brailleDataArrayList;
     protected DBManager dbManager;
     protected int pageNumber = 0 ;
+    protected Context context;
 
     BasicControl(Context context,Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
+        this.context = context;
         brailleDataArrayList = getBrailleDataArray(context, jsonFileName, databaseFileName, brailleLearningType);
-        dbManager = new DBManager(context, databaseFileName, brailleLearningType);
+        dbManager = new DBManager(context, databaseFileName);
         mediaSoundManager = new MediaSoundManager(context);
         oneFingerFunction = getSingleFingerFunction(context, brailleLearningType);
         multiFingerFunction = new MultiFinger(context);
@@ -137,6 +139,7 @@ public class BasicControl implements Control{
                 case MotionEvent.ACTION_UP: // 손가락 1개를 화면에서 떨어트렸을 때 발생되는 Event
                     multiTouch = false;
                     fingerCoordinate.initialize();
+                    oneFingerFunction.init();
                     break;
                 default:
                     if(multiTouch == false) {
@@ -173,6 +176,8 @@ public class BasicControl implements Control{
     public void oneFingerFunction() {
         if(data != null)
             oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
+        else
+            oneFingerFunction.oneFingerFunction(null, fingerCoordinate);
     }
 
     /**

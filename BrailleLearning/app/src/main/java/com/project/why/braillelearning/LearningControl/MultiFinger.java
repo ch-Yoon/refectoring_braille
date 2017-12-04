@@ -64,7 +64,14 @@ public class MultiFinger{
         if(mediaSoundManager.checkTTSPlaying() == true)
             type = FingerFunctionType.NONE;
 
-        mediaSoundManager.start(type);
+        if(type == FingerFunctionType.BACK)
+            mediaSoundManager.start(type);
+        else {
+            if(mediaSoundManager.getMenuInfoPlaying() == false)
+                mediaSoundManager.start(type);
+        }
+
+
 
         return type;
     }

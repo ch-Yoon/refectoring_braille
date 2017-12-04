@@ -15,37 +15,18 @@ import com.project.why.braillelearning.LearningModel.Dot;
  * 점자의 행, 열, 점자의 크기, 터치 영역을 설정함
  */
 public class DataConversionModule {
-    private int COL;
-    private int ROW;
     private float BigCircleRadiusRatio;
     private float MiniCircleRadiusRatio;
     private float touchAreaRidus;
 
     public DataConversionModule(){}
 
-    public DataConversionModule(Database databaseFileName, String brailleText){
+    public DataConversionModule(Database databaseFileName){
         initBrailleRatio(databaseFileName);
-        initMatrixInfo(brailleText);
     }
 
-    public DataConversionModule(BrailleLearningType brailleLearningType, String brailleText){
+    public DataConversionModule(BrailleLearningType brailleLearningType){
         initBrailleRatio(brailleLearningType);
-        initMatrixInfo(brailleText);
-    }
-
-    public DataConversionModule(BrailleLearningType brailleLearningType, Dot brailleMatrix[][]){
-        initBrailleRatio(brailleLearningType);
-        initMatrixInfo(brailleMatrix);
-    }
-
-    private void initMatrixInfo(String brailleText){
-        COL = 4; //4행
-        ROW = (brailleText.length() / 3) + ((brailleText.length() / 3) / 2);
-    }
-
-    private void initMatrixInfo(Dot brailleMatrix[][]){
-        COL = brailleMatrix.length; //4행
-        ROW = brailleMatrix[0].length;
     }
 
     private void initBrailleRatio(Database databaseFileName) {
@@ -103,10 +84,11 @@ public class DataConversionModule {
      * @return 변환된 음성 file string
      */
     public String getConversionRawId(Dot brailleMatrix[][], String rawId){
-        COL = brailleMatrix.length; //4행
-        ROW = brailleMatrix[0].length;
-        int dotCount = ROW/3;
-        switch(dotCount){
+        String tempLetterId = rawId;
+        int COL = brailleMatrix.length; //4행
+        int ROW = brailleMatrix[0].length;
+        int dotCount = getDotCount(brailleMatrix);
+        switch (dotCount) {
             case 1:
                 rawId += ",일";
                 break;
@@ -128,28 +110,76 @@ public class DataConversionModule {
             case 7:
                 rawId += ",칠";
                 break;
+            default:
+                break;
         }
 
-        for(int i=0 ; i<ROW ; i++){
-            for(int j=1 ; j<COL ; j++){
-                boolean target = brailleMatrix[j][i].getTarget();
-                if(target == true){
-                    int dotType = brailleMatrix[j][i].getDotType();
-                    rawId += ","+dotType;
+        if(0 < dotCount) {
+            for (int i = 0; i < ROW; i++) {
+                for (int j = 1; j < COL; j++) {
+                    boolean target = brailleMatrix[j][i].getTarget();
+                    if (target == true) {
+                        int dotType = brailleMatrix[j][i].getDotType();
+                        rawId += "," + dotType;
+                    }
+                }
+
+                if (i % 3 == 2) {
+                    if(rawId.length() != 0) {
+                        char dotType[] = {'1', '2', '3', '4', '5', '6'};
+                        char target = rawId.charAt(rawId.length() - 1);
+                        for (int k = 0; k < dotType.length; k++) {
+                            if (target == dotType[k]) {
+                                rawId += "점";
+                                break;
+                            }
+                        }
+                    }
                 }
             }
+        }
 
-            if(i % 3 == 2)
-                rawId += "점";
+
+        if(rawId.length() == 0)
+            rawId = "noinput";
+        else {
+            if((tempLetterId.length() == 0) && (0 < dotCount))
+                rawId = "noletter"+rawId;
         }
 
         return rawId;
     }
 
+    public int getDotCount(Dot[][] brailleMatrix){
+        int COL = brailleMatrix.length; //4행
+        int ROW = brailleMatrix[0].length;
+        int dotCount = 0;
+        boolean check = false;
+        for(int i=0 ; i<ROW ; i++){
+            for(int j=0 ; j<COL ; j++){
+                if(brailleMatrix[j][i].getTarget() == true)
+                    check = true;
+            }
+
+            if(i%3 == 2){
+                if(check == true) {
+                    dotCount++;
+                    check = false;
+                }
+            }
+        }
+
+        return dotCount;
+    }
+
+
+
     public String getConversionBrailleText(Dot[][] brailleMatrix){
+        int COL = brailleMatrix.length; //4행
         String brailleText = "";
+        int realRow = getRowLength(brailleMatrix);
         for(int i=0 ; i<COL ; i++){
-            for(int j=0 ; j<ROW ; j++){
+            for(int j=0 ; j<realRow ; j++){
                 Dot dot = brailleMatrix[i][j];
                 int dotType = dot.getDotType();
                 if(dotType != DotType.DEVISION_LINE.getNumber() && dotType != DotType.EXTERNAL_WALL.getNumber()){
@@ -164,12 +194,34 @@ public class DataConversionModule {
         return brailleText;
     }
 
+    public int getRowLength(Dot[][] brailleMatrix){
+        int col = brailleMatrix.length;
+        int row = brailleMatrix[0].length;
+        int targetRow = 0;
+        for(int i=0 ; i<row ; i++){
+            for(int j=0 ; j<col ; j++){
+                if(brailleMatrix[j][i].getTarget()){
+                    targetRow = i;
+                    break;
+                }
+            }
+        }
+
+        targetRow = ((targetRow/3)+1)*3;
+
+        return targetRow;
+    }
+
+
+
     /**
      * string 형식으로 저장되어 있는 점자 행렬 정보를 가공하는 함수
      * @param brailleText : 점자 행렬정보가 string으로 저장되어 있음
      * @return : 가공된 점자 행렬
      */
     public Dot[][] getConversionBrailleMatrix(String brailleText) { // 점자를 의미하는 행렬 셋팅
+        int COL = 4; //4행
+        int ROW = (brailleText.length() / 3) + ((brailleText.length() / 3) / 2);
         Dot brailleMatrix[][] = new Dot[COL][ROW];
 
         int index=0;
@@ -202,11 +254,12 @@ public class DataConversionModule {
 
                 brailleMatrix[i][j] = new Dot();
                 brailleMatrix[i][j].setTouchAreaRidus(touchAreaRidus);
-                brailleMatrix[i][j].setViewAreaRidus(getViewAreaRidus(target));
+                brailleMatrix[i][j].setBigCircleRidus(getViewAreaRidus(true));
+                brailleMatrix[i][j].setSmallCircleRidus(getViewAreaRidus(false));
                 brailleMatrix[i][j].setTarget(target);
                 brailleMatrix[i][j].setDotType(dotType);
                 brailleMatrix[i][j].setX(getCoordinate_X(j));
-                brailleMatrix[i][j].setY(getCoordinate_Y(i));
+                brailleMatrix[i][j].setY(getCoordinate_Y(COL, i));
             }
         }
 
@@ -215,11 +268,11 @@ public class DataConversionModule {
 
     /**
      * y좌표를 얻어오는 함수
-     * @param col : 현재 세로 축
+     * @param nowCol : 현재 세로 축
      * @return : 1 - (점자 원의 크기 * ((전체 열-1) - 현재 열) + 점자의 반지름) = 점자의 세로 좌표
      */
-    public float getCoordinate_Y(int col){
-        return Global.DisplayY * (1 - ((2 * BigCircleRadiusRatio * ((COL-1) - col)) + BigCircleRadiusRatio));
+    public float getCoordinate_Y(int COL, int nowCol){
+        return Global.DisplayY * (1 - ((2 * BigCircleRadiusRatio * ((COL-1) - nowCol)) + BigCircleRadiusRatio));
     }
 
     /**

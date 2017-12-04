@@ -10,6 +10,8 @@ package com.project.why.braillelearning.LearningModel;
  */
 public class Dot {
     private float touchAreaRidus;
+    private float bigCircleRidus;
+    private float smallCircleRidus;
     private float viewAreaRidus;
     private float x;
     private float y;
@@ -35,8 +37,16 @@ public class Dot {
         this.touchAreaRidus = touchAreaRidus;
     }
 
-    public void setViewAreaRidus(float viewAreaRidus) {
+    private void setViewAreaRidus(float viewAreaRidus) {
         this.viewAreaRidus = viewAreaRidus;
+    }
+
+    public void setBigCircleRidus(float ridus){
+        this.bigCircleRidus = ridus;
+    }
+
+    public void setSmallCircleRidus(float ridus){
+        this.smallCircleRidus = ridus;
     }
 
     public void setX(float x) {
@@ -49,6 +59,17 @@ public class Dot {
 
     public void setTarget(boolean target) {
         this.target = target;
+        if(target == true)
+            setViewAreaRidus(bigCircleRidus);
+        else
+            setViewAreaRidus(smallCircleRidus);
+    }
+
+    public void changeTarget(){
+        if(target == true)
+            setTarget(false);
+        else
+            setTarget(true);
     }
 
     public void setDotType(int dotType){

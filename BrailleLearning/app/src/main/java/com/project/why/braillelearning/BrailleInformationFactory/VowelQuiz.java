@@ -13,43 +13,19 @@ import com.project.why.braillelearning.EnumConstant.Json;
 /**
  * 모음 읽기 퀴즈 점자 정보 class
  */
-public class VowelQuiz extends LearningInformation implements GettingInformation {
-    VowelQuiz(){
-        setJsonFileName(Json.VOWEL);
-        setBrailleLearningType(BrailleLearningType.QUIZ);
-        setDatabaseTableName(Database.BASIC);
-    }
-
+public class VowelQuiz implements GettingInformation {
     @Override
     public Json getJsonFileName() {
-        return jsonFileName;
+        return Json.VOWEL;
     }
 
     @Override
     public BrailleLearningType getBrailleLearningType() {
-        return brailleLearningType;
+        return BrailleLearningType.QUIZ;
     }
 
     @Override
     public Database getDatabaseTableName() {
-        return databaseTableName;
-    }
-
-    @Override
-    public void setJsonFileName(Json jsonFileName){
-        if(jsonFileName != null)
-            this.jsonFileName = jsonFileName;
-        else
-            this.jsonFileName = null;
-    }
-
-    @Override
-    public void setBrailleLearningType(BrailleLearningType brailleLearningType) {
-        this.brailleLearningType = brailleLearningType;
-    }
-
-    @Override
-    public void setDatabaseTableName(Database databaseTableName) {
-        this.databaseTableName = databaseTableName;
+        return Database.BASIC;
     }
 }

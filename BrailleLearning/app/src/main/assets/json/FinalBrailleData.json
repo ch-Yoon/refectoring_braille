@@ -3,76 +3,76 @@
     "LetterName": "ㄱ",
     "BrailleMatrix": "100000",
     "AssistanceName": "기역",
-    "RawId": "initial_giyeok"
+    "RawId": "final_giyeok"
   }, {
     "LetterName": "ㄴ",
     "BrailleMatrix": "001100",
     "AssistanceName": "니은",
-    "RawId": "initial_giyeok"
+    "RawId": "final_nieun"
   }, {
     "LetterName": "ㄷ",
     "BrailleMatrix": "000110",
     "AssistanceName": "디귿",
-    "RawId": "initial_giyeok"
+    "RawId": "final_digeud"
   }, {
     "LetterName": "ㄹ",
     "BrailleMatrix": "001000",
     "AssistanceName": "리을",
-    "RawId": "initial_giyeok"
+    "RawId": "final_rieul"
   }, {
     "LetterName": "ㅁ",
     "BrailleMatrix": "001001",
     "AssistanceName": "미음",
-    "RawId": "initial_giyeok"
+    "RawId": "final_mieum"
   }, {
     "LetterName": "ㅂ",
     "BrailleMatrix": "101000",
     "AssistanceName": "비읍",
-    "RawId": "initial_giyeok"
+    "RawId": "final_bieub"
   }, {
     "LetterName": "ㅅ",
     "BrailleMatrix": "000010",
     "AssistanceName": "시옷",
-    "RawId": "initial_giyeok"
+    "RawId": "final_siot"
   }, {
     "LetterName": "ㅇ",
     "BrailleMatrix": "001111",
     "AssistanceName": "이응",
-    "RawId": "initial_giyeok"
+    "RawId": "final_eieung"
   }, {
     "LetterName": "ㅈ",
     "BrailleMatrix": "100010",
     "AssistanceName": "지읒",
-    "RawId": "initial_giyeok"
+    "RawId": "final_zieud"
   }, {
     "LetterName": "ㅊ",
     "BrailleMatrix": "001010",
     "AssistanceName": "치읓",
-    "RawId": "initial_giyeok"
+    "RawId": "final_chieud"
   }, {
     "LetterName": "ㅋ",
     "BrailleMatrix": "001110",
     "AssistanceName": "키읔",
-    "RawId": "initial_giyeok"
+    "RawId": "final_kiyek"
   }, {
     "LetterName": "ㅌ",
     "BrailleMatrix": "001011",
     "AssistanceName": "티읕",
-    "RawId": "initial_giyeok"
+    "RawId": "final_tieud"
   }, {
     "LetterName": "ㅍ",
     "BrailleMatrix": "001101",
     "AssistanceName": "피읖",
-    "RawId": "initial_giyeok"
+    "RawId": "final_pieub"
   }, {
     "LetterName": "ㅎ",
     "BrailleMatrix": "000111",
     "AssistanceName": "히읗",
-    "RawId": "initial_giyeok"
+    "RawId": "final_hieut"
   }, {
     "LetterName": "ㅆ",
     "BrailleMatrix": "010010",
     "AssistanceName": "쌍시옷",
-    "RawId": "initial_giyeok"
+    "RawId": "final_sangsiot"
   }]
 }

@@ -34,7 +34,6 @@ import java.util.LinkedList;
 public class MenuActivity extends Activity {
     private BrailleLearningType brailleLearningType = BrailleLearningType.MENU;
     private int ONE_FINGER = FingerFunctionType.ONE_FINGER.getNumber(); // 손가락 1개
-    private int TWO_FINGER = FingerFunctionType.TWO_FINGER.getNumber(); // 손가락 2개
     private int THREE_FINGER = FingerFunctionType.THREE_FINGER.getNumber(); // 손가락 3개
     private boolean multiFinger = false; // 멀티터치 체크 변수
     private boolean functionLock = false;
@@ -46,7 +45,6 @@ public class MenuActivity extends Activity {
     private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
     private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
     private MediaSoundManager mediaSoundManager;
-    private SingleFingerFunction singleFingerFunction;
     private MultiFinger multiFingerFunction;
     private FingerCoordinate fingerCoordinate;
     private FingerFunctionType type = FingerFunctionType.NONE;
@@ -100,18 +98,9 @@ public class MenuActivity extends Activity {
         menuAddressDeque = new LinkedList<>();
         menuAddressDeque.addLast(PageNumber);
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-        singleFingerFunction = getSingleFingerFunction();
         multiFingerFunction = new MultiFinger(this);
         fingerCoordinate = new FingerCoordinate(THREE_FINGER);
-    }
-
-    /**
-     * 손가락 1개에 대한 event 모듈을 setting하는 함수
-     * @return : 손가락 1개 event 모듈 리턴
-     */
-    public SingleFingerFunction getSingleFingerFunction(){
-        SingleFIngerFactory singleFIngerFactory = new SingleFIngerFactory(this, brailleLearningType);
-        return singleFIngerFactory.getSingleFingerMoudle();
+        setFullScreen();
     }
 
     public void initImageView(){ // 이미지 size setting
@@ -172,9 +161,10 @@ public class MenuActivity extends Activity {
      */
     public void CheckMenuType(){ // 화면 전환을 위한 CustomTouchEvent 함수
         if(functionLock == false) {
-            if (multiFinger == false) // 싱글터치
-                type = singleFingerFunction.oneFingerFunction(null, fingerCoordinate);
-            else  // 멀티터치
+            if (multiFinger == false) {// 싱글터치
+                type = FingerFunctionType.ENTER;
+                mediaSoundManager.start(type);
+            } else  // 멀티터치
                 type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
 
             switch (type) {

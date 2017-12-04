@@ -17,6 +17,7 @@ import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.EnumConstant.Menu;
 import com.project.why.braillelearning.LearningView.BrailleLearningViewManager;
 import com.project.why.braillelearning.LearningView.ViewObservers;
+import com.project.why.braillelearning.Menu.MenuInformationActivity;
 import com.project.why.braillelearning.R;
 
 
@@ -25,6 +26,7 @@ import com.project.why.braillelearning.R;
  * 점자 정보를 담고 있는 Object의 값들로 화면에 점자를 그리는 View와 점자 학습 Control을 결정함
  */
 public class BrailleLearningActivity extends Activity implements ControlListener {
+    public static final int MENU_INFO = 0;
     private GettingInformation object;
     private Control learningModule;
     private ViewObservers learningView;
@@ -41,11 +43,26 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         jsonFileName = object.getJsonFileName();
         brailleLearningType =  object.getBrailleLearningType();
         databaseTableName =  object.getDatabaseTableName();
-
-        initBrailleControl(); // 학습 모듈
-        initBrailleView(); // 학습 화면
+        startMenuInfo();
     }
 
+    private void startMenuInfo(){
+        Intent i = new Intent(this, MenuInformationActivity.class);
+        i.putExtra("BRAILLELEARNINGTYPE",brailleLearningType);
+        startActivityForResult(i, MENU_INFO);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MENU_INFO) {
+            if (resultCode == RESULT_OK) {
+                initBrailleControl(); // 학습 모듈
+                initBrailleView(); // 학습 화면
+            } else if(resultCode == RESULT_CANCELED){
+                exit();
+            }
+        }
+    }
     /**
      * 화면이 일시정지 될 때, control과 view를 일시정지하는 함수
      */

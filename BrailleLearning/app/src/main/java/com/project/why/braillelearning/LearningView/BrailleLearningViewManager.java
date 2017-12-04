@@ -29,7 +29,7 @@ public class BrailleLearningViewManager{
             case QUIZ:
                 return new BasicView(context);
             default:
-                return null;
+                return new BasicView(context);
         }
     }
 }

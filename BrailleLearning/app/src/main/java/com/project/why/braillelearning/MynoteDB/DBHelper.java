@@ -62,8 +62,20 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
             addHashMap(getResult()); // 해쉬맵 세팅
 
             if (mapDB.containsKey(brailleMatrix) == false) {
-                db.execSQL("INSERT INTO " + databaseName.getName() + " VALUES(null, '" + letterName + "' , '" + brailleMatrix + "' , '" + assistanceName + "', '" + rawId + "');");// DB에 입력한 값으로 행 추가
-                mediaSoundManager.start(R.raw.save);
+                String tableName = databaseName.getName();
+                db.execSQL("INSERT INTO " + tableName + " VALUES(null, '" + letterName + "' , '" + brailleMatrix + "' , '" + assistanceName + "', '" + rawId + "');");// DB에 입력한 값으로 행 추가
+
+                switch (tableName){
+                    case "BASIC":
+                        mediaSoundManager.start(R.raw.basicsave);
+                        break;
+                    case "MASTER":
+                        mediaSoundManager.start(R.raw.mastersave);
+                        break;
+                    case "COMMUNICATION":
+                        mediaSoundManager.start(R.raw.communicationsave);
+                        break;
+                }
             }
 
             db.close();

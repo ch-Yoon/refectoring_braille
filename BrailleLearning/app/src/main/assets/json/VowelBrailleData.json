@@ -3,106 +3,106 @@
     "LetterName": "ㅏ",
     "BrailleMatrix": "101001",
     "AssistanceName": "아",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_a"
   }, {
     "LetterName": "ㅐ",
     "BrailleMatrix": "101110",
     "AssistanceName": "애",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_ae"
   }, {
     "LetterName": "ㅑ",
     "BrailleMatrix": "010110",
     "AssistanceName": "야",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_ya"
   }, {
     "LetterName": "ㅓ",
     "BrailleMatrix": "011010",
     "AssistanceName": "어",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_eo"
   }, {
     "LetterName": "ㅔ",
     "BrailleMatrix": "110110",
     "AssistanceName": "에",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_e"
   }, {
     "LetterName": "ㅕ",
     "BrailleMatrix": "100101",
     "AssistanceName": "여",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_yeo"
   }, {
     "LetterName": "ㅖ",
     "BrailleMatrix": "010010",
     "AssistanceName": "예",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_ye"
   }, {
     "LetterName": "ㅗ",
     "BrailleMatrix": "100011",
     "AssistanceName": "오",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_o"
   }, {
     "LetterName": "ㅘ",
     "BrailleMatrix": "101011",
     "AssistanceName": "와",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_wa"
   }, {
     "LetterName": "ㅚ",
     "BrailleMatrix": "110111",
     "AssistanceName": "외",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_oi"
   }, {
     "LetterName": "ㅛ",
     "BrailleMatrix": "010011",
     "AssistanceName": "요",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_yo"
   }, {
     "LetterName": "ㅜ",
     "BrailleMatrix": "110010",
     "AssistanceName": "우",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_woo"
   }, {
     "LetterName": "ㅝ",
     "BrailleMatrix": "111010",
     "AssistanceName": "워",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_wo"
   }, {
     "LetterName": "ㅠ",
     "BrailleMatrix": "110001",
     "AssistanceName": "유",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_yoo"
   }, {
     "LetterName": "ㅡ",
     "BrailleMatrix": "011001",
     "AssistanceName": "으",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_eu"
   }, {
     "LetterName": "ㅣ",
     "BrailleMatrix": "100110",
     "AssistanceName": "이",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_i"
   }, {
     "LetterName": "ㅢ",
     "BrailleMatrix": "011101",
     "AssistanceName": "의",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_eui"
   }, {
     "LetterName": "ㅒ",
     "BrailleMatrix": "011001111010",
     "AssistanceName": "얘",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_yai"
   }, {
     "LetterName": "ㅙ",
     "BrailleMatrix": "101010111110",
     "AssistanceName": "왜",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_oai"
   }, {
     "LetterName": "ㅞ",
     "BrailleMatrix": "111010111010",
     "AssistanceName": "웨",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_we"
   }, {
     "LetterName": "ㅟ",
     "BrailleMatrix": "111000111010",
     "AssistanceName": "위",
-    "RawId": "initial_giyeok"
+    "RawId": "vowel_wi"
   }]
 }

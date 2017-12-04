@@ -26,23 +26,10 @@ public class SingleFIngerFactory {
      */
     public SingleFingerFunction getSingleFingerMoudle() {
         switch (brailleLearningType) {
-            case MENU:
-                return new MenuSingleFinger(context);
-            case BASIC:
-                return new BrailleSingleFinger(context);
-            case MASTER:
-                return new BrailleSingleFinger(context);
-            case TRANSLATION:
-                return new BrailleSingleFinger(context);
-            case MYNOTE:
-                return new BrailleSingleFinger(context);
-            case QUIZ:
-                return new BrailleSingleFinger(context);
             case TEACHER:
-                return null;
-                //return new TeacherSingleFinger(context, callBackMethod);
+                return new TeacherSingleFinger(context);
             default:
-                return null;
+                return new BasicSingleFinger(context);
         }
     }
 }

@@ -1,11 +1,11 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Vibrate;
-import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.Dot;
 
 import java.util.Timer;
@@ -15,7 +15,7 @@ import java.util.TimerTask;
  * Created by Yeo on 2017-11-02.
  */
 
-public class TeacherSingleFinger extends BrailleSingleFinger {
+public class TeacherSingleFinger extends BasicSingleFinger {
     private TimerTask mTask;
     private Timer mTimer;
     private int threadTimeCount = 0;
@@ -24,49 +24,55 @@ public class TeacherSingleFinger extends BrailleSingleFinger {
 
     TeacherSingleFinger(Context context) {
         super(context);
-//        init(callBackMethmod);
+        init();
     }
-//
-//    public void init(CallBack callBackMethod){
-//        check_i = 0;
-//        check_j = 0;
-//        this.callBackMethod = callBackMethod;
-//    }
 
     @Override
-    public FingerFunctionType oneFingerFunction(Dot[][] brailleMatrix, FingerCoordinate fingerCoordinate){
-        super.oneFingerFunction(brailleMatrix, fingerCoordinate);
-        //checkCoordinate(data);
-        return null;
-    }
-    public void checkCoordinate(BrailleData data){
-        if(check_i == super.previous_i && check_j == previous_j) {
-            if (super.dotType != DotType.EXTERNAL_WALL.getNumber() || super.dotType != DotType.DEVISION_LINE.getNumber()){
-//                threadMaking();
-//                if(threadTimeCount > 2) {
-//                    data.resetBrailleMatrix(previous_i, previous_j);
-//                    callBackMethod.objectCallBackMethod(data);
-//                    if(data.getBrailleMatrix()[previous_i][previous_j].getTarget()) {
-//                        mediaSoundManager.start(dotType, true); //남성 음성으로 번호 출력
-//                        vibrator.vibrate(Vibrate.STRONG.getStrength()); // 강한 진동 발생
-//                    }
-//                    else {
-//                        mediaSoundManager.start(dotType, false); // 여성음성으로 번호 출력
-//                        vibrator.vibrate(Vibrate.WEAKLY.getStrength()); // 약한 진동 발생
-//                    }
-//                    threadStop();
-//                }
-            }else
-                threadStop();
-        } else if(mTask != null){
-            threadStop();
-        }
-        check_i = previous_i;
-        check_j = previous_j;
-        //부모의 previous i,j를 확인
+    public void init(){
+        super.init();
+        check_i = 0;
+        check_j = 0;
+        threadStop();
     }
 
-    private void threadMaking(){
+    @Override
+    public Dot[][] oneFingerFunction(Dot[][] brailleMatrix, FingerCoordinate fingerCoordinate){
+        super.oneFingerFunction(brailleMatrix, fingerCoordinate);
+        return checkCoordinate(brailleMatrix);
+    }
+
+    private Dot[][] checkCoordinate(Dot[][] brailleMatrix){
+        threadMaking();
+        int col = super.previous_i;
+        int row = super.previous_j;
+        if(check_i == col && check_j == row) {
+            int dotType = brailleMatrix[col][row].getDotType();
+            if (dotType != DotType.EXTERNAL_WALL.getNumber() && dotType != DotType.DEVISION_LINE.getNumber()) {
+                if (threadTimeCount > 1) {
+                    brailleMatrix[col][row].changeTarget();
+                    boolean target = brailleMatrix[col][row].getTarget();
+                    mediaSoundManager.start(dotType, target);
+                    startVibrator(target);
+                    init();
+                    return brailleMatrix;
+                }
+            }
+        } else
+            threadStop();
+
+        check_i = col;
+        check_j = row;
+        return null;
+    }
+
+    private void startVibrator(boolean target){
+        if (target)
+            vibrator.vibrate(Vibrate.STRONG.getStrength()); // 강한 진동 발생
+        else
+            vibrator.vibrate(Vibrate.WEAKLY.getStrength()); // 약한 진동 발생
+    }
+
+    private synchronized void threadMaking(){
         if(mTask == null) {
             mTask = new TimerTask() {
                 @Override
@@ -78,9 +84,17 @@ public class TeacherSingleFinger extends BrailleSingleFinger {
             mTimer.schedule(mTask, 1000, 1000); // 1초마다 생성
         }
     }
+
     private void threadStop(){
-        mTask.cancel();
-        mTask = null;
+        if(mTask != null) {
+            mTask.cancel();
+            mTask = null;
+        }
+
+        if(mTimer != null){
+            mTimer.cancel();
+            mTimer = null;
+        }
         threadTimeCount = 0;
     }
 }

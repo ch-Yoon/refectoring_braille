@@ -109,6 +109,8 @@ public class BasicView extends View implements ViewObservers {
 
     @Override
     public void onPause() {
+        if(textName != null)
+            textName.setText("");
         letterName = "";
         brailleMatrix = null;
         textName = null;

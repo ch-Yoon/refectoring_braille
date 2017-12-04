@@ -246,12 +246,12 @@ public class BrailleTranslationModule {
             }
 
             Dot realTranslationmatrix[][] = new Dot[MAX_COL][progressRowIndex]; //번역된 칸 수 만큼 배열 생성
-            DataConversionModule conversionModule = new DataConversionModule(BrailleLearningType.TRANSLATION, realTranslationmatrix); //점자 data를 가공하는 모듈 생성
+            DataConversionModule conversionModule = new DataConversionModule(BrailleLearningType.TRANSLATION); //점자 data를 가공하는 모듈 생성
             for(int i=0 ; i<MAX_COL ; i++){
                 for(int j=0 ; j<progressRowIndex ; j++) {
                     realTranslationmatrix[i][j] = new Dot(tempMatrix[i][j]); // 임시 행렬을 깊은복사로 가져옴
                     realTranslationmatrix[i][j].setX(conversionModule.getCoordinate_X(j)); // x좌표를 다시 setting
-                    realTranslationmatrix[i][j].setY(conversionModule.getCoordinate_Y(i)); // y좌표를 다시 setting
+                    realTranslationmatrix[i][j].setY(conversionModule.getCoordinate_Y(MAX_COL, i)); // y좌표를 다시 setting
 
                     if ((0 < i) && (j < progressRowIndex - 1) && (realTranslationmatrix[i][j].getDotType() == 7)) // 내부 구분선 지정
                         realTranslationmatrix[i][j].setDotType(8);
@@ -260,7 +260,6 @@ public class BrailleTranslationModule {
 
             String rawId = conversionModule.getConversionRawId(realTranslationmatrix, letterName);
             String brailleText = conversionModule.getConversionBrailleText(realTranslationmatrix);
-            Log.d("brailleText",brailleText);
             BrailleData translationBrailleData = new BrailleData(letterName, brailleText, realTranslationmatrix, null, rawId); // 가공된 brailleData생성
 
 

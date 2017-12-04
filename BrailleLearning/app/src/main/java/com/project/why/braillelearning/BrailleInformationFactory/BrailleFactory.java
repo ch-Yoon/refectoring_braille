@@ -11,10 +11,10 @@ import com.project.why.braillelearning.EnumConstant.Menu;
  * 점자 정보 factory class
  *
  * 메뉴 구성
- * tutorial : x
+ * tutorial : 하위메뉴 없음
  * basicpractice : initial, vowel, final, number, alphabet, sentence, abbreviation
  * masterpractce : letter, word
- * translation : x
+ * translation : 하위메뉴 없음
  * quiz : initial_quiz, vowel_quiz, final_quiz, number_quiz, alphabet_quiz, sentence_quiz, abbreviation_quiz, letter_quiz, word_quiz
  * mynote : basic_note, master_note, communication_note
  * communication : teacher_mode, student_mode

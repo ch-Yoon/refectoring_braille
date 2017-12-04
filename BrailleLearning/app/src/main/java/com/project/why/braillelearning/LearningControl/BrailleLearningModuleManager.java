@@ -28,7 +28,7 @@ public class BrailleLearningModuleManager {
     public Control getLearningModule(){
         switch(brailleLearningType){
             case TUTORIAL:
-                return null;
+                return new BasicControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
             case BASIC:
                 return new BasicControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
             case MASTER:
@@ -40,9 +40,9 @@ public class BrailleLearningModuleManager {
             case QUIZ:
                 return new QuizControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
             case TEACHER:
-                return null;
+                return new TeacherControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
             case STUDENT:
-                return null;
+                return new StudentControl(context, jsonFileName, databaseTableName, brailleLearningType, controlListener);
             default:
                 return null;
         }

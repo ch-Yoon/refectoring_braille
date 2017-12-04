@@ -12,43 +12,19 @@ import com.project.why.braillelearning.EnumConstant.Json;
 /**
  * 단어 연습 점자 정보 class
  */
-public class Word extends LearningInformation implements GettingInformation {
-    Word(){
-        setJsonFileName(Json.WORD);
-        setBrailleLearningType(BrailleLearningType.MASTER);
-        setDatabaseTableName(Database.MASTER);
-    }
-
+public class Word implements GettingInformation {
     @Override
     public Json getJsonFileName() {
-        return jsonFileName;
+        return Json.WORD;
     }
 
     @Override
     public BrailleLearningType getBrailleLearningType() {
-        return brailleLearningType;
+        return BrailleLearningType.MASTER;
     }
 
     @Override
     public Database getDatabaseTableName() {
-        return databaseTableName;
-    }
-
-    @Override
-    public void setJsonFileName(Json jsonFileName){
-        if(jsonFileName != null)
-            this.jsonFileName = jsonFileName;
-        else
-            this.jsonFileName = null;
-    }
-
-    @Override
-    public void setBrailleLearningType(BrailleLearningType brailleLearningType) {
-        this.brailleLearningType = brailleLearningType;
-    }
-
-    @Override
-    public void setDatabaseTableName(Database databaseTableName) {
-        this.databaseTableName = databaseTableName;
+        return Database.MASTER;
     }
 }

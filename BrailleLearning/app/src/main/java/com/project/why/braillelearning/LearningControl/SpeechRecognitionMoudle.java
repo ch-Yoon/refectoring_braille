@@ -21,9 +21,9 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
     private SpeechRecognitionListener listener;
     private SpeechRecognizerClient client;
     private MediaSoundManager mediaSoundManager;
-    private CheckMediaTask checkMediaTask;
+    private boolean taskCheck = false;
 
-    SpeechRecognitionMoudle(Context context, SpeechRecognitionListener listener){
+    public SpeechRecognitionMoudle(Context context, SpeechRecognitionListener listener){
         SpeechRecognizerManager.getInstance().initializeLibrary(context); // SDK 초기화
         this.listener = listener;
         mediaSoundManager = new MediaSoundManager(context);
@@ -31,10 +31,31 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
 
     public void start(){
         try {
-            mediaSoundManager.start(R.raw.speechrecognition_start);
-            checkMediaTask = new CheckMediaTask();
-            checkMediaTask.execute();
+            if(client == null){
+                if(taskCheck == false){
+                    mediaSoundManager.start(R.raw.speechrecognition_start);
+                    CheckMediaTask checkMediaTask = new CheckMediaTask();
+                    checkMediaTask.execute();
+                }
+            }
         } catch (Exception e){
+            Log.d("test","error");
+            mediaSoundManager.start("speechrecognition_fail");
+        }
+    }
+
+    public void start(String text){
+        try {
+            if(client == null){
+                if(taskCheck == false){
+                    text += ",confirm";
+                    mediaSoundManager.start(text);
+                    CheckMediaTask checkMediaTask = new CheckMediaTask();
+                    checkMediaTask.execute();
+                }
+            }
+        } catch (Exception e){
+            Log.d("test","error");
             mediaSoundManager.start("speechrecognition_fail");
         }
     }
@@ -65,6 +86,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
 
     @Override
     public void onError(int errorCode, String errorMsg) {
+        client = null;
         mediaSoundManager.start("speechrecognition_fail");
         listener.speechRecogntionResult(null);
     }
@@ -93,6 +115,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
     }
 
     private class CheckMediaTask extends AsyncTask<Void, Void, Boolean> {
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -100,12 +123,13 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            final int MAX_COUNT = 100; // 총 5초
+            final int MAX_COUNT = 200; // 최대 10초
             int count = 0;
+
 
             while(true){
                 if(count <= MAX_COUNT) {
-                    if(mediaSoundManager.getMediaQueueSize() == 0){
+                    if((mediaSoundManager.getMediaQueueSize() == 0) && (mediaSoundManager.checkTTSPlaying() == false)){
                         if(mediaSoundManager.getMediaPlaying() == false)
                             return true;
                     } else {
@@ -125,11 +149,12 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            if(result == true)
+            if(result == true) {
+                Log.d("test","startRecogntion");
                 startSpeechRecognition();
-            else
+            } else
                 onError(0,"SpeechRecognition error");
-            Log.d("asyncTask",result+"");
+            taskCheck = false;
         }
     }
 }

@@ -13,43 +13,19 @@ import com.project.why.braillelearning.EnumConstant.Json;
 /**
  * 선생님모드 정보 class
  */
-public class Teacher extends LearningInformation implements GettingInformation {
-    Teacher(){
-        setJsonFileName(Json.TEACHER);
-        setBrailleLearningType(BrailleLearningType.TEACHER);
-        setDatabaseTableName(Database.COMMUNICATION);
-    }
-
+public class Teacher implements GettingInformation {
     @Override
     public Json getJsonFileName() {
-        return jsonFileName;
+        return Json.TEACHER;
     }
 
     @Override
     public BrailleLearningType getBrailleLearningType() {
-        return brailleLearningType;
+        return BrailleLearningType.TEACHER;
     }
 
     @Override
     public Database getDatabaseTableName() {
-        return databaseTableName;
-    }
-
-    @Override
-    public void setJsonFileName(Json jsonFileName){
-        if(jsonFileName != null)
-            this.jsonFileName = jsonFileName;
-        else
-            this.jsonFileName = null;
-    }
-
-    @Override
-    public void setBrailleLearningType(BrailleLearningType brailleLearningType) {
-        this.brailleLearningType = brailleLearningType;
-    }
-
-    @Override
-    public void setDatabaseTableName(Database databaseTableName) {
-        this.databaseTableName = databaseTableName;
+        return Database.COMMUNICATION;
     }
 }

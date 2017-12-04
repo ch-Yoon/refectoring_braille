@@ -46,7 +46,7 @@ public class BrailleDataManager {
             case MYNOTE:
                 return SingletonDB.getInstance(context, databaseFileName);
             case TEACHER:
-                return null;
+                return new JsonBrailleData(context, jsonFileName, brailleLearningType);
             case STUDENT:
                 return null;
             default:

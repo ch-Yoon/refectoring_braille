@@ -8,6 +8,8 @@ import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.Module.BrailleTranslationModule;
+import com.project.why.braillelearning.R;
+
 import java.util.ArrayList;
 
 /**
@@ -20,6 +22,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
 
     TranslationControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
+        mediaSoundManager.start(R.raw.translation_guide);
         brailleTranslationModule = new BrailleTranslationModule(context);
         speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
     }
@@ -36,7 +39,10 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
                 speechRecognitionMoudle.start();
                 break;
             case MYNOTE:
-                dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+                if(data != null)
+                    dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+                else
+                    mediaSoundManager.start(R.raw.impossble_save);
                 break;
             default:
                 break;
@@ -49,7 +55,8 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
      */
     @Override
     public void speechRecogntionResult(ArrayList<String> text) {
-        startBrailleTranslation(text.get(0));
+        if(text != null)
+            startBrailleTranslation(text.get(0));
     }
 
     /**
@@ -61,6 +68,8 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
         BrailleData translationBrailleData = brailleTranslationModule.translation(letterName);
         if(translationBrailleData != null) {
             brailleDataArrayList.add(translationBrailleData);
+            if(pageNumber < brailleDataArrayList.size()-1)
+                pageNumber = brailleDataArrayList.size() - 1;
             nodifyObservers();
         }
         else

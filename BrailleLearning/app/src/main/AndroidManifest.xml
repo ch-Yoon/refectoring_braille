@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.project.why.braillelearning">
 
-    <uses-permission android:name = "android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -27,12 +27,16 @@
         <activity
             android:name=".Menu.MenuActivity"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".LearningControl.BrailleLearningActivity"
-            android:screenOrientation="sensorLandscape"></activity>
+        <activity
+            android:name=".LearningControl.BrailleLearningActivity"
+            android:screenOrientation="sensorLandscape" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
+
+        <activity android:name=".Menu.MenuInformationActivity"
+            android:screenOrientation="sensorLandscape" />
     </application>
 
 </manifest>

@@ -32,6 +32,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     private Queue<Integer> tempQueue = new LinkedList<>();
     private int shieldId; // 특정 음성들이 종료되지 않도록 방어하는 변수
     private boolean mediaPlaying = false;
+    private boolean menuInfoPlaying = false;
 
     public static MediaPlayerSingleton getInstance(Context context) {
         ourInstance.setContext(context);
@@ -100,11 +101,11 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
      * queue에 저장되어 있는 음성들을 순차적으로 출력함
      */
     private void startMediaPlayer(){
-        mediaPlaying = true;
         if(queue.peek() != null){
-            Log.d("MediaPlayer","queue size : "+queue.size());
+            mediaPlaying = true;
             int id = queue.poll();
             shieldId = id; // 음성출력 방어변수
+            checkMenuInfoMedia(id);
             mediaPlayer = MediaPlayer.create(context, id);
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -115,8 +116,18 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
                     checkMediaPlayer();
                 }
             });
-        } else
+        } else {
             mediaPlaying = false;
+        }
+    }
+
+    private void checkMenuInfoMedia(int id){
+        int menuInfo_Id[] = new int[]{R.raw.tutorial_info, R.raw.basic_info, R.raw.master_info, R.raw.translation_info,
+                R.raw.quiz_info, R.raw.mynote_info, R.raw.teacher_mode, R.raw.student_mode};
+        for(int i=0; i<menuInfo_Id.length ; i++){
+            if(id == menuInfo_Id[i])
+                menuInfoPlaying = true;
+        }
     }
 
     public MediaPlayer getMediaPlayer(){
@@ -158,6 +169,8 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
                 mediaPlayer = null;
             }
         }
+
+        menuInfoPlaying = false;
     }
 
     /**
@@ -186,6 +199,10 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
 
     }
 
+    public boolean getMenuInfoPlaying(){
+        return menuInfoPlaying;
+    }
+
     @Override
     public void onError(int code, String message) {
         Log.d("tts","ttserror");
@@ -195,6 +212,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     public int getMediaQueueSize(){
         return queue.size();
     }
+
     public boolean getMediaPlaying(){
         return mediaPlaying;
     }

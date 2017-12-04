@@ -18,12 +18,13 @@ import com.project.why.braillelearning.Module.DataConversionModule;
 public class BrailleData {
     private String letterName = ""; // 점자 이름
     private Dot brailleMatrix[][]; // 점자 행렬
-    private String assistanceLetterName = ""; // 퀴즈메뉴를 위한 점자 보조 이름.
+    private String assistanceLetterName = "";
     private String rawId = ""; // 점자 음성 파일
     private String strBrailleMatrix = "";
+    private DataConversionModule conversionModule;
 
     public BrailleData(String letterName, String brailleText, String assistanceLetterName, String rawId, Database databaseFileName){
-        DataConversionModule conversionModule = new DataConversionModule(databaseFileName, brailleText); // 학습에 사용 될 수 있도록 점자 data를 가공하는 class
+        conversionModule = new DataConversionModule(databaseFileName); // 학습에 사용 될 수 있도록 점자 data를 가공하는 class
         this.letterName = letterName;
         this.strBrailleMatrix = brailleText;
         this.brailleMatrix = conversionModule.getConversionBrailleMatrix(brailleText);
@@ -32,7 +33,7 @@ public class BrailleData {
     }
 
     public BrailleData(String letterName, String brailleText, String assistanceLetterName, String rawId, BrailleLearningType brailleLearningType){
-        DataConversionModule conversionModule = new DataConversionModule(brailleLearningType, brailleText); // 학습에 사용 될 수 있도록 점자 data를 가공하는 class
+        conversionModule = new DataConversionModule(brailleLearningType); // 학습에 사용 될 수 있도록 점자 data를 가공하는 class
         this.letterName = letterName;
         this.strBrailleMatrix = brailleText;
         this.brailleMatrix = conversionModule.getConversionBrailleMatrix(brailleText);
@@ -46,6 +47,28 @@ public class BrailleData {
         this.brailleMatrix = brailleMatrix;
         this.assistanceLetterName = assistanceLetterName;
         this.rawId = rawId;
+    }
+
+    public BrailleData(String letterName, String brailleText, String rawId, BrailleLearningType brailleLearningType){
+        conversionModule = new DataConversionModule(brailleLearningType); // 학습에 사용 될 수 있도록 점자 data를 가공하는 class
+        this.letterName = letterName;
+        this.strBrailleMatrix = brailleText;
+        this.brailleMatrix = conversionModule.getConversionBrailleMatrix(brailleText);
+        this.assistanceLetterName = "";
+        this.rawId = rawId;
+    }
+
+    public void setLetterName(String letterName){
+        this.letterName = letterName;
+    }
+
+    public void setBrailleMatrix(Dot brailleMatrix[][]){
+        this.brailleMatrix = brailleMatrix;
+    }
+
+    public void refreshData(){
+        this.rawId = conversionModule.getConversionRawId(brailleMatrix, letterName);
+        this.strBrailleMatrix = conversionModule.getConversionBrailleText(brailleMatrix);
     }
 
     public String getLetterName(){

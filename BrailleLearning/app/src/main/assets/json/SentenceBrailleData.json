@@ -3,86 +3,86 @@
     "LetterName": "\"",
     "BrailleMatrix": "001011",
     "AssistanceName": "큰따옴표 열기",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_sang_open"
   }, {
     "LetterName": "\"",
     "BrailleMatrix": "000111",
     "AssistanceName": "큰따옴표 닫기",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_sang_close"
   }, {
     "LetterName": "(",
     "BrailleMatrix": "000011",
     "AssistanceName": "괄호",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_gualho_open"
   }, {
     "LetterName": ")",
     "BrailleMatrix": "000011",
     "AssistanceName": "괄호",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_gualho_close"
   }, {
     "LetterName": "!",
     "BrailleMatrix": "001110",
     "AssistanceName": "느낌표",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_exclamation_mark"
   }, {
     "LetterName": ".",
     "BrailleMatrix": "001101",
     "AssistanceName": "마침표",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_peroid"
   }, {
     "LetterName": ",",
     "BrailleMatrix": "000100",
     "AssistanceName": "쉼표",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_comma"
   }, {
     "LetterName": "+",
     "BrailleMatrix": "001001",
     "AssistanceName": "더하기",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_plus"
   }, {
     "LetterName": "-",
     "BrailleMatrix": "000110",
     "AssistanceName": "빼기",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_minus"
   }, {
     "LetterName": "*",
     "BrailleMatrix": "100001",
     "AssistanceName": "곱하기",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_multi"
   }, {
     "LetterName": "\/",
     "BrailleMatrix": "010010010010",
     "AssistanceName": "나누기",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_divide"
   }, {
     "LetterName": "=",
     "BrailleMatrix": "001100001100",
     "AssistanceName": "같다",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_equal"
   }, {
     "LetterName": "'",
     "BrailleMatrix": "000001001011",
     "AssistanceName": "작은 따옴표 열기",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_small_open"
   }, {
     "LetterName": "'",
     "BrailleMatrix": "000111000001",
     "AssistanceName": "작음 따옴표 닫기",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_small_close"
   }, {
     "LetterName": "~",
     "BrailleMatrix": "000011000011",
     "AssistanceName": "물결",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_wave"
   }, {
     "LetterName": ":",
     "BrailleMatrix": "000100001000",
     "AssistanceName": "쌍점",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_sang_dot"
   }, {
     "LetterName": "※",
     "BrailleMatrix": "000110000110",
     "AssistanceName": "참고표",
-    "RawId": "initial_giyeok"
+    "RawId": "sentence_billiard"
   }]
 }

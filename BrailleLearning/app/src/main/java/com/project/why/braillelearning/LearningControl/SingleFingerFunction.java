@@ -9,5 +9,6 @@ import com.project.why.braillelearning.LearningModel.Dot;
  */
 
 public interface SingleFingerFunction {
-    FingerFunctionType oneFingerFunction(Dot[][] brailleMatrix, FingerCoordinate fingerCoordinate);
+    Dot[][] oneFingerFunction(Dot[][] brailleMatrix, FingerCoordinate fingerCoordinate);
+    void init();
 }

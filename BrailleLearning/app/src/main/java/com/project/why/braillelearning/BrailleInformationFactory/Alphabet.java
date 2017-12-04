@@ -11,43 +11,19 @@ import com.project.why.braillelearning.EnumConstant.Json;
 /**
  * 알파벳 연습 점자 정보 class
  */
-public class Alphabet extends LearningInformation implements GettingInformation {
-    Alphabet(){
-        setJsonFileName(Json.ALPHABET);
-        setBrailleLearningType(BrailleLearningType.BASIC);
-        setDatabaseTableName(Database.BASIC);
-    }
-
+public class Alphabet implements GettingInformation {
     @Override
     public Json getJsonFileName() {
-        return jsonFileName;
+        return Json.ALPHABET;
     }
 
     @Override
     public BrailleLearningType getBrailleLearningType() {
-        return brailleLearningType;
+        return BrailleLearningType.BASIC;
     }
 
     @Override
     public Database getDatabaseTableName() {
-        return databaseTableName;
-    }
-
-    @Override
-    public void setJsonFileName(Json jsonFileName){
-        if(jsonFileName != null)
-            this.jsonFileName = jsonFileName;
-        else
-            this.jsonFileName = null;
-    }
-
-    @Override
-    public void setBrailleLearningType(BrailleLearningType brailleLearningType) {
-        this.brailleLearningType = brailleLearningType;
-    }
-
-    @Override
-    public void setDatabaseTableName(Database databaseTableName) {
-        this.databaseTableName = databaseTableName;
+        return Database.BASIC;
     }
 }

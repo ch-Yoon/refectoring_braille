@@ -3,81 +3,81 @@
     "LetterName": "수표",
     "BrailleMatrix": "010101",
     "AssistanceName": "수표",
-    "RawId": "initial_giyeok"
+    "RawId": "number_sign"
   }, {
     "LetterName": "0",
     "BrailleMatrix": "010101111100",
     "AssistanceName": "0",
-    "RawId": "initial_giyeok"
+    "RawId": "number_zero"
   }, {
     "LetterName": "1",
     "BrailleMatrix": "011001001100",
     "AssistanceName": "1",
-    "RawId": "initial_giyeok"
+    "RawId": "number_one"
   }, {
     "LetterName": "2",
     "BrailleMatrix": "011001101100",
     "AssistanceName": "2",
-    "RawId": "initial_giyeok"
+    "RawId": "number_two"
   }, {
     "LetterName": "3",
     "BrailleMatrix": "011101001100",
     "AssistanceName": "3",
-    "RawId": "initial_giyeok"
+    "RawId": "number_three"
   }, {
     "LetterName": "4",
     "BrailleMatrix": "011101011100",
     "AssistanceName": "4",
-    "RawId": "initial_giyeok"
+    "RawId": "number_four"
   }, {
     "LetterName": "5",
     "BrailleMatrix": "011001011100",
     "AssistanceName": "5",
-    "RawId": "initial_giyeok"
+    "RawId": "number_five"
   }, {
     "LetterName": "6",
     "BrailleMatrix": "011101101100",
     "AssistanceName": "6",
-    "RawId": "initial_giyeok"
+    "RawId": "number_six"
   }, {
     "LetterName": "7",
     "BrailleMatrix": "011101111100",
     "AssistanceName": "7",
-    "RawId": "initial_giyeok"
+    "RawId": "number_seven"
   }, {
     "LetterName": "8",
     "BrailleMatrix": "011001111100",
     "AssistanceName": "8",
-    "RawId": "initial_giyeok"
+    "RawId": "number_eight"
   }, {
     "LetterName": "9",
     "BrailleMatrix": "010101101100",
     "AssistanceName": "9",
-    "RawId": "initial_giyeok"
+    "RawId": "number_nine"
   }, {
     "LetterName": "10",
     "BrailleMatrix": "011001010011110000",
     "AssistanceName": "10",
-    "RawId": "initial_giyeok"
+    "RawId": "number_ten"
   }, {
     "LetterName": "25",
     "BrailleMatrix": "011010011001110000",
     "AssistanceName": "25",
-    "RawId": "initial_giyeok"
+    "RawId": "number_twenthfive"
   }, {
     "LetterName": "47",
     "BrailleMatrix": "011111010111110000",
     "AssistanceName": "47",
-    "RawId": "initial_giyeok"
+    "RawId": "number_fourtyseven"
   }, {
     "LetterName": "68",
     "BrailleMatrix": "011110011011110000",
     "AssistanceName": "68",
-    "RawId": "initial_giyeok"
+    "RawId": "number_sixtyeight"
   }, {
     "LetterName": "99",
     "BrailleMatrix": "010101011010110000",
     "AssistanceName": "99",
-    "RawId": "initial_giyeok"
+    "RawId": "number_ninetynine"
   }]
 }

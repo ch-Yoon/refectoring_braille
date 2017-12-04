@@ -40,11 +40,6 @@
     "AssistanceName": "남",
     "RawId": "letter_nam"
   }, {
-    "LetterName": "스",
-    "BrailleMatrix": "000100100101",
-    "AssistanceName": "스",
-    "RawId": "letter_s"
-  }, {
     "LetterName": "일",
     "BrailleMatrix": "100001101000",
     "AssistanceName": "일",
@@ -115,11 +110,6 @@
     "AssistanceName": "각",
     "RawId": "letter_gak"
   }, {
-    "LetterName": "빅",
-    "BrailleMatrix": "011010010100001000",
-    "AssistanceName": "빅",
-    "RawId": "letter_big"
-  }, {
     "LetterName": "장",
     "BrailleMatrix": "010000110111",
     "AssistanceName": "장",
@@ -129,16 +119,6 @@
     "BrailleMatrix": "011011000000",
     "AssistanceName": "학",
     "RawId": "letter_hak"
-  }, {
-    "LetterName": "궤",
-    "BrailleMatrix": "011110001011001010",
-    "AssistanceName": "궤",
-    "RawId": "letter_gue"
-  }, {
-    "LetterName": "교",
-    "BrailleMatrix": "010100000011",
-    "AssistanceName": "교",
-    "RawId": "letter_gyo"
   }, {
     "LetterName": "민",
     "BrailleMatrix": "101000010111001000",

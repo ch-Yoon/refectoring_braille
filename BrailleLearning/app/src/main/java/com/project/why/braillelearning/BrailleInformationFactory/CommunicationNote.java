@@ -13,43 +13,19 @@ import com.project.why.braillelearning.EnumConstant.Json;
 /**
  * 선생님의 단어장 정보 class
  */
-public class CommunicationNote extends LearningInformation implements GettingInformation {
-    CommunicationNote(){
-        setJsonFileName(null);
-        setBrailleLearningType(BrailleLearningType.MYNOTE);
-        setDatabaseTableName(Database.COMMUNICATION);
-    }
-
+public class CommunicationNote implements GettingInformation {
     @Override
     public Json getJsonFileName() {
-        return jsonFileName;
+        return null;
     }
 
     @Override
     public BrailleLearningType getBrailleLearningType() {
-        return brailleLearningType;
+        return BrailleLearningType.MYNOTE;
     }
 
     @Override
     public Database getDatabaseTableName() {
-        return databaseTableName;
-    }
-
-    @Override
-    public void setJsonFileName(Json jsonFileName){
-        if(jsonFileName != null)
-            this.jsonFileName = jsonFileName;
-        else
-            this.jsonFileName = null;
-    }
-
-    @Override
-    public void setBrailleLearningType(BrailleLearningType brailleLearningType) {
-        this.brailleLearningType = brailleLearningType;
-    }
-
-    @Override
-    public void setDatabaseTableName(Database databaseTableName) {
-        this.databaseTableName = databaseTableName;
+        return Database.COMMUNICATION;
     }
 }

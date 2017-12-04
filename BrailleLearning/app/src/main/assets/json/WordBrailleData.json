@@ -3,86 +3,86 @@
     "LetterName": "화장실",
     "BrailleMatrix": "011001000010001110001100011000110111011000",
     "AssistanceName": "화장실",
-    "RawId": "initial_giyeok"
+    "RawId": "word_toilet"
   }, {
     "LetterName": "점자",
     "BrailleMatrix": "010100010010100001100101",
     "AssistanceName": "점자",
-    "RawId": "initial_giyeok"
+    "RawId": "word_braille"
   }, {
     "LetterName": "사랑",
     "BrailleMatrix": "100010001001101110000111",
     "AssistanceName": "사랑",
-    "RawId": "initial_giyeok"
+    "RawId": "word_love"
   }, {
     "LetterName": "엄마",
     "BrailleMatrix": "010010101001100100",
     "AssistanceName": "엄마",
-    "RawId": "initial_giyeok"
+    "RawId": "word_mother"
   }, {
     "LetterName": "출구",
     "BrailleMatrix": "001101110110000001110010",
     "AssistanceName": "출구",
-    "RawId": "initial_giyeok"
+    "RawId": "word_exit"
   }, {
     "LetterName": "아빠",
     "BrailleMatrix": "100001100001010100",
     "AssistanceName": "아빠",
-    "RawId": "initial_giyeok"
+    "RawId": "word_father"
   }, {
     "LetterName": "입구",
     "BrailleMatrix": "101001110110000010000010",
     "AssistanceName": "입구",
-    "RawId": "initial_giyeok"
+    "RawId": "word_entrance"
   }, {
     "LetterName": "서울",
     "BrailleMatrix": "000111001010011011",
     "AssistanceName": "서울",
-    "RawId": "initial_giyeok"
+    "RawId": "word_seoul"
   }, {
     "LetterName": "지하철",
     "BrailleMatrix": "011001000100011101110110000110",
     "AssistanceName": "지하철",
-    "RawId": "initial_giyeok"
+    "RawId": "word_subway"
   }, {
     "LetterName": "오른쪽",
     "BrailleMatrix": "100010000111000101000000110011010111",
     "AssistanceName": "오른쪽",
-    "RawId": "initial_giyeok"
+    "RawId": "word_right"
   }, {
     "LetterName": "한국",
     "BrailleMatrix": "010001111011110000000000001000",
     "AssistanceName": "한국",
-    "RawId": "initial_giyeok"
+    "RawId": "word_korea"
   }, {
     "LetterName": "왼쪽",
     "BrailleMatrix": "110000011101110000001100010111",
     "AssistanceName": "왼쪽",
-    "RawId": "initial_giyeok"
+    "RawId": "word_left"
   }, {
     "LetterName": "좌석",
     "BrailleMatrix": "011000110010000101110101",
     "AssistanceName": "좌석",
-    "RawId": "initial_giyeok"
+    "RawId": "word_seat"
   }, {
     "LetterName": "핸드폰",
     "BrailleMatrix": "011000010111101111111010011100100000010011",
     "AssistanceName": "핸드폰",
-    "RawId": "initial_giyeok"
+    "RawId": "word_cellphone"
   }, {
     "LetterName": "스마트폰",
     "BrailleMatrix": "000110100111100010011110011101010000010011",
     "AssistanceName": "스마트폰",
-    "RawId": "initial_giyeok"
+    "RawId": "word_smartphone"
   }, {
     "LetterName": "서점",
     "BrailleMatrix": "000101010000100010100110011001",
     "AssistanceName": "서점",
-    "RawId": "initial_giyeok"
+    "RawId": "word_bookstore"
   }, {
     "LetterName": "계단",
     "BrailleMatrix": "010101000000101100100000",
     "AssistanceName": "계단",
-    "RawId": "initial_giyeok"
+    "RawId": "word_stair"
   }]
 }

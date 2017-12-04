@@ -87,16 +87,20 @@ public class MediaSoundManager {
             tempQueue.add(st.nextToken());
         }
 
-        Queue<Integer> soundIdQueue = new LinkedList<>();
 
-        int rawId = checkRawId(tempQueue.peek());
-        if(rawId != 0){
-            soundIdQueue.addAll(getTranslationQueue(tempQueue));
-            mediaPlayerSingleton.start(soundIdQueue);
-        } else {
-            String ttsText = tempQueue.poll();
-            soundIdQueue = getTranslationQueue(tempQueue);
-            mediaPlayerSingleton.start(soundIdQueue, ttsText);
+        if(0 < tempQueue.size()) {
+            Queue<String> checkQueue = new LinkedList<>();
+            checkQueue.add(tempQueue.peek());
+            Queue<Integer> soundIdQueue = getTranslationQueue(checkQueue);
+            if (soundIdQueue.size() != 0) {
+                tempQueue.poll();
+                soundIdQueue.addAll(getTranslationQueue(tempQueue));
+                mediaPlayerSingleton.start(soundIdQueue);
+            } else {
+                String ttsText = tempQueue.poll();
+                soundIdQueue = getTranslationQueue(tempQueue);
+                mediaPlayerSingleton.start(soundIdQueue, ttsText);
+            }
         }
     }
 
@@ -149,6 +153,7 @@ public class MediaSoundManager {
      * @return 있으면 id값, 없으면 0 리턴
      */
     private int checkRawId(String soundId){
+        int result = 0;
         String packName = context.getPackageName();
         Resources resources = context.getResources();
         return resources.getIdentifier(soundId, "raw", packName);
@@ -287,5 +292,9 @@ public class MediaSoundManager {
 
     public boolean checkTTSPlaying(){
         return mediaPlayerSingleton.checkTTSPlay();
+    }
+
+    public boolean getMenuInfoPlaying() {
+        return mediaPlayerSingleton.getMenuInfoPlaying();
     }
 }

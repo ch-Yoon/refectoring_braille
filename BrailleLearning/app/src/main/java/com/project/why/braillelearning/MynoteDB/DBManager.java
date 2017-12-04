@@ -13,12 +13,10 @@ import java.util.ArrayList;
 
 public class DBManager {
     private DBHelper dbHelper;
-    private BrailleLearningType brailleLearningType;
 
-    public DBManager(Context context, Database databaseFileName, BrailleLearningType brailleLearningType){
+    public DBManager(Context context, Database databaseFileName){
         dbHelper = SingletonDB.getInstance(context, databaseFileName);
         dbHelper.setDatabaseName(databaseFileName);
-        this.brailleLearningType = brailleLearningType;
     }
 
     public void saveMyNote(String letterName, String StrBrailleMatrix, String assistLetterName, String rawID){
@@ -29,16 +27,4 @@ public class DBManager {
         ArrayList<BrailleData> brailleDataArrayList = dbHelper.delete(StrBrailleMatrix);
         return brailleDataArrayList;
     }
-
-//    public void startSpecialFunction(String letterName, String StrBrailleMatrix, String assistLetterName, String rawID){
-//        switch(brailleLearningType){
-//            case MYNOTE:
-//                ArrayList<BrailleData> brailleDataArrayList = dbHelper.delete(StrBrailleMatrix);
-//                databaseCallBackMethod.objectCallBackMethod(brailleDataArrayList);
-//                break;
-//            default:
-//                dbHelper.insert(letterName, StrBrailleMatrix, assistLetterName, rawID);
-//                break;
-//        }
-//    }
 }
