@@ -153,7 +153,6 @@ public class MediaSoundManager {
      * @return 있으면 id값, 없으면 0 리턴
      */
     private int checkRawId(String soundId){
-        int result = 0;
         String packName = context.getPackageName();
         Resources resources = context.getResources();
         return resources.getIdentifier(soundId, "raw", packName);

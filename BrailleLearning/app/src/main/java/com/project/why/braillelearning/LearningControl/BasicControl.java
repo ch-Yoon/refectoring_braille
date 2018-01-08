@@ -34,7 +34,7 @@ public class BasicControl implements Control{
     private final int ONE_FINGER = 1;
     private final int TWO_FINGER = 2;
     private final int THREE_FINGER = 3;
-    private ControlListener controlListener;
+    protected ControlListener controlListener;
     private boolean multiTouch = false;
     private boolean touchLock = false;
     protected ViewObservers viewObservers;

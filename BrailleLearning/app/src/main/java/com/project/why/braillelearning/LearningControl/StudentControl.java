@@ -2,6 +2,8 @@ package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
+
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -30,11 +32,50 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
     private SpeechRecognitionMoudle speechRecognitionMoudle;
     private String roomNumber = "";
     private boolean checkTask = false;
+    private boolean checkNewData = false;
 
     StudentControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
         mediaSoundManager.start(R.raw.studentmode_guide);
         speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
+    }
+
+
+    /**
+     * 손가락 2개에 대한 event 함수
+     * BACK(상위메뉴), RIGHT(오른쪽 화면), LEFT(왼쪽 화면), REFRESH(다시듣기)
+     */
+    public void twoFingerFunction() {
+        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
+        switch (type) {
+            case BACK:
+                exit();
+                break;
+            case RIGHT:
+                if (pageNumber < brailleDataArrayList.size()-1) {
+                    pageNumber++;
+                    nodifyObservers();
+                }
+                else {
+                    checkNewData = true;
+                    ReceiveServerTask task = new ReceiveServerTask();
+                    task.execute();
+                }
+                break;
+            case LEFT:
+                if (0 < pageNumber) {
+                    pageNumber--;
+                    nodifyObservers();
+                }
+                else {
+                    mediaSoundManager.allStop();
+                    mediaSoundManager.start(R.raw.first_page);
+                }
+                break;
+            case REFRESH:
+                nodifyObservers();
+                break;
+        }
     }
 
     /**
@@ -71,10 +112,15 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
             String room = getRoomNumber(text);
             if(room != null) {
                 if(checkTask == false) {
-                    checkTask = true;
-                    roomNumber = room;
-                    ReceiveServerTask task = new ReceiveServerTask();
-                    task.execute();
+                    if(roomNumber.equals(room))
+                        mediaSoundManager.start(R.raw.sameroom);
+                    else {
+                        checkTask = true;
+                        brailleDataArrayList.clear();
+                        roomNumber = room;
+                        ReceiveServerTask task = new ReceiveServerTask();
+                        task.execute();
+                    }
                 } else
                     mediaSoundManager.start(R.raw.speechrecognition_fail);
             }
@@ -150,15 +196,28 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
                     JSONObject jsonObj = new JSONObject(result);
                     JSONArray jsonArray = jsonObj.getJSONArray("result");   //  mysql에서 불러온값을 저장.
 
-                    for(int i=0; i<jsonArray.length(); i++){
-                        JSONObject c = jsonArray.getJSONObject(i);
-                        String letterName = c.getString("LetterName");
-                        String brailleText = c.getString("brailleText");
-                        String rawId = c.getString("rawID");
-                        addBrailleDataArray(letterName, brailleText, rawId);
-                    }
+                    if(brailleDataArrayList.size() < jsonArray.length()) {
+                        int startIndex = brailleDataArrayList.size();
 
-                    nodifyObservers();
+                        for (int i = startIndex; i < jsonArray.length(); i++) {
+                            JSONObject c = jsonArray.getJSONObject(i);
+                            String letterName = c.getString("LetterName");
+                            String brailleText = c.getString("brailleText");
+                            String rawId = c.getString("rawID");
+                            addBrailleDataArray(letterName, brailleText, rawId);
+                        }
+
+                        if(checkNewData == true) {
+                            pageNumber++;
+                            checkNewData = false;
+                        }
+
+                        nodifyObservers();
+                    } else if(checkNewData == true) {
+                        mediaSoundManager.allStop();
+                        mediaSoundManager.start(R.raw.last_page);
+                        checkNewData = false;
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -170,5 +229,15 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
     private void addBrailleDataArray(String letterName, String brailleMatrix, String rawId){
         BrailleData data = new BrailleData(letterName, brailleMatrix, rawId, BrailleLearningType.TEACHER);
         brailleDataArrayList.add(data);
+    }
+
+
+    /**
+     * 학습화면 종료 함수
+     */
+    @Override
+    public void exit(){
+        speechRecognitionMoudle.stop();
+        controlListener.exit();
     }
 }

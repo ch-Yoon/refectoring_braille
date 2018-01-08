@@ -1,6 +1,7 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
@@ -57,6 +58,8 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
     public void speechRecogntionResult(ArrayList<String> text) {
         if(text != null)
             startBrailleTranslation(text.get(0));
+        else
+            mediaSoundManager.start(R.raw.retry);
     }
 
     /**
@@ -74,5 +77,14 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
         }
         else
             mediaSoundManager.start("brailletranslation_fail");
+    }
+
+    /**
+     * 학습화면 종료 함수
+     */
+    @Override
+    public void exit(){
+        speechRecognitionMoudle.stop();
+        controlListener.exit();
     }
 }

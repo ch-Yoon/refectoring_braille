@@ -5,23 +5,22 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Menu;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningControl.MultiFinger;
 import com.project.why.braillelearning.LearningControl.BrailleLearningActivity;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
-import com.project.why.braillelearning.LearningControl.SingleFIngerFactory;
-import com.project.why.braillelearning.LearningControl.SingleFingerFunction;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.Module.ImageResizeModule;
+import com.project.why.braillelearning.AccessibilityCheckService;
 import com.project.why.braillelearning.R;
 
 import java.util.Deque;
@@ -32,7 +31,6 @@ import java.util.LinkedList;
  * MenuTreeManager에서 메뉴 image와 음성 file들을 관리하고 있음
  */
 public class MenuActivity extends Activity {
-    private BrailleLearningType brailleLearningType = BrailleLearningType.MENU;
     private int ONE_FINGER = FingerFunctionType.ONE_FINGER.getNumber(); // 손가락 1개
     private int THREE_FINGER = FingerFunctionType.THREE_FINGER.getNumber(); // 손가락 3개
     private boolean multiFinger = false; // 멀티터치 체크 변수
@@ -49,7 +47,6 @@ public class MenuActivity extends Activity {
     private FingerCoordinate fingerCoordinate;
     private FingerFunctionType type = FingerFunctionType.NONE;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +58,8 @@ public class MenuActivity extends Activity {
     protected void onResume(){
         super.onResume();
         refreshData();
+        Log.d("test","onResume");
+        startService(new Intent(this, AccessibilityCheckService.class));
     }
 
     @Override
@@ -68,6 +67,7 @@ public class MenuActivity extends Activity {
         super.onPause();
         recycleImage();
         stopMediaPlayer();
+        stopService(new Intent(this, AccessibilityCheckService.class));
     }
 
     @Override
@@ -180,12 +180,26 @@ public class MenuActivity extends Activity {
                     refreshData();
                     break;
                 case RIGHT: // 오른쪽 메뉴
-                    menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast() + 1));
-                    refreshData();
+                    if(menuAddressDeque.peekLast()+1 == NowMenuListSize) {
+                        mediaSoundManager.allStop();
+                        mediaSoundManager.start(R.raw.last_page);
+                    } else {
+                        menuAddressDeque.addLast(menuAddressDeque.removeLast() + 1);
+                        refreshData();
+                    }
+//                    menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast() + 1));
+//                    refreshData();
                     break;
                 case LEFT: // 왼쪽 메뉴
-                    menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast() - 1));
-                    refreshData();
+                    if(menuAddressDeque.peekLast() == 0) {
+                        mediaSoundManager.allStop();
+                        mediaSoundManager.start(R.raw.first_page);
+                    } else {
+                        menuAddressDeque.addLast(menuAddressDeque.removeLast() - 1);
+                        refreshData();
+                    }
+//                    menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast() - 1));
+//                    refreshData();
                     break;
                 case REFRESH: // 특수기능
                     refreshData();
@@ -258,6 +272,7 @@ public class MenuActivity extends Activity {
      * 자신이 선택한 menu name을 학습화면으로 전달
      */
     public void enterBrailleLearning(){
+        Log.d("test","enterBrailleLearning");
         menuAddressDeque.removeLast();
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);

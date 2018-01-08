@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.project.why.braillelearning.AccessibilityCheckService;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
@@ -37,6 +38,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("test","brailleLearningActivity oncreate");
         Intent i = getIntent();
         Menu menuName = (Menu) i.getSerializableExtra("MENUNAME");
         object = getBrailleInformationObject(menuName);
@@ -44,9 +46,11 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         brailleLearningType =  object.getBrailleLearningType();
         databaseTableName =  object.getDatabaseTableName();
         startMenuInfo();
+
     }
 
     private void startMenuInfo(){
+        Log.d("test","startMenuInfo");
         Intent i = new Intent(this, MenuInformationActivity.class);
         i.putExtra("BRAILLELEARNINGTYPE",brailleLearningType);
         startActivityForResult(i, MENU_INFO);
@@ -73,6 +77,8 @@ public class BrailleLearningActivity extends Activity implements ControlListener
             learningModule.onPause();
             learningView.onPause();
         }
+        stopService(new Intent(this, AccessibilityCheckService.class));
+
     }
 
     /**
@@ -83,6 +89,8 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         super.onResume();
         if(learningModule != null && learningView != null)
             learningModule.nodifyObservers();
+
+        startService(new Intent(this, AccessibilityCheckService.class));
     }
 
     /**
@@ -155,6 +163,8 @@ public class BrailleLearningActivity extends Activity implements ControlListener
      */
     @Override
     public void exit() {
+        Log.d("test","exit");
         finish();
+        Log.d("test","finish");
     }
 }

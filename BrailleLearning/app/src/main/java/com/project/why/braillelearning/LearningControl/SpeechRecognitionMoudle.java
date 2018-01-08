@@ -22,11 +22,13 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
     private SpeechRecognizerClient client;
     private MediaSoundManager mediaSoundManager;
     private boolean taskCheck = false;
+    private boolean stop = false;
 
     public SpeechRecognitionMoudle(Context context, SpeechRecognitionListener listener){
         SpeechRecognizerManager.getInstance().initializeLibrary(context); // SDK 초기화
         this.listener = listener;
         mediaSoundManager = new MediaSoundManager(context);
+        stop = false;
     }
 
     public void start(){
@@ -39,7 +41,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
                 }
             }
         } catch (Exception e){
-            Log.d("test","error");
+            Log.d("test", "error : "+e.getMessage());
             mediaSoundManager.start("speechrecognition_fail");
         }
     }
@@ -55,7 +57,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
                 }
             }
         } catch (Exception e){
-            Log.d("test","error");
+            Log.d("test", "error : "+e.getMessage());
             mediaSoundManager.start("speechrecognition_fail");
         }
     }
@@ -68,6 +70,14 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
         client.setSpeechRecognizeListener(this);
         client.startRecording(false);
     }
+
+    public void stop(){
+        stop = true;
+        if(client != null)
+            client.stopRecording();
+    }
+
+
 
     @Override
     public void onReady() {
@@ -86,8 +96,12 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
 
     @Override
     public void onError(int errorCode, String errorMsg) {
+        Log.d("test", "error : "+errorMsg);
         client = null;
-        mediaSoundManager.start("speechrecognition_fail");
+        if(stop == false)
+            mediaSoundManager.start("speechrecognition_fail");
+        else
+            stop = false;
         listener.speechRecogntionResult(null);
     }
 
@@ -100,8 +114,11 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
     public void onResults(Bundle results) {
         Log.d("test","onResult");
         client = null;
-        ArrayList<String> sttArray = results.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS);
-        listener.speechRecogntionResult(sttArray);
+        if(stop == false) {
+            ArrayList<String> sttArray = results.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS);
+            listener.speechRecogntionResult(sttArray);
+        } else
+            stop = false;
     }
 
     @Override
@@ -158,3 +175,5 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
         }
     }
 }
+
+

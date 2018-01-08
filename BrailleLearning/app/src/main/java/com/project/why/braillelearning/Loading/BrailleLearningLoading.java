@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
@@ -18,7 +17,9 @@ import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.Menu.MenuActivity;
 import com.project.why.braillelearning.Module.FullScreenModule;
 import com.project.why.braillelearning.Module.ImageResizeModule;
+import com.project.why.braillelearning.AccessibilityCheckService;
 import com.project.why.braillelearning.R;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,6 +44,19 @@ public class BrailleLearningLoading extends Activity {
         setContentView(R.layout.activity_braille_learning_loading);
         InitLoadingImage();
         Loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
+
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -51,6 +65,7 @@ public class BrailleLearningLoading extends Activity {
     //    setLoadingImage();
         Timer_Start(); // 애니메이션 시작
         Log.d("onResume","onResume");
+        startService(new Intent(this, AccessibilityCheckService.class));
     }
 
     @Override
@@ -60,6 +75,7 @@ public class BrailleLearningLoading extends Activity {
         recycleImage();
         LoadingAnimationIndex = 0; // 애니메이션을 위한 index 초기화
         Log.d("onPause","onPause");
+        stopService(new Intent(this, AccessibilityCheckService.class));
     }
 
     @Override
@@ -76,9 +92,8 @@ public class BrailleLearningLoading extends Activity {
             InitDisplaySize(); // 화면 해상도 구하기
             setMenuImageSize();
             setLoadingImage();
-
         }
-        Log.d("onWindowFocus","onWindowFocus");
+
     }
 
     public void InitDisplaySize(){  // Display 해상도를 구하기 위한 메소드
@@ -153,14 +168,14 @@ public class BrailleLearningLoading extends Activity {
             } catch(Exception e){
                 Log.d("Error",e.getMessage());
             } finally {
-                if(Blind_person == false) {
+              //  if(Blind_person == false) {
                     Intent i = new Intent(BrailleLearningLoading.this, MenuActivity.class);
                     startActivity(i);
                     overridePendingTransition(R.anim.fade, R.anim.hold);
                     finish();
-                } else {
+           //     } else {
 
-                }
+             //   }
             }
         }
     }

@@ -86,8 +86,9 @@ public class DataConversionModule {
     public String getConversionRawId(Dot brailleMatrix[][], String rawId){
         String tempLetterId = rawId;
         int COL = brailleMatrix.length; //4행
-        int ROW = brailleMatrix[0].length;
+       // int ROW = brailleMatrix[0].length;
         int dotCount = getDotCount(brailleMatrix);
+        int ROW = dotCount * 3;
         switch (dotCount) {
             case 1:
                 rawId += ",일";
@@ -115,25 +116,33 @@ public class DataConversionModule {
         }
 
         if(0 < dotCount) {
+            int cellCount = 0;
             for (int i = 0; i < ROW; i++) {
                 for (int j = 1; j < COL; j++) {
                     boolean target = brailleMatrix[j][i].getTarget();
                     if (target == true) {
                         int dotType = brailleMatrix[j][i].getDotType();
                         rawId += "," + dotType;
+                        cellCount++;
                     }
                 }
 
                 if (i % 3 == 2) {
                     if(rawId.length() != 0) {
-                        char dotType[] = {'1', '2', '3', '4', '5', '6'};
-                        char target = rawId.charAt(rawId.length() - 1);
-                        for (int k = 0; k < dotType.length; k++) {
-                            if (target == dotType[k]) {
-                                rawId += "점";
-                                break;
+                        if(cellCount == 0){
+                            rawId += ",emptyspace";
+                        } else {
+                            char dotType[] = {'1', '2', '3', '4', '5', '6'};
+                            char target = rawId.charAt(rawId.length() - 1);
+                            for (int k = 0; k < dotType.length; k++) {
+                                if (target == dotType[k]) {
+                                    rawId += "점";
+                                    break;
+                                }
                             }
                         }
+
+                        cellCount = 0;
                     }
                 }
             }
@@ -163,7 +172,8 @@ public class DataConversionModule {
 
             if(i%3 == 2){
                 if(check == true) {
-                    dotCount++;
+                    //dotCount++;
+                    dotCount = i/3 + 1;
                     check = false;
                 }
             }

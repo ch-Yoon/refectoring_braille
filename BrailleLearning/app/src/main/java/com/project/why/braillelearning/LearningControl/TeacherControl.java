@@ -58,11 +58,13 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
     @Override
     public void oneFingerFunction() {
         if(data != null) {
-            Dot tempDot[][] = oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
-            if(tempDot != null) {
-                data.setBrailleMatrix(tempDot);
-                data.refreshData();
-                nodifyViewObserver();
+            if(sendCheck == false) {
+                Dot tempDot[][] = oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
+                if (tempDot != null) {
+                    data.setBrailleMatrix(tempDot);
+                    data.refreshData();
+                    nodifyViewObserver();
+                }
             }
         }
     }
@@ -115,6 +117,16 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                 if(checkAddPage())
                     addJsonBrailleData(context, Json.TEACHER);
             }
+        } else {
+            ((BrailleLearningActivity)context).runOnUiThread(new Runnable() { // onError가 호출되었을 경우
+                @Override
+                public void run() {
+                    data.setLetterName("");
+                    data.refreshData();
+                    nodifyViewObserver();
+                    mediaSoundManager.start(R.raw.retry);
+                }
+            });
         }
     }
 
@@ -235,7 +247,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                     for(int i=0; i<jsonArray.length(); i++){
                         JSONObject c = jsonArray.getJSONObject(i);
                         String str = c.getString("id");    // 저장코드들
-                        if(0<str.length()) {
+                        if(0 < str.length()) {
                             String text = str + " 번! " + str+",send_ok";
                             mediaSoundManager.start(text);
                             room = str;
@@ -249,6 +261,16 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
             taskCheck = false;
         }
     }
+
+    /**
+     * 학습화면 종료 함수
+     */
+    @Override
+    public void exit(){
+        speechRecognitionMoudle.stop();
+        controlListener.exit();
+    }
+
 }
 
 

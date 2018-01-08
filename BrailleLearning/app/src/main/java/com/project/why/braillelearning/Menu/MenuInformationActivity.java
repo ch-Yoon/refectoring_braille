@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.project.why.braillelearning.AccessibilityCheckService;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.Global;
@@ -81,6 +82,8 @@ public class MenuInformationActivity extends Activity {
         super.onResume();
         mediaStart();
         aniTimerStart(); // 애니메이션 시작
+        startService(new Intent(this, AccessibilityCheckService.class));
+
     }
 
     public void mediaStart(){
@@ -120,6 +123,8 @@ public class MenuInformationActivity extends Activity {
         touchTimerStop();
         recycleImage();
         stopMediaPlayer();
+        stopService(new Intent(this, AccessibilityCheckService.class));
+
     }
 
     @Override
@@ -320,7 +325,7 @@ public class MenuInformationActivity extends Activity {
     public void exit(int result){
         aniTimerStop();
         touchTimerStop();
-        Log.d("test","exit");
+        Log.d("test","menu info exit");
         if(result == 0) {
             if(brailleLearningType == BrailleLearningType.TUTORIAL)
                 setResult(RESULT_CANCELED);
