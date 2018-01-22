@@ -17,6 +17,9 @@ import java.util.ArrayList;
  * Created by hyuck on 2017-11-16.
  */
 
+/**
+ * 음성인식 모듈 class
+ */
 public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
     private SpeechRecognitionListener listener;
     private SpeechRecognizerClient client;
@@ -31,6 +34,11 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
         stop = false;
     }
 
+
+    /**
+     * 음성인식 시작 함수
+     * AsyncTask를 생성하여 처리
+     */
     public void start(){
         try {
             if(client == null){
@@ -41,11 +49,16 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
                 }
             }
         } catch (Exception e){
-            Log.d("test", "error : "+e.getMessage());
+            Log.d("SpeechRecognitionModule", "error : "+e.getMessage());
             mediaSoundManager.start("speechrecognition_fail");
         }
     }
 
+    /**
+     * 선생님과의 대화 메뉴를 위한 음성인식 시작 함수
+     * 가이드 음성 출력 후 음성 종료 후 음성인식 시작
+     * @param text : 사용자가 음성인식한 글자
+     */
     public void start(String text){
         try {
             if(client == null){
@@ -57,11 +70,15 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
                 }
             }
         } catch (Exception e){
-            Log.d("test", "error : "+e.getMessage());
+            Log.d("SpeechRecognitionModule", "error : "+e.getMessage());
             mediaSoundManager.start("speechrecognition_fail");
         }
     }
 
+
+    /**
+     * 음성인식 시작
+     */
     private void startSpeechRecognition(){
         SpeechRecognizerClient.Builder builder = new SpeechRecognizerClient.Builder().
                 setServiceType(SpeechRecognizerClient.SERVICE_TYPE_WORD);
@@ -71,6 +88,10 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
         client.startRecording(false);
     }
 
+
+    /**
+     * 음성인식 중지
+     */
     public void stop(){
         stop = true;
         if(client != null)
@@ -81,22 +102,25 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
 
     @Override
     public void onReady() {
-
     }
 
     @Override
     public void onBeginningOfSpeech() {
-
     }
 
     @Override
     public void onEndOfSpeech() {
-
     }
 
+
+    /**
+     * 음성인식 error 발생시 호출되는 함수
+     * @param errorCode
+     * @param errorMsg
+     */
     @Override
     public void onError(int errorCode, String errorMsg) {
-        Log.d("test", "error : "+errorMsg);
+        Log.d("SpeechRecognitionModule", "error : "+errorMsg);
         client = null;
         if(stop == false)
             mediaSoundManager.start("speechrecognition_fail");
@@ -110,6 +134,11 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
 
     }
 
+
+    /**
+     * 음성인식 결과 전달 함수
+     * @param results : 음성인식 결과
+     */
     @Override
     public void onResults(Bundle results) {
         Log.d("test","onResult");
@@ -123,16 +152,18 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
 
     @Override
     public void onAudioLevel(float audioLevel) {
-
     }
 
     @Override
     public void onFinished() {
-
     }
 
-    private class CheckMediaTask extends AsyncTask<Void, Void, Boolean> {
 
+    /**
+     * 음성file 재생 중 확인 AsyncTask
+     * 최대 10초동안 확인
+     */
+    private class CheckMediaTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -142,7 +173,6 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
         protected Boolean doInBackground(Void... params) {
             final int MAX_COUNT = 200; // 최대 10초
             int count = 0;
-
 
             while(true){
                 if(count <= MAX_COUNT) {
@@ -154,7 +184,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
                             count++;
                             Thread.sleep(50);
                         } catch (Exception e) {
-                            Log.d("checkMediaThread", "Thread sleep error");
+                            Log.d("SpeechRecognitionModule", "Thread sleep error");
                             return false;
                         }
                     }

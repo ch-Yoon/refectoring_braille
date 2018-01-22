@@ -3,6 +3,10 @@ package com.project.why.braillelearning.LearningControl;
 import android.content.Context;
 import android.view.MotionEvent;
 
+import com.project.why.braillelearning.CustomTouch.CustomLearningTouchEvent;
+import com.project.why.braillelearning.CustomTouch.CustomLearningTouchListener;
+import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
+import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -30,13 +34,8 @@ import java.util.ArrayList;
  * 손가락 3개 : 나만의 단어장 삭제
  */
 
-public class BasicControl implements Control{
-    private final int ONE_FINGER = 1;
-    private final int TWO_FINGER = 2;
-    private final int THREE_FINGER = 3;
+public class BasicControl implements Control, CustomLearningTouchListener {
     protected ControlListener controlListener;
-    private boolean multiTouch = false;
-    private boolean touchLock = false;
     protected ViewObservers viewObservers;
     protected MediaSoundManager mediaSoundManager;
     protected FingerCoordinate fingerCoordinate;
@@ -47,6 +46,7 @@ public class BasicControl implements Control{
     protected DBManager dbManager;
     protected int pageNumber = 0 ;
     protected Context context;
+    private CustomTouchConnectListener customTouchConnectListener;
 
     BasicControl(Context context,Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         this.context = context;
@@ -57,6 +57,7 @@ public class BasicControl implements Control{
         multiFingerFunction = new MultiFinger(context);
         fingerCoordinate = new FingerCoordinate(FingerFunctionType.THREE_FINGER.getNumber());
         this.controlListener = controlListener;
+        initTouchEvent();
     }
 
     /**
@@ -105,12 +106,39 @@ public class BasicControl implements Control{
         }
     }
 
+
+    /**
+     * customTouch class선언
+     */
+    public void initTouchEvent(){
+        customTouchConnectListener = new CustomLearningTouchEvent(context, this);
+        connectTouchEvent();
+    }
+
+
+    /**
+     * customTouch class와 interface로 연결
+     */
+    public void connectTouchEvent(){
+        customTouchConnectListener.onResume();
+    }
+
+
+    /**
+     * customTouch class pause
+     */
+    public void pauseTouchEvent(){
+        customTouchConnectListener.onPause();
+    }
+
+
     /**
      * viewObserver에게 데이터를 알림
      */
     @Override
     public void nodifyObservers() {
         refreshData();
+        connectTouchEvent();
         if(data != null)
             viewObservers.nodifyBraille(data.getLetterName(), data.getBrailleMatrix());
     }
@@ -121,70 +149,54 @@ public class BasicControl implements Control{
     @Override
     public void onPause() {
         mediaSoundManager.stop();
+        pauseTouchEvent();
     }
 
+    @Override
+    public void onFocusRefresh() {
+    }
+
+    @Override
+    public void onStopSound() {
+        mediaSoundManager.stop();
+    }
+
+    @Override
+    public void onError() {
+        FingerFunctionType type = FingerFunctionType.NONE;
+        mediaSoundManager.start(type);
+    }
+
+
     /**
-     * 손가락 1개, 2개, 3개에 대한 event를 처리하는 touchEvent
-     * @param event : touchEvent를 관리하는 변수
+     * 손가락 1개를 화면에서 떨어트렸을 경우
+     * @param fingerCoordinate : 좌표값
      */
     @Override
-    public void touchEvent(MotionEvent event) {
-        int pointer_Count = event.getPointerCount(); // 현재 발생된 터치 event의 수
-
-        if(pointer_Count > THREE_FINGER) // 발생된 터치 이벤트가 3개를 초과하여도 3개까지만 인식
-            pointer_Count = THREE_FINGER;
-
-        if(pointer_Count == ONE_FINGER) {
-            switch(event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_UP: // 손가락 1개를 화면에서 떨어트렸을 때 발생되는 Event
-                    multiTouch = false;
-                    fingerCoordinate.initialize();
-                    oneFingerFunction.init();
-                    break;
-                default:
-                    if(multiTouch == false) {
-                        fingerCoordinate.setDownCoordinate(event, pointer_Count);
-                        oneFingerFunction();
-                    }
-                    break;
-            }
-        } else if(pointer_Count > ONE_FINGER) {
-            multiTouch = true;
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                    touchLock = false;
-                    fingerCoordinate.setDownCoordinate(event, pointer_Count);
-                    break;
-                case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                    if(touchLock == false) {
-                        touchLock = true;
-                        fingerCoordinate.setUpCoordinate(event, pointer_Count);
-
-                        if (pointer_Count == TWO_FINGER)
-                            twoFingerFunction();
-                        else if (pointer_Count == THREE_FINGER)
-                            threeFingerFunction();
-                    }
-            }
-        }
+    public void onOneFingerFunction(FingerCoordinate fingerCoordinate) {
+        oneFingerFunction.init();
     }
 
+
     /**
-     * 손가락 1개에 대한 event 함수
-     * 점자 행렬의 좌푯값 전달
+     * 손가락 1개를 화면에 터치하거나 드래그할 경우
+     * @param fingerCoordinate : 좌표값
      */
-    public void oneFingerFunction() {
+    @Override
+    public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
         if(data != null)
             oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
         else
             oneFingerFunction.oneFingerFunction(null, fingerCoordinate);
     }
 
+
     /**
-     * 손가락 2개에 대한 event 함수
-     * BACK(상위메뉴), RIGHT(오른쪽 화면), LEFT(왼쪽 화면), REFRESH(다시듣기)
+     * 손가락 2개를 화면에서 드래그하였을 경우
+     * @param fingerCoordinate : 좌표값
      */
-    public void twoFingerFunction() {
+    @Override
+    public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case BACK:
@@ -216,11 +228,13 @@ public class BasicControl implements Control{
         }
     }
 
+
     /**
-     * 손가락 3개에 대한 event 함수
-     * SPEECH(음성인식), MYNOTE(나만의 단어장 저장 및 삭제)
+     * 손가락 3개를 화면에서 드래그할 경우
+     * @param fingerCoordinate : 좌표값
      */
-    public void threeFingerFunction() {
+    @Override
+    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case SPEECH:
@@ -230,6 +244,17 @@ public class BasicControl implements Control{
                 dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
                 break;
         }
+    }
+
+
+    /**
+     * 손가락 1개, 2개, 3개에 대한 event를 처리하는 touchEvent
+     * @param event : touchEvent를 관리하는 변수
+     */
+    @Override
+    public void touchEvent(MotionEvent event) {
+        if(customTouchConnectListener != null)
+            customTouchConnectListener.touchEvent(event);
     }
 
     /**

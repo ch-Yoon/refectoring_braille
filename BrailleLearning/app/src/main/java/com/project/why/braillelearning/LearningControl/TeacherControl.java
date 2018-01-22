@@ -51,12 +51,9 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         if(data != null)
             viewObservers.nodifyBraille(data.getLetterName(), data.getBrailleMatrix());
     }
-    /**
-     * 손가락 1개에 대한 event 함수
-     * 점자 행렬의 좌푯값 전달
-     */
+
     @Override
-    public void oneFingerFunction() {
+    public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
         if(data != null) {
             if(sendCheck == false) {
                 Dot tempDot[][] = oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
@@ -69,12 +66,8 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         }
     }
 
-    /**
-     * 손가락 3개에 대한 event 함수
-     * SPEECH(음성인식), MYNOTE(나만의 단어장 저장 및 삭제)
-     */
     @Override
-    public void threeFingerFunction() {
+    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case SPEECH:

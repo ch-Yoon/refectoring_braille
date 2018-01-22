@@ -10,13 +10,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Loading.BrailleLearningLoading"
+            android:label="@string/app_name"
             android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,9 +27,11 @@
         </activity>
         <activity
             android:name=".Menu.MenuActivity"
+            android:label=""
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".LearningControl.BrailleLearningActivity"
+            android:label=""
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensorLandscape" />
 
@@ -38,12 +41,22 @@
 
         <activity
             android:name=".Menu.MenuInformationActivity"
+            android:label=""
             android:screenOrientation="sensorLandscape" />
 
         <service
-            android:name=".AccessibilityCheckService"
+            android:name=".Accessibility.AccessibilityCheckService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
     </application>
 
 </manifest>

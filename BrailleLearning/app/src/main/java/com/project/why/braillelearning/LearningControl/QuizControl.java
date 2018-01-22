@@ -15,6 +15,9 @@ import java.util.ArrayList;
  * Created by hyuck on 2017-11-17.
  */
 
+/**
+ * 퀴즈 메뉴를 위한 class
+ */
 public class QuizControl extends BasicControl implements SpeechRecognitionListener{
     private SpeechRecognitionMoudle speechRecognitionMoudle;
     private ArrayList<QuizBrailleData> quizBrailleDataArrayList = new ArrayList<>();
@@ -90,21 +93,24 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
         }
     }
 
+
     /**
-     * 손가락 1개에 대한 event 함수
-     * 점자 행렬의 좌푯값 전달
+     * 손가락 1개 함수 재정의
+     * @param fingerCoordinate : 좌표값
      */
-    public void oneFingerFunction() {
+    @Override
+    public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
         if(data != null)
             oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
     }
 
+
     /**
-     * 손가락 3개에 대한 event 함수
-     * SPEECH(음성인식), MYNOTE(나만의 단어장 저장 및 삭제)
+     * 손가락 3개 함수 재정의
+     * @param fingerCoordinate : 좌표값
      */
     @Override
-    public void threeFingerFunction() {
+    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case SPEECH:
@@ -121,6 +127,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
         }
     }
 
+
     /**
      * 음성인식에 대한 callback method
      * 음성인식에 대한 ArrayList가 전달됨
@@ -136,6 +143,11 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
         progress = false;
     }
 
+    /**
+     * 정답 확인 함수
+     * @param text : 음성인식 결과 ArrayList
+     * @return : true(정답), false(오답)
+     */
     public boolean checkAnswer(ArrayList<String> text){
         boolean result = false;
         for(int i=0 ; i<text.size() ; i++){

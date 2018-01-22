@@ -92,6 +92,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
             if(!mediaPlayer.isPlaying()){
                 initializeMediaPlayer();
                 startMediaPlayer();
+
             }
         } else
             startMediaPlayer();
@@ -214,7 +215,10 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     }
 
     public boolean getMediaPlaying(){
-        return mediaPlaying;
+        if(queue.size() == 0 && mediaPlayer == null && ttsClient == null)
+            return false;
+        else
+            return true;
     }
 
     public boolean checkTTSPlay(){

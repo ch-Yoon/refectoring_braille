@@ -17,6 +17,9 @@ import java.util.ArrayList;
  * Created by hyuck on 2017-11-17.
  */
 
+/**
+ * 점자 번역 메뉴를 위한 모듈
+ */
 public class TranslationControl extends BasicControl implements SpeechRecognitionListener {
     private BrailleTranslationModule brailleTranslationModule;
     private SpeechRecognitionMoudle speechRecognitionMoudle;
@@ -29,11 +32,11 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
     }
 
     /**
-     * 손가락 3개에 대한 event 함수
-     * SPEECH(음성인식), MYNOTE(나만의 단어장 저장 및 삭제)
+     * 손가락 3개 함수 재정의
+     * @param fingerCoordinate : 좌표값
      */
     @Override
-    public void threeFingerFunction() {
+    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case SPEECH:

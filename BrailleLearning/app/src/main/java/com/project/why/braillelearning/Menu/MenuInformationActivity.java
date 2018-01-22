@@ -8,9 +8,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-import com.project.why.braillelearning.AccessibilityCheckService;
+import com.project.why.braillelearning.Accessibility.AccessibilityCheckService;
+import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
+import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
+import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.Global;
@@ -23,29 +29,25 @@ import com.project.why.braillelearning.R;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MenuInformationActivity extends Activity {
-    private final int ONE_FINGER = 1;
-    private final int TWO_FINGER = 2;
-    private final int THREE_FINGER = 3;
-    private boolean multiTouch = false; // 멀티터치 체크 변수
-    private boolean touchLock = false;
-    private FingerCoordinate fingerCoordinate = new FingerCoordinate(THREE_FINGER);
+/**
+ * 각 메뉴 접속시 안내 멘트를 출력해주는 activity
+ */
+public class MenuInformationActivity extends Activity implements CustomTouchEventListener{
+    private LinearLayout layout;
     private ImageResizeModule imageResizeModule;
     private ImageView information_ImageView;
     private TimerTask aniTimerTask;
     private Timer aniTimer; // 애니메이션을 위한 시간 timer
-    private TimerTask touchTimerTask;
-    private Timer touchTimer;
     private final int TimerTaskTime = 700; // 0.05초
     private int aniDrawableId[];
     private int index = 0;
     private int widthSize = 0;
     private int heightSize = 0;
     private BrailleLearningType brailleLearningType;
-    private MediaSoundManager mediaSoundManager = new MediaSoundManager(this);
-    private MultiFinger multiFingerFunction = new MultiFinger(this);
-    private int touchCount = 0;
-    private int touchTimerCount = 0;
+    private MediaSoundManager mediaSoundManager;
+    private MultiFinger multiFingerFunction;
+    private CustomTouchConnectListener customTouchConnectListener;
+    private boolean finish = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +55,13 @@ public class MenuInformationActivity extends Activity {
         setContentView(R.layout.activity_menu_information);
         Intent i = getIntent();
         brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
-
+        mediaSoundManager = new MediaSoundManager(this);
+        multiFingerFunction = new MultiFinger(this);
+        setLayout();
         initImageView();
         initAniDrawableId();
         setFullScreen();
+        initTouchEvent();
     }
 
     @Override
@@ -82,12 +87,31 @@ public class MenuInformationActivity extends Activity {
         super.onResume();
         mediaStart();
         aniTimerStart(); // 애니메이션 시작
-        startService(new Intent(this, AccessibilityCheckService.class));
+        connectTouchEvent();
+    }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        aniTimerStop();
+        recycleImage();
+        stopSound();
+        pauseTouchEvent();
+    }
+
+    public void setLayout(){
+        layout = (LinearLayout) findViewById(R.id.information_layout);
+        layout.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                onTouchEvent(event);
+                return false;
+            }
+        });
     }
 
     public void mediaStart(){
-        stopMediaPlayer();
+        stopSound();
         switch (brailleLearningType){
             case TUTORIAL:
                 mediaSoundManager.start(R.raw.tutorial_info);
@@ -117,17 +141,6 @@ public class MenuInformationActivity extends Activity {
     }
 
     @Override
-    protected void onPause(){
-        super.onPause();
-        aniTimerStop();
-        touchTimerStop();
-        recycleImage();
-        stopMediaPlayer();
-        stopService(new Intent(this, AccessibilityCheckService.class));
-
-    }
-
-    @Override
     protected void onStop(){
         super.onStop();
     }
@@ -144,6 +157,10 @@ public class MenuInformationActivity extends Activity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
+
+    /**
+     * imageView setting 함수
+     */
     public void initImageView(){ // 이미지 size setting
         information_ImageView = (ImageView) findViewById(R.id.information_imageview);
         widthSize = (int)(Global.DisplayY*0.7); // imageview의 width는 세로 높이의 90%
@@ -159,60 +176,56 @@ public class MenuInformationActivity extends Activity {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int pointer_Count = event.getPointerCount(); // 현재 발생된 터치 event의 수
-
-        if(pointer_Count > THREE_FINGER) // 발생된 터치 이벤트가 3개를 초과하여도 3개까지만 인식
-            pointer_Count = THREE_FINGER;
-
-        if(pointer_Count == ONE_FINGER) {
-            switch(event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_DOWN:
-                    touchTimerStart();
-                    touchCount++;
-                    break;
-                case MotionEvent.ACTION_UP: // 손가락 1개를 화면에서 떨어트렸을 때 발생되는 Event
-                    touchCount++;
-                    if(multiTouch == true)
-                        multiTouch = false;
-                    else {
-                        if(touchCount == 4)
-                            exit(0);
-                    }
-                    fingerCoordinate.initialize();
-                    break;
-                default:
-                    if(multiTouch == false) {
-                        fingerCoordinate.setDownCoordinate(event, pointer_Count);
-                    }
-                    break;
-            }
-        } else if(pointer_Count > ONE_FINGER) {
-            multiTouch = true;
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                    touchLock = false;
-                    fingerCoordinate.setDownCoordinate(event, pointer_Count);
-                    break;
-                case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                    if(touchLock == false) {
-                        touchLock = true;
-                        fingerCoordinate.setUpCoordinate(event, pointer_Count);
-
-                        if (pointer_Count == TWO_FINGER)
-                            twoFingerFunction();
-                    }
-            }
-        }
+        if(customTouchConnectListener != null)
+            customTouchConnectListener.touchEvent(event);
 
         return false;
     }
 
 
+    public void initTouchEvent(){
+        customTouchConnectListener = new CustomTouchEvent(this, this);
+        connectTouchEvent();
+    }
+
+    public void connectTouchEvent(){
+        customTouchConnectListener.onResume();
+    }
+
+    public void pauseTouchEvent(){
+        customTouchConnectListener.onPause();
+    }
+
+    @Override
+    public void onFocusRefresh() {
+        layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+    }
+
+    @Override
+    public void onStopSound() {
+    }
+
+    @Override
+    public void onError() {
+    }
+
+    @Override
+    public void onOneFingerFunction(FingerCoordinate fingerCoordinate) {
+        Log.d("MenuInformation","onefinger");
+        exit(0);
+    }
+
+    public void stopSound(){
+        mediaSoundManager.stop();
+    }
+
     /**
      * 손가락 2개에 대한 event 함수
      * BACK(상위메뉴), RIGHT(오른쪽 화면), LEFT(왼쪽 화면), REFRESH(다시듣기)
      */
-    public void twoFingerFunction() {
+    @Override
+    public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
+        Log.d("MenuInformation","twofinger");
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case BACK:
@@ -222,6 +235,10 @@ public class MenuInformationActivity extends Activity {
                 mediaStart();
                 break;
         }
+    }
+
+    @Override
+    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
     }
 
     public void aniTimerStart(){ //1초의 딜레이 시간을 갖는 함수
@@ -255,44 +272,6 @@ public class MenuInformationActivity extends Activity {
         }
     }
 
-    public void touchTimerStart(){
-        touchTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(touchTimerCount<1)
-                            touchTimerCount++;
-                        else {
-                            touchCount = 0;
-                            touchTimerCount = 0;
-                            touchTimerStop();
-                        }
-                    }
-                });
-
-            }
-        };
-
-        if(touchTimer == null) {
-            touchTimer = new Timer();
-            touchTimer.schedule(touchTimerTask, 0, TimerTaskTime); // 0.05초의 딜레이시간
-        }
-    }
-
-    public void touchTimerStop(){
-        if(touchTimerTask != null){
-            touchTimerTask.cancel();
-            touchTimerTask = null;
-        }
-
-        if(touchTimer != null){
-            touchTimer.cancel();
-            touchTimer = null;
-        }
-    }
-
     public void initAniDrawableId(){
         imageResizeModule = new ImageResizeModule(getResources());
         aniDrawableId = new int[]{R.drawable.speech0, R.drawable.speech1, R.drawable.speech2, R.drawable.speech3, R.drawable.speech4, R.drawable.speech5};
@@ -318,30 +297,33 @@ public class MenuInformationActivity extends Activity {
         }
     }
 
-    public void stopMediaPlayer(){
-        mediaSoundManager.stop();
-    }
-
-    public void exit(int result){
-        aniTimerStop();
-        touchTimerStop();
-        Log.d("test","menu info exit");
-        if(result == 0) {
-            if(brailleLearningType == BrailleLearningType.TUTORIAL)
+    public synchronized void exit(int result){
+        if(finish == false) {
+            Log.d("MenuInformation","exit");
+            finish = true;
+            if (result == 0) {
+                if (brailleLearningType == BrailleLearningType.TUTORIAL)
+                    setResult(RESULT_CANCELED);
+                else {
+                    mediaSoundManager.start(FingerFunctionType.ENTER);
+                    setResult(RESULT_OK);
+                }
+            } else if (result == 1)
                 setResult(RESULT_CANCELED);
-            else {
-                mediaSoundManager.start(FingerFunctionType.ENTER);
-                setResult(RESULT_OK);
-            }
+
+            aniTimerStop();
+            stopSound();
+
+            finish();
         }
-        else if(result == 1)
-            setResult(RESULT_CANCELED);
-        finish();
     }
 
     public void checkSoundPlaying(){
-        Log.d("test","checkSoundPlaing");
-        if((mediaSoundManager.getMediaQueueSize() == 0) && (mediaSoundManager.getMediaPlaying() == false))
+        if(mediaSoundManager.getMenuInfoPlaying() == false && mediaSoundManager.getMediaPlaying() == false ) {
+            Log.d("MenuInformation","checkSoundPlaying : false" );
             exit(0);
+        }
+
+        Log.d("MenuInformation","MenuInfoPlaying : "+mediaSoundManager.getMenuInfoPlaying());
     }
 }

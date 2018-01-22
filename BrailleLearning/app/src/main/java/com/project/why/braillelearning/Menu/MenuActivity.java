@@ -8,10 +8,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
+import android.widget.LinearLayout;
+import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
+import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
+import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Menu;
 import com.project.why.braillelearning.Global;
@@ -20,21 +24,17 @@ import com.project.why.braillelearning.LearningControl.BrailleLearningActivity;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.Module.ImageResizeModule;
-import com.project.why.braillelearning.AccessibilityCheckService;
 import com.project.why.braillelearning.R;
-
 import java.util.Deque;
 import java.util.LinkedList;
+
 
 /**
  * Menu를 화면에 출력하는 Activity
  * MenuTreeManager에서 메뉴 image와 음성 file들을 관리하고 있음
  */
-public class MenuActivity extends Activity {
-    private int ONE_FINGER = FingerFunctionType.ONE_FINGER.getNumber(); // 손가락 1개
-    private int THREE_FINGER = FingerFunctionType.THREE_FINGER.getNumber(); // 손가락 3개
-    private boolean multiFinger = false; // 멀티터치 체크 변수
-    private boolean functionLock = false;
+public class MenuActivity extends Activity implements CustomTouchEventListener{
+    private LinearLayout layout;
     private int PageNumber=0; // 메뉴 위치를 알기위한 변수
     private int MenuImageSize;
     private ImageView MenuImageView; // 메뉴 이미지뷰
@@ -44,35 +44,15 @@ public class MenuActivity extends Activity {
     private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
     private MediaSoundManager mediaSoundManager;
     private MultiFinger multiFingerFunction;
-    private FingerCoordinate fingerCoordinate;
-    private FingerFunctionType type = FingerFunctionType.NONE;
+    private CustomTouchConnectListener customTouchConnectListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_braille_learning_menu);
         InitMenu();
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        refreshData();
-        Log.d("test","onResume");
-        startService(new Intent(this, AccessibilityCheckService.class));
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        recycleImage();
-        stopMediaPlayer();
-        stopService(new Intent(this, AccessibilityCheckService.class));
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
+        setLayout();
+        initTouchEvent();
     }
 
     @Override
@@ -86,11 +66,24 @@ public class MenuActivity extends Activity {
     public void setFullScreen(){ // 전체화면 함수
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
-    public void InitMenu(){ // 메뉴 초기화 함수
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Log.d("MenuActivity","onResume");
+        refreshData();
+        connectTouchEvent();
+    }
+
+
+    /**
+     * 메뉴 초기화 함수
+     */
+    public void InitMenu(){
         initImageView(); // 메뉴 imageview 사이즈 조절
         imageResizeModule = new ImageResizeModule(getResources());
         mediaSoundManager = new MediaSoundManager(this);
@@ -99,11 +92,14 @@ public class MenuActivity extends Activity {
         menuAddressDeque.addLast(PageNumber);
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         multiFingerFunction = new MultiFinger(this);
-        fingerCoordinate = new FingerCoordinate(THREE_FINGER);
         setFullScreen();
     }
 
-    public void initImageView(){ // 이미지 size setting
+
+    /**
+     * 메뉴 imageview setting 함수
+     */
+    public void initImageView(){
         MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
         MenuImageSize = (int)(Global.DisplayY*0.8); // imageview의 width와 height는 세로 높이의 80%
         MenuImageView.getLayoutParams().height = MenuImageSize;
@@ -112,121 +108,71 @@ public class MenuActivity extends Activity {
     }
 
     /**
+     * layout 설정
+     */
+    public void setLayout(){
+        layout = (LinearLayout) findViewById(R.id.menu_layout);
+        layout.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                onTouchEvent(event);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Log.d("MenuActivity","onPause");
+        recycleImage();
+        onStopSound();
+        pauseTouchEvent();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
+
+
+    /**
      * 손가락 1개, 2개에 대한 event를 발생하는 touchevent 함수
      * @param event : 발생된 touchevent
-     * @return
+     * @return 처리 여부
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int pointer_Count = event.getPointerCount(); // 현재 발생된 터치 event의 수
-
-        if(pointer_Count > THREE_FINGER) // 발생된 터치 이벤트가 2개를 초과하여도 2개까지만 인식
-            pointer_Count = THREE_FINGER;
-
-        if(pointer_Count == ONE_FINGER){
-            switch(event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_DOWN: // 손가락 1개를 화면에 터치하였을 때 발생되는 Event
-                    multiFinger = false;
-                    functionLock = false;
-                    fingerCoordinate.setDownCoordinate(event, pointer_Count);
-                    stopMediaPlayer();
-                    break;
-                case MotionEvent.ACTION_UP: // 손가락 1개를 화면에서 떨어트렸을 때 발생되는 Event
-                    if(multiFinger == false) {
-                        fingerCoordinate.setUpCoordinate(event, pointer_Count);
-                        CheckMenuType();
-                    }
-                    break;
-            }
-        } else if(pointer_Count > ONE_FINGER){
-            switch(event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                    multiFinger = true;
-                    fingerCoordinate.setDownCoordinate(event, pointer_Count);
-                    break;
-                case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                    fingerCoordinate.setUpCoordinate(event, pointer_Count);
-                    CheckMenuType();
-                    functionLock = true;
-                    break;
-            }
-        }
+        if(customTouchConnectListener != null)
+            customTouchConnectListener.touchEvent(event);
 
         return false;
     }
 
+
     /**
-     * 현재 화면에 출력될 메뉴를 check
-     * 손가락 2개에서 발생되는 event에 따라, 메뉴가 이동됨.
+     * touchevent module 초기화
      */
-    public void CheckMenuType(){ // 화면 전환을 위한 CustomTouchEvent 함수
-        if(functionLock == false) {
-            if (multiFinger == false) {// 싱글터치
-                type = FingerFunctionType.ENTER;
-                mediaSoundManager.start(type);
-            } else  // 멀티터치
-                type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-
-            switch (type) {
-                case ENTER: // 메뉴 접속
-                    menuAddressDeque.addLast(0);
-                    NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
-                    refreshData();
-                    break;
-                case BACK: // 상위 메뉴
-                    menuAddressDeque.removeLast();
-                    if (!menuAddressDeque.isEmpty())
-                        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
-                    refreshData();
-                    break;
-                case RIGHT: // 오른쪽 메뉴
-                    if(menuAddressDeque.peekLast()+1 == NowMenuListSize) {
-                        mediaSoundManager.allStop();
-                        mediaSoundManager.start(R.raw.last_page);
-                    } else {
-                        menuAddressDeque.addLast(menuAddressDeque.removeLast() + 1);
-                        refreshData();
-                    }
-//                    menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast() + 1));
-//                    refreshData();
-                    break;
-                case LEFT: // 왼쪽 메뉴
-                    if(menuAddressDeque.peekLast() == 0) {
-                        mediaSoundManager.allStop();
-                        mediaSoundManager.start(R.raw.first_page);
-                    } else {
-                        menuAddressDeque.addLast(menuAddressDeque.removeLast() - 1);
-                        refreshData();
-                    }
-//                    menuAddressDeque.addLast(getPageNumber(menuAddressDeque.removeLast() - 1));
-//                    refreshData();
-                    break;
-                case REFRESH: // 특수기능
-                    refreshData();
-                    break;
-                case SPEECH:
-                    mediaSoundManager.start(R.raw.impossble_function);
-                    break;
-                case MYNOTE:
-                    mediaSoundManager.start(R.raw.impossble_function);
-                    break;
-                default:
-                    break;
-            }
-        }
+    public void initTouchEvent(){
+        customTouchConnectListener = new CustomTouchEvent(this, this);
+        connectTouchEvent();
     }
 
-    public int getPageNumber(int PageNumber){ // 메뉴 번호 얻어오는 함수
-        int Startpage = 0;
-        int Lastpage = NowMenuListSize-1; // 마지막 페이지는 현재 메뉴 리스트의 마지막 페이지
 
-        if(PageNumber > Lastpage)  // 메뉴를 원형으로 연결
-            PageNumber = Startpage;
-        else if(PageNumber < Startpage)
-            PageNumber = Lastpage;
-
-        return PageNumber;
+    /**
+     * touchevent module 연결
+     */
+    public void connectTouchEvent(){
+        customTouchConnectListener.onResume();
     }
+
+    /**
+     * touchevent module 일시중지
+     */
+    public void pauseTouchEvent(){
+        customTouchConnectListener.onPause();
+    }
+
 
     /**
      * 화면 새로고침 함수
@@ -236,15 +182,18 @@ public class MenuActivity extends Activity {
         if(menuAddressDeque.isEmpty())  // 메뉴 Adress Deque가 비어있으면 종료
             finish();
         else {
-            TreeNode menuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
-            if (menuNode != null) {
-                refreshImage(menuNode);
-                refreshSound(menuNode);
-            } else  // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제 후 점자 학습 화면 이동
-                enterBrailleLearning();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TreeNode menuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
+                    if (menuNode != null) {
+                        refreshImage(menuNode);
+                        refreshSound(menuNode);
+                    } else  // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제 후 점자 학습 화면 이동
+                        enterBrailleLearning();
+                }
+            });
         }
-
-        type = FingerFunctionType.NONE;
     }
 
     /**
@@ -256,6 +205,7 @@ public class MenuActivity extends Activity {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.image_fade);
         MenuImageView.startAnimation(animation);
         MenuImageView.setImageDrawable(imageResizeModule.getDrawableImage(menuNode.getImageId(), MenuImageSize, MenuImageSize)); //현재화면에 이미지 설정
+        layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
     }
 
     /**
@@ -265,6 +215,12 @@ public class MenuActivity extends Activity {
     public void refreshSound(TreeNode menuNode){
         int id = menuNode.getSoundId();
         mediaSoundManager.start(id);
+    }
+
+    public void refreshSound(){
+        onStopSound();
+        TreeNode menuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
+        refreshSound(menuNode);
     }
 
     /**
@@ -282,6 +238,109 @@ public class MenuActivity extends Activity {
         startActivity(i);
     }
 
+
+    /**
+     * 화면에 focus를 잡아주는 함수
+     * 이미지가 변결될때마다 호출됨
+     */
+    @Override
+    public void onFocusRefresh() {
+        layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+        refreshSound();
+    }
+
+    @Override
+    public void onStopSound() {
+        mediaSoundManager.stop();
+    }
+
+
+    @Override
+    public void onError() {
+        FingerFunctionType type = FingerFunctionType.NONE;
+        mediaSoundManager.start(type);
+    }
+
+
+    /**
+     * 손가락 1개 함수 정의
+     * 메뉴 접속 이벤트가 발생되었을 경우 호출됨
+     * Deque에 tree를 탐색하기 위한 주소값 변경
+     * @param fingerCoordinate : 좌표값
+     */
+    @Override
+    public void onOneFingerFunction(FingerCoordinate fingerCoordinate) {
+        Log.d("MenuActivity","onfinger");
+        FingerFunctionType type = FingerFunctionType.ENTER;
+        mediaSoundManager.start(type);
+        menuAddressDeque.addLast(0);
+        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
+        refreshData();
+    }
+
+
+    /**
+     * 손가락 2개 함수 정의
+     * 이벤트에 따라 Deque에 tree를 탐색하기 위한 주소값 변경
+     * @param fingerCoordinate : 좌표값
+     */
+    @Override
+    public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
+        Log.d("MenuActivity","twofinger");
+        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
+        switch (type) {
+            case BACK: // 상위 메뉴
+                menuAddressDeque.removeLast();
+                if (!menuAddressDeque.isEmpty())
+                    NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
+                refreshData();
+                break;
+            case RIGHT: // 오른쪽 메뉴
+                if(menuAddressDeque.peekLast()+1 == NowMenuListSize) {
+                    mediaSoundManager.allStop();
+                    mediaSoundManager.start(R.raw.last_page);
+                } else {
+                    menuAddressDeque.addLast(menuAddressDeque.removeLast() + 1);
+                    refreshData();
+                }
+                break;
+            case LEFT: // 왼쪽 메뉴
+                if(menuAddressDeque.peekLast() == 0) {
+                    mediaSoundManager.allStop();
+                    mediaSoundManager.start(R.raw.first_page);
+                } else {
+                    menuAddressDeque.addLast(menuAddressDeque.removeLast() - 1);
+                    refreshData();
+                }
+                break;
+            case REFRESH: // 특수기능
+                refreshData();
+                break;
+        }
+    }
+
+
+    /**
+     * 손가락 3개 함수 정의
+     * 손가락 3개 함수가 발생됬을 시, 메뉴 activity에서는 사용 불가 음성 출력
+     * @param fingerCoordinate
+     */
+    @Override
+    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
+        Log.d("MenuActivity","threefinger");
+        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
+        switch (type) {
+            case SPEECH:
+                mediaSoundManager.start(R.raw.impossble_function);
+                break;
+            case MYNOTE:
+                mediaSoundManager.start(R.raw.impossble_function);
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * 이미지 메모리 해제 함수
      */
@@ -294,9 +353,5 @@ public class MenuActivity extends Activity {
             }
             MenuImageView.setImageDrawable(null);
         }
-    }
-
-    public void stopMediaPlayer(){
-        mediaSoundManager.stop();
     }
 }

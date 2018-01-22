@@ -33,12 +33,10 @@ public class MynoteControl extends BasicControl implements Control {
         }
     }
 
-    /**
-     * 손가락 3개 함수 재정의
-     * 나만의 단어장 삭제 기능 변경
-     */
+
+
     @Override
-    public void threeFingerFunction() {
+    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case SPEECH:

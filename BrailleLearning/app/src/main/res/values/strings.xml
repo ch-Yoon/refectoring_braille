@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">BrailleLearning</string>
+    <string name="app_name">봄</string>
     <string name="kakao_app_key">a824838b9185f5c18979efe5a986b080</string>
+    <string name="accessibility_description">현재 앱의 접근성 권한을 필요로 합니다. </string>
 </resources>

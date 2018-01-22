@@ -17,7 +17,7 @@ import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.Menu.MenuActivity;
 import com.project.why.braillelearning.Module.FullScreenModule;
 import com.project.why.braillelearning.Module.ImageResizeModule;
-import com.project.why.braillelearning.AccessibilityCheckService;
+import com.project.why.braillelearning.Accessibility.AccessibilityCheckService;
 import com.project.why.braillelearning.R;
 
 import java.util.Timer;
@@ -65,7 +65,7 @@ public class BrailleLearningLoading extends Activity {
     //    setLoadingImage();
         Timer_Start(); // 애니메이션 시작
         Log.d("onResume","onResume");
-        startService(new Intent(this, AccessibilityCheckService.class));
+        //startService(new Intent(this, AccessibilityCheckService.class));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class BrailleLearningLoading extends Activity {
         recycleImage();
         LoadingAnimationIndex = 0; // 애니메이션을 위한 index 초기화
         Log.d("onPause","onPause");
-        stopService(new Intent(this, AccessibilityCheckService.class));
+      //  stopService(new Intent(this, AccessibilityCheckService.class));
     }
 
     @Override

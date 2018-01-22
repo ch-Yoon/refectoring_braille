@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.project.why.braillelearning.AccessibilityCheckService;
+import com.project.why.braillelearning.Accessibility.AccessibilityCheckService;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
@@ -77,8 +77,6 @@ public class BrailleLearningActivity extends Activity implements ControlListener
             learningModule.onPause();
             learningView.onPause();
         }
-        stopService(new Intent(this, AccessibilityCheckService.class));
-
     }
 
     /**
@@ -89,8 +87,6 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         super.onResume();
         if(learningModule != null && learningView != null)
             learningModule.nodifyObservers();
-
-        startService(new Intent(this, AccessibilityCheckService.class));
     }
 
     /**
@@ -120,7 +116,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
      * 점자 학습 모듈을 setting하는 함수
      */
     public void initBrailleControl(){
-        BrailleLearningModuleManager brailleLearningModuleManager = new BrailleLearningModuleManager(this, this, jsonFileName, databaseTableName, brailleLearningType);
+        BrailleLearningModuleFactory brailleLearningModuleManager = new BrailleLearningModuleManager(this, this, jsonFileName, databaseTableName, brailleLearningType);
         learningModule = brailleLearningModuleManager.getLearningModule();
     }
 
@@ -130,9 +126,16 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     public void initBrailleView(){
         BrailleLearningViewManager brailleLearningViewManager = new BrailleLearningViewManager(this, brailleLearningType);
         learningView = brailleLearningViewManager.getView();
+        learningModule.addObservers(learningView);    // view를 learning module observer로 등록
         View view = learningView.getView();
         view.setBackgroundColor(ContextCompat.getColor(this, R.color.AppBasicColor));
-        learningModule.addObservers(learningView);    // view를 learning module observer로 등록
+        view.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                onTouchEvent(event);
+                return false;
+            }
+        });
         setContentView(view);
     }
 

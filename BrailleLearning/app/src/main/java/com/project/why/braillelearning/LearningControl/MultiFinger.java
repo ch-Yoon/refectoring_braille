@@ -1,6 +1,7 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.Global;
@@ -8,6 +9,11 @@ import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 
 /**
  * Created by User on 2017-10-09.
+ */
+
+/**
+ * 다중 터치 이벤트 class
+ * 손가락 2개, 3개에 관한 이벤트를 분석하여 return
  */
 
 public class MultiFinger{
@@ -71,11 +77,23 @@ public class MultiFinger{
                 mediaSoundManager.start(type);
         }
 
+        Log.d("MultiFinger","finger type : "+type);
 
 
         return type;
     }
 
+
+    /**
+     * 손가락 2개에 대한 event를 분석하는 함수
+     * @param DragX : 좌우 드래그 범위 충족(true : 충족, false : 비충족)
+     * @param DragY : 상하 드래그 범위 충족(true : 충족, false : 비충족)
+     * @param Drag_countX : 양수이면 오른쪽, 음수이면 왼쪽 드래그 의미
+     * @param Drag_countY : 양수이면 위에서 아래로 드래그, 음수이면 아래서 위로 드래그 의미
+     * @param Finger_gapX : 좌우 드래그의 이동거리
+     * @param Finger_gapY : 상하 드래그의 이동거리
+     * @return : 이벤트 type
+     */
     private FingerFunctionType getTwoFingerFunction(boolean DragX, boolean DragY, int Drag_countX, int Drag_countY, double Finger_gapX[], double Finger_gapY[]){
         FingerFunctionType type = FingerFunctionType.NONE;
 
@@ -116,6 +134,14 @@ public class MultiFinger{
         return type;
     }
 
+
+    /**
+     * 손가락 3개 이벤트를 분석하는 함수
+     * @param DragX : true이면 좌우 드래그 인식 거리 충족, false이면 미충족
+     * @param DragY  : true이면 상하 드래그 인식 거리 충족, false이면 미충족
+     * @param Drag_countY : 상하 드래그 이동거리
+     * @return : 이벤트 type
+     */
     private FingerFunctionType getThreeFingerFunction(boolean DragX, boolean DragY, int Drag_countY){
         FingerFunctionType type = FingerFunctionType.NONE;
 

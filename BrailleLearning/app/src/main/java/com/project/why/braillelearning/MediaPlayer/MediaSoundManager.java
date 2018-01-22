@@ -285,6 +285,7 @@ public class MediaSoundManager {
     public int getMediaQueueSize(){
         return mediaPlayerSingleton.getMediaQueueSize();
     }
+
     public boolean getMediaPlaying(){
         return mediaPlayerSingleton.getMediaPlaying();
     }

@@ -15,6 +15,9 @@ import java.util.TimerTask;
  * Created by Yeo on 2017-11-02.
  */
 
+/**
+ * 선생님과의 대화 메뉴 중 선생님 모드 손가락 1개 함수 분석 모듈
+ */
 public class TeacherSingleFinger extends BasicSingleFinger {
     private TimerTask mTask;
     private Timer mTimer;
@@ -35,12 +38,24 @@ public class TeacherSingleFinger extends BasicSingleFinger {
         threadStop();
     }
 
+    /**
+     * 손가락 1개 함수 정의
+     * @param brailleMatrix : 현재 화면의 점자 data 좌표
+     * @param fingerCoordinate : 손가락 1개의 좌표가 저장되어 있는 클래스
+     * @return
+     */
     @Override
     public Dot[][] oneFingerFunction(Dot[][] brailleMatrix, FingerCoordinate fingerCoordinate){
         super.oneFingerFunction(brailleMatrix, fingerCoordinate);
         return checkCoordinate(brailleMatrix);
     }
 
+
+    /**
+     * 동일한 장소에서 일정시간 대기 시 점자 돌출 유무 변경
+     * @param brailleMatrix : 점자 행렬
+     * @return : 변경된 점자 행렬
+     */
     private Dot[][] checkCoordinate(Dot[][] brailleMatrix){
         threadMaking();
         int col = super.previous_i;
@@ -65,6 +80,11 @@ public class TeacherSingleFinger extends BasicSingleFinger {
         return null;
     }
 
+
+    /**
+     * 진동 발생 함수
+     * @param target : 점자의 돌출 유무 true(돌출), false(비돌출)
+     */
     private void startVibrator(boolean target){
         if (target)
             vibrator.vibrate(Vibrate.STRONG.getStrength()); // 강한 진동 발생

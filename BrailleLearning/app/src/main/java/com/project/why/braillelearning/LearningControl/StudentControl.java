@@ -28,6 +28,9 @@ import java.util.ArrayList;
  * Created by hyuck on 2017-11-27.
  */
 
+/**
+ * 선생님과의 대화 중 학생 모드 class
+ */
 public class StudentControl extends BasicControl implements SpeechRecognitionListener{
     private SpeechRecognitionMoudle speechRecognitionMoudle;
     private String roomNumber = "";
@@ -40,12 +43,12 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
     }
 
-
     /**
-     * 손가락 2개에 대한 event 함수
-     * BACK(상위메뉴), RIGHT(오른쪽 화면), LEFT(왼쪽 화면), REFRESH(다시듣기)
+     * 손가락 2개 함수 재정의
+     * @param fingerCoordinate : 좌표값
      */
-    public void twoFingerFunction() {
+    @Override
+    public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case BACK:
@@ -78,12 +81,13 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         }
     }
 
+
     /**
-     * 손가락 3개에 대한 event 함수
-     * SPEECH(음성인식), MYNOTE(나만의 단어장 저장 및 삭제)
+     * 손가락 3개 함수 재정의
+     * @param fingerCoordinate : 좌표값
      */
     @Override
-    public void threeFingerFunction() {
+    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case SPEECH:
@@ -99,7 +103,6 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
                 break;
         }
     }
-
 
 
     /**
@@ -203,8 +206,9 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
                             JSONObject c = jsonArray.getJSONObject(i);
                             String letterName = c.getString("LetterName");
                             String brailleText = c.getString("brailleText");
-                            String rawId = c.getString("rawID");
-                            addBrailleDataArray(letterName, brailleText, rawId);
+                          //  String rawId = c.getString("rawID");
+                         //   addBrailleDataArray(letterName, brailleText, rawId);
+                            addBrailleDataArray(letterName, brailleText);
                         }
 
                         if(checkNewData == true) {
@@ -226,8 +230,14 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         }
     }
 
-    private void addBrailleDataArray(String letterName, String brailleMatrix, String rawId){
-        BrailleData data = new BrailleData(letterName, brailleMatrix, rawId, BrailleLearningType.TEACHER);
+//    private void addBrailleDataArray(String letterName, String brailleMatrix, String rawId){
+//        BrailleData data = new BrailleData(letterName, brailleMatrix, rawId, BrailleLearningType.TEACHER);
+//        brailleDataArrayList.add(data);
+//    }
+
+    private void addBrailleDataArray(String letterName, String brailleMatrix){
+        BrailleData data = new BrailleData(letterName, brailleMatrix, "", BrailleLearningType.TEACHER);
+        data.refreshData();
         brailleDataArrayList.add(data);
     }
 
