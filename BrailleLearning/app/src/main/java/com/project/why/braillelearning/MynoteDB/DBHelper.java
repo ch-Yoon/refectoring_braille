@@ -5,15 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.GettingBraille;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.R;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 

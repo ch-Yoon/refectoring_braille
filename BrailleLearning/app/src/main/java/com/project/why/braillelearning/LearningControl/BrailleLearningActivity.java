@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.project.why.braillelearning.Accessibility.AccessibilityCheckService;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
@@ -16,7 +14,7 @@ import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.EnumConstant.Menu;
-import com.project.why.braillelearning.LearningView.BrailleLearningViewManager;
+import com.project.why.braillelearning.LearningView.BasicView;
 import com.project.why.braillelearning.LearningView.ViewObservers;
 import com.project.why.braillelearning.Menu.MenuInformationActivity;
 import com.project.why.braillelearning.R;
@@ -38,7 +36,6 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("test","brailleLearningActivity oncreate");
         Intent i = getIntent();
         Menu menuName = (Menu) i.getSerializableExtra("MENUNAME");
         object = getBrailleInformationObject(menuName);
@@ -49,13 +46,25 @@ public class BrailleLearningActivity extends Activity implements ControlListener
 
     }
 
+
+    /**
+     * 각 메뉴에 맞는 사용방법 가이드 activity 실행
+     */
     private void startMenuInfo(){
-        Log.d("test","startMenuInfo");
         Intent i = new Intent(this, MenuInformationActivity.class);
         i.putExtra("BRAILLELEARNINGTYPE",brailleLearningType);
         startActivityForResult(i, MENU_INFO);
     }
 
+
+    /**
+     * 사용방법 가이드 activity 종료 후 호출 함수
+     * 사용방법을 모두 들었다면 학습 view와 control 연결
+     * 사용방법을 모두 듣지 않고 뒤로가기를 했다면 현재 activity 종료
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MENU_INFO) {
@@ -67,6 +76,8 @@ public class BrailleLearningActivity extends Activity implements ControlListener
             }
         }
     }
+
+
     /**
      * 화면이 일시정지 될 때, control과 view를 일시정지하는 함수
      */
@@ -79,8 +90,9 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         }
     }
 
+
     /**
-     * 화면이 다시 시작될 때, 일시정지했던 control과 view를 재가동시키는 함수
+     * 화면이 다시 시작될 때, 일시정지했던 control과 view를 재 가동시키는 함수
      */
     @Override
     public void onResume(){
@@ -89,6 +101,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
             learningModule.nodifyObservers();
     }
 
+
     /**
      * 전체화면을 위한 함수
      * @param hasFocus
@@ -96,11 +109,11 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        Log.d("onwindow",hasFocus+"");
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
             setFullScreen();
         }
     }
+
 
     /**
      * 전체화면 적용 함수
@@ -112,6 +125,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
+
     /**
      * 점자 학습 모듈을 setting하는 함수
      */
@@ -120,12 +134,13 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         learningModule = brailleLearningModuleManager.getLearningModule();
     }
 
+
     /**
      * 점자 화면 view를 setting하는 함수
      */
     public void initBrailleView(){
-        BrailleLearningViewManager brailleLearningViewManager = new BrailleLearningViewManager(this, brailleLearningType);
-        learningView = brailleLearningViewManager.getView();
+        BasicView basicView = new BasicView(this);
+        learningView = basicView;
         learningModule.addObservers(learningView);    // view를 learning module observer로 등록
         View view = learningView.getView();
         view.setBackgroundColor(ContextCompat.getColor(this, R.color.AppBasicColor));
@@ -139,6 +154,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         setContentView(view);
     }
 
+
     /**
      * menu에 따라 결정되는 점자 정보 class를 얻는 함수
      * @param menuName : 선택된 메뉴 이름
@@ -149,6 +165,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         GettingInformation object = brailleInformationFactory.getInformationObject(menuName);
         return object;
     }
+
 
     /**
      * 발생되는 touch event를 control로 전달하는 함수
@@ -161,13 +178,12 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         return true;
     }
 
+
     /**
      * 학습 종료 함수
      */
     @Override
     public void exit() {
-        Log.d("test","exit");
         finish();
-        Log.d("test","finish");
     }
 }

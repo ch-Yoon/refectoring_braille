@@ -46,11 +46,19 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
         this.customTouchEventListener = customTouchEventListener;
     }
 
+
+    /**
+     * app이 재개될 경우, 접근성 service 연결
+     */
     @Override
     public void onResume() {
         setBlindPerson();
     }
 
+
+    /**
+     * app이 onPause상태에 놓일 경우, 접근성 service 초기화
+     */
     @Override
     public void onPause() {
         initializeBlindPerson();
@@ -102,6 +110,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
      */
     private void checkBlindPerson(){
         blindMode = am.isTouchExplorationEnabled();
+
         if(blindMode == true) {
             if(accessibilityEventSingleton != null)
                 accessibilityEventSingleton.checkPermissions();
@@ -120,6 +129,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
         checkBlindPerson();
 
         int pointer_Count = event.getPointerCount(); // 현재 발생된 터치 event의 수
+
         if(pointer_Count > THREE_FINGER)
             pointer_Count = THREE_FINGER;
 
@@ -130,12 +140,12 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
                         multiFinger = true;
+
                         fingerCoordinate.setDownCoordinate(event, pointer_Count);
                         break;
                     case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
                         if(functionLock == false) {
                             fingerCoordinate.setUpCoordinate(event, pointer_Count);
-
                             if (pointer_Count == TWO_FINGER)
                                 customTouchEventListener.onTwoFingerFunction(fingerCoordinate);
                             else if (pointer_Count == THREE_FINGER)
@@ -149,7 +159,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
         } else {
             if (pointer_Count == ONE_FINGER)
                 blindOneFIngerTouch(event);
-            else if(pointer_Count > ONE_FINGER){
+            else {
                 switch (event.getAction()  & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
                         multiFinger = true;
@@ -172,6 +182,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
             }
         }
     }
+
 
     /**
      * 일반버전의 손가락 1개 함수
@@ -216,7 +227,6 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                 functionLock = false;
                 hoverError = false;
 
-                accessibilityEventSingleton.touchCheckStop();
                 threadStop();
                 customTouchEventListener.onStopSound();
                 actionDownTime = event.getEventTime();
@@ -227,14 +237,11 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                     hoverError = fingerCoordinate.checkHoverError(event);
                     if(hoverError == false)
                         fingerCoordinate.setHoverUpCoordinate(event, ONE_FINGER + 1);
-                } else
-                    break;
-
+                }
                 break;
             case MotionEvent.ACTION_UP:
-                actionUpTime = event.getEventTime();
-
                 if(multiFinger == false) {
+                    actionUpTime = event.getEventTime();
                     if (actionDownTime == actionUpTime) {
                         multiFinger = false;
                         threadMaking();
@@ -272,10 +279,15 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                 }
             };
             touchTimer = new Timer();
-            touchTimer.schedule(touchTimerTask, 100);
+            touchTimer.schedule(touchTimerTask, 200);
         }
     }
 
+
+    /**
+     * 시각장애인 버전의 touch event를 식별하기 위한 thread를 중지하는 함수
+     * thread 중지 후 모두 초기화
+     */
     private void threadStop(){
         if(touchTimerTask != null) {
             touchTimerTask.cancel();
@@ -287,10 +299,13 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
             touchTimer = null;
         }
 
-
         initActionTime();
     }
 
+
+    /**
+     * ACTION_DOWN과 ACTION_UP의 이벤트 발생 시간을 초기화 시키는 함수
+     */
     private void initActionTime(){
         actionDownTime = 0;
         actionUpTime = 0;

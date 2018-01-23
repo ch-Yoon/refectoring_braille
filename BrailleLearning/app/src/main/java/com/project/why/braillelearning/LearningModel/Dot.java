@@ -20,6 +20,7 @@ public class Dot {
 
     public Dot(){}
 
+
     /**
      * Dot가 매개변수로 넘어왔을 때, 깊은복사를 위한 생성자
      * @param copyDot : 다른 곳에서 만들어진 dot class
@@ -100,6 +101,7 @@ public class Dot {
         return touchAreaRidus;
     }
 
+
     /**
      * 터치영역 중 y좌표의 허용영역에 해당되는지 check하는 함수
      * @param y : 터치된 y좌표
@@ -111,6 +113,7 @@ public class Dot {
         else
             return false;
     }
+
 
     /**
      * 터치영역 중 x좌표의 허용영역에 해당되는지 check하는 함수

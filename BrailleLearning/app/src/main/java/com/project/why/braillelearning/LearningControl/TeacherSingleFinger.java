@@ -1,13 +1,9 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.project.why.braillelearning.EnumConstant.DotType;
-import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Vibrate;
 import com.project.why.braillelearning.LearningModel.Dot;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,6 +33,7 @@ public class TeacherSingleFinger extends BasicSingleFinger {
         check_j = 0;
         threadStop();
     }
+
 
     /**
      * 손가락 1개 함수 정의
@@ -92,6 +89,10 @@ public class TeacherSingleFinger extends BasicSingleFinger {
             vibrator.vibrate(Vibrate.WEAKLY.getStrength()); // 약한 진동 발생
     }
 
+
+    /**
+     * 점자 입력을 위한 손가락이 다른 위치로 이동했는지 확인하는 쓰레드
+     */
     private synchronized void threadMaking(){
         if(mTask == null) {
             mTask = new TimerTask() {
@@ -105,6 +106,10 @@ public class TeacherSingleFinger extends BasicSingleFinger {
         }
     }
 
+
+    /**
+     * 점자 입력을 위한 손가락 위치 체크 쓰레드를 종료하는 함수
+     */
     private void threadStop(){
         if(mTask != null) {
             mTask.cancel();

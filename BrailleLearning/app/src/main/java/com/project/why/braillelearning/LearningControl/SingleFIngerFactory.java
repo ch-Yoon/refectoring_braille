@@ -1,7 +1,6 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 
 /**
@@ -19,6 +18,7 @@ public class SingleFIngerFactory {
         this.context = context;
         this.brailleLearningType = brailleLearningType;
     }
+
 
     /**
      * brailleLearningType에 따른 손가락 1개 event모듈을 return하는 함수

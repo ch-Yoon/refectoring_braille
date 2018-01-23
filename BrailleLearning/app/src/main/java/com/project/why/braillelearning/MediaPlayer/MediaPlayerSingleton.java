@@ -2,14 +2,10 @@ package com.project.why.braillelearning.MediaPlayer;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
-
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager;
 import com.kakao.sdk.newtoneapi.TextToSpeechClient;
 import com.kakao.sdk.newtoneapi.TextToSpeechListener;
 import com.kakao.sdk.newtoneapi.TextToSpeechManager;
-import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.R;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -47,6 +43,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         this.context = context;
     }
 
+
     /**
      * 일반적인 음성 file 출력 함수
      * @param soundIdQueue : MediaSoundManager로 부터 Queue를 받음.
@@ -55,6 +52,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         queue.addAll(soundIdQueue);
         checkMediaPlayer();
     }
+
 
     /**
      * tts 출력을 위한 함수
@@ -83,11 +81,11 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         ttsClient.play(ttsText);
     }
 
+
     /**
      * 다수의 곳에서 접근할 때, race contidion을 방지하기 위한 동기화 함수
      */
     private synchronized void checkMediaPlayer(){
-        Log.d("media","queue size : "+ queue.size());
         if(mediaPlayer != null){
             if(!mediaPlayer.isPlaying()){
                 initializeMediaPlayer();
@@ -97,6 +95,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         } else
             startMediaPlayer();
     }
+
 
     /**
      * queue에 저장되어 있는 음성들을 순차적으로 출력함
@@ -122,6 +121,11 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         }
     }
 
+
+    /**
+     * 메뉴 가이드 음성이 출력중인지 확인하는 함수
+     * @param id : 현재 출력중인 음성 파일 id
+     */
     private void checkMenuInfoMedia(int id){
         int menuInfo_Id[] = new int[]{R.raw.tutorial_info, R.raw.basic_info, R.raw.master_info, R.raw.translation_info,
                 R.raw.quiz_info, R.raw.mynote_info, R.raw.teacher_mode, R.raw.student_mode};
@@ -206,7 +210,6 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
 
     @Override
     public void onError(int code, String message) {
-        Log.d("tts","ttserror");
         ttsClient = null;
     }
 

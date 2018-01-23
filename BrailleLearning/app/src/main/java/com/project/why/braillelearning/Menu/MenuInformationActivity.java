@@ -5,15 +5,11 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.project.why.braillelearning.Accessibility.AccessibilityCheckService;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
@@ -110,6 +106,10 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         });
     }
 
+
+    /**
+     * 메뉴 음성 가이드 출력 함수
+     */
     public void mediaStart(){
         stopSound();
         switch (brailleLearningType){
@@ -211,7 +211,6 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
 
     @Override
     public void onOneFingerFunction(FingerCoordinate fingerCoordinate) {
-        Log.d("MenuInformation","onefinger");
         exit(0);
     }
 
@@ -225,7 +224,6 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
      */
     @Override
     public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
-        Log.d("MenuInformation","twofinger");
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case BACK:
@@ -299,7 +297,6 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
 
     public synchronized void exit(int result){
         if(finish == false) {
-            Log.d("MenuInformation","exit");
             finish = true;
             if (result == 0) {
                 if (brailleLearningType == BrailleLearningType.TUTORIAL)
@@ -319,11 +316,8 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
     public void checkSoundPlaying(){
-        if(mediaSoundManager.getMenuInfoPlaying() == false && mediaSoundManager.getMediaPlaying() == false ) {
-            Log.d("MenuInformation","checkSoundPlaying : false" );
+        if(mediaSoundManager.getMenuInfoPlaying() == false && mediaSoundManager.getMediaPlaying() == false )
             exit(0);
-        }
 
-        Log.d("MenuInformation","MenuInfoPlaying : "+mediaSoundManager.getMenuInfoPlaying());
     }
 }

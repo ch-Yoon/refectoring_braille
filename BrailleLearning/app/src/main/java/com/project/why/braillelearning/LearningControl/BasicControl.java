@@ -6,7 +6,6 @@ import android.view.MotionEvent;
 import com.project.why.braillelearning.CustomTouch.CustomLearningTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomLearningTouchListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
-import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -193,6 +192,10 @@ public class BasicControl implements Control, CustomLearningTouchListener {
 
     /**
      * 손가락 2개를 화면에서 드래그하였을 경우
+     * BACK : 뒤로가기
+     * RIGHT : 오른쪽 페이지 이동
+     * LEFT : 왼쪽 페이지 이동
+     * REFRESH : 다시듣기
      * @param fingerCoordinate : 좌표값
      */
     @Override
@@ -231,6 +234,8 @@ public class BasicControl implements Control, CustomLearningTouchListener {
 
     /**
      * 손가락 3개를 화면에서 드래그할 경우
+     * SPEECH : 음성인식
+     * MYNOTE : 나만의 단어장 저장
      * @param fingerCoordinate : 좌표값
      */
     @Override

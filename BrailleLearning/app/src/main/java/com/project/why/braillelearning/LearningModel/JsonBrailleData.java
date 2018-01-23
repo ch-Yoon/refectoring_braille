@@ -2,14 +2,10 @@ package com.project.why.braillelearning.LearningModel;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.util.Log;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Json;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -34,6 +30,7 @@ public class JsonBrailleData implements GettingBraille {
         this.brailleLearningType = brailleLearningType;
         readJsonBraillData();
     }
+
 
     /**
      * json file로부터 data를 읽어와 BrailleData에 저장 후, 각각의 BrailleData들을 Arraylist에 저장함
@@ -61,11 +58,18 @@ public class JsonBrailleData implements GettingBraille {
                 addBrailleDataArray(lettername, brailleMatrix, assistanceLetterName, rawId);
             }
         } catch (Exception e) {
-            Log.d("JsonBrailleData",e.getMessage());
         }
 
     }
 
+
+    /**
+     * 점자 데이터를 저장하는 함수
+     * @param letterName : 점자를 의미하는 글자
+     * @param brailleMatrix : 점자 행렬을 의미하는 string
+     * @param assistanceLetterName : 퀴즈를 정답을 위한 글자
+     * @param rawId : 음성 파일 id
+     */
     private void addBrailleDataArray(String letterName, String brailleMatrix, String assistanceLetterName, String rawId){
         BrailleData data = new BrailleData(letterName, brailleMatrix, assistanceLetterName, rawId, brailleLearningType);
         brailleDataArray.add(data);

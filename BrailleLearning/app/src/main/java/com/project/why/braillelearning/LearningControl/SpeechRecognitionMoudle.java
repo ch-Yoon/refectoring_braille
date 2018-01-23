@@ -3,8 +3,6 @@ package com.project.why.braillelearning.LearningControl;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener;
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient;
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager;
@@ -49,10 +47,10 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
                 }
             }
         } catch (Exception e){
-            Log.d("SpeechRecognitionModule", "error : "+e.getMessage());
             mediaSoundManager.start("speechrecognition_fail");
         }
     }
+
 
     /**
      * 선생님과의 대화 메뉴를 위한 음성인식 시작 함수
@@ -70,7 +68,6 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
                 }
             }
         } catch (Exception e){
-            Log.d("SpeechRecognitionModule", "error : "+e.getMessage());
             mediaSoundManager.start("speechrecognition_fail");
         }
     }
@@ -120,7 +117,6 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
      */
     @Override
     public void onError(int errorCode, String errorMsg) {
-        Log.d("SpeechRecognitionModule", "error : "+errorMsg);
         client = null;
         if(stop == false)
             mediaSoundManager.start("speechrecognition_fail");
@@ -131,7 +127,6 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
 
     @Override
     public void onPartialResult(String partialResult) {
-
     }
 
 
@@ -141,7 +136,6 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
      */
     @Override
     public void onResults(Bundle results) {
-        Log.d("test","onResult");
         client = null;
         if(stop == false) {
             ArrayList<String> sttArray = results.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS);
@@ -184,7 +178,6 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
                             count++;
                             Thread.sleep(50);
                         } catch (Exception e) {
-                            Log.d("SpeechRecognitionModule", "Thread sleep error");
                             return false;
                         }
                     }
@@ -196,10 +189,9 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            if(result == true) {
-                Log.d("test","startRecogntion");
+            if(result == true)
                 startSpeechRecognition();
-            } else
+            else
                 onError(0,"SpeechRecognition error");
             taskCheck = false;
         }

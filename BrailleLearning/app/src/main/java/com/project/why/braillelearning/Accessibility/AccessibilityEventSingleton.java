@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by hyuck on 2018-01-16.
@@ -24,8 +21,6 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
     private static final int TYPE_TOUCH_INTERACTION_END = 2097152; // 사용자가 화면 터치를 종료하였을 떄의 이벤트 상수값
     private static final AccessibilityEventSingleton ourInstance = new AccessibilityEventSingleton();
     private AccessibilityEventListener accessibilityEventListener;
-    private TimerTask touchTimerTask;
-    private Timer touchTimer;
     private int screenTouchCount = 0;
     private Context context;
     private AccessibilityManager accessibilityManager;
@@ -46,13 +41,14 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
     private AccessibilityEventSingleton() {
     }
 
+
     /**
      * 화면에 Accessibility focus가 잡혔는지 안잡혔는지의 여부를 해당 함수를 통해 설정한다.
+     * focus가 잡혀 현재 함수가 호출될 경우, 접근성 service에서 발생되는 pushEvent를 무시한다.
      * @param state : true(focus 잡힘), false(focus 안잡힘)
      */
     public void setFocusState(boolean state){
         screenFocusState = state;
-        touchCheckStop();
     }
 
 
@@ -71,83 +67,17 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
         if(accessibilityEventListener != null) {
             if (screenFocusState == false) {
                 int eventType = event.getEventType();
-                Log.d("singletonevent", "event : " + eventType + ", time : " + event.getEventTime());
-
-                if (eventType == TYPE_TOUCH_INTERACTION_START) {
+                if (eventType == TYPE_TOUCH_INTERACTION_START)
                     screenTouchCount++;
-                } else if (eventType == TYPE_TOUCH_INTERACTION_END) {
+                else if (eventType == TYPE_TOUCH_INTERACTION_END) {
                     if (screenTouchCount == 2)
-                        startDoubleTap();
-                    else
-                        touchCheckStop();
-
+                        pushEnterEvent();
                     screenTouchCount = 0;
-                } else {
-                    touchCheckStop();
+                } else
                     screenTouchCount = 0;
-                }
             }
-        }
-    }
-
-
-    /**
-     * double tab 판정이 일어났을 경우, push event를 위한 thread를 생성한다.
-     */
-    private void startDoubleTap() {
-        threadStop();
-        threadMaking();
-    }
-
-
-    /**
-     * touch event를 식별하기 위한 thread
-     * 손가락 1개로 화면의 같은 지점을 두번 연속 탭 할 경우, 1048576 -> 1048576 -> 2097152이 호출된다.
-     * 손가락 1개로 화면의 다른 지점(ex 화면의 좌우 양끝)을 한번씩 탭 할 경우 1048576 -> 1048576 - > 2097152이 호출되고, 일정 시간 후 2097152가 다시 한번 호출된다.
-     * 이 두개의 action을 구별하기 위해, 1048576 -> 1048576 -> 2097152 이후 일정시간 동안 대기를 한 뒤, 추가적인 2097152가 없다면 double tab으로 간주한다.
-     */
-    private synchronized void threadMaking(){
-        if(touchTimerTask == null) {
-            touchTimerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    Log.d("singletonevent","thread start");
-                    pushEnterEvent();
-                    threadStop();
-                }
-            };
-            touchTimer = new Timer();
-            touchTimer.schedule(touchTimerTask, 700);
-        }
-    }
-
-
-    /**
-     * 작동중인 thread를 정지한다.
-     */
-    private void threadStop(){
-        if(touchTimerTask != null) {
-            touchTimerTask.cancel();
-            touchTimerTask = null;
-        }
-
-        if(touchTimer != null){
-            touchTimer.cancel();
-            touchTimer = null;
-        }
-
-        Log.d("singletonevent","thread stop");
-    }
-
-
-    /**
-     * doubletab 판정을 위한 thread를 중지한다.
-     * 해당 함수는 Activity에서 focus가 잡힐경우 호출된다.
-     */
-    public void touchCheckStop(){
-        Log.d("singletonevent","touch check stop");
-        threadStop();
-        screenTouchCount = 0;
+        } else
+            screenTouchCount = 0;
     }
 
 
@@ -156,7 +86,6 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
      * ACTION_DOWN과 ACTION_UP을 같은 시간대로 생성한 뒤 전송한다.
      */
     private void pushEnterEvent() {
-        Log.d("singletonevent","pushEvent");
         if(accessibilityEventListener != null) {
 
             int metaState = 0;
@@ -183,8 +112,6 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
                     metaState
             );
 
-            Log.d("singletonevent","doubletap push");
-
             accessibilityEventListener.pushDoubleTab(downEvent);
             accessibilityEventListener.pushDoubleTab(upEvent);
         }
@@ -195,7 +122,6 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
      * singleton 초기화 함수
      */
     public void initialize(){
-        threadStop();
         setFocusState(false);
         accessibilityEventListener = null;
     }
@@ -222,10 +148,8 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
 
         // getEnabledAccessibilityServiceList는 현재 접근성 권한을 가진 리스트를 가져오게 된다
         List<AccessibilityServiceInfo> list = accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
-        Log.d("singletonevent","accessibilityService size : "+list.size());
         for (int i = 0; i < list.size(); i++) {
             AccessibilityServiceInfo info = list.get(i);
-            Log.d("singletonevent",info.getResolveInfo().serviceInfo.packageName);
             // 접근성 권한을 가진 앱의 패키지 네임과 패키지 네임이 같으면 현재앱이 접근성 권한을 가지고 있다고 판단함
             if (info.getResolveInfo().serviceInfo.packageName.equals(context.getPackageName())) {
                 return true;

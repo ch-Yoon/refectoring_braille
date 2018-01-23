@@ -5,6 +5,8 @@ package com.project.why.braillelearning.EnumConstant;
 
 /**
  * 점자 학습 진행에 따른 진동 강도 enum
+ * STRING : 강한진동
+ * WEAKLY : 약한진동
  */
 public enum Vibrate {
     STRONG(250), WEAKLY(50);

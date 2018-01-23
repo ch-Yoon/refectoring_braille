@@ -2,8 +2,6 @@ package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -11,11 +9,9 @@ import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -43,8 +39,13 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
     }
 
+
     /**
      * 손가락 2개 함수 재정의
+     * BACK : 뒤로가기
+     * RIGHT : 오른쪽 페이지 이동
+     * LEFT : 왼쪽 페이지 이동
+     * REFRESH : 화면 새로고침
      * @param fingerCoordinate : 좌표값
      */
     @Override
@@ -84,6 +85,8 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
 
     /**
      * 손가락 3개 함수 재정의
+     * SPEECH : 음성인식
+     * MYNOTE : 나만의 단어장 저장
      * @param fingerCoordinate : 좌표값
      */
     @Override
@@ -130,6 +133,13 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         }
     }
 
+
+    /**
+     * 음성인식 된 결과 중 방번호를 가져오는 함수
+     * 음성인식 결과로 날라온 ArrayList중 가장 처음 등장하는 숫자를 방번호로 간주
+     * @param text : 음성인식 결과 arraylist
+     * @return : 방 번호
+     */
     public String getRoomNumber(ArrayList<String> text){
         boolean number = false;
         for(int i=0 ; i<text.size() ; i++){
@@ -151,6 +161,10 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         return null;
     }
 
+
+    /**
+     * server로 접근한 뒤, 방 번호를 이용하여 점자 데이터를 받아오는 AsyncTask
+     */
     class ReceiveServerTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
@@ -175,7 +189,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                 StringBuilder sb = new StringBuilder();
-                String line = null;
+                String line = "";
 
                 while((line = reader.readLine()) != null) {
                     sb.append(line);
@@ -206,8 +220,6 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
                             JSONObject c = jsonArray.getJSONObject(i);
                             String letterName = c.getString("LetterName");
                             String brailleText = c.getString("brailleText");
-                          //  String rawId = c.getString("rawID");
-                         //   addBrailleDataArray(letterName, brailleText, rawId);
                             addBrailleDataArray(letterName, brailleText);
                         }
 
@@ -230,11 +242,12 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         }
     }
 
-//    private void addBrailleDataArray(String letterName, String brailleMatrix, String rawId){
-//        BrailleData data = new BrailleData(letterName, brailleMatrix, rawId, BrailleLearningType.TEACHER);
-//        brailleDataArrayList.add(data);
-//    }
 
+    /**
+     * server로 부터 수신된 점자 데이터를 저장하는 함수
+     * @param letterName : 글자 이름
+     * @param brailleMatrix : 점자 행렬을 의미하는 string
+     */
     private void addBrailleDataArray(String letterName, String brailleMatrix){
         BrailleData data = new BrailleData(letterName, brailleMatrix, "", BrailleLearningType.TEACHER);
         data.refreshData();

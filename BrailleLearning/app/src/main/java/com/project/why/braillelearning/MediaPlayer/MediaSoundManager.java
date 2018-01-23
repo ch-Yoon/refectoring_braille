@@ -3,12 +3,9 @@ package com.project.why.braillelearning.MediaPlayer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
-import android.util.Log;
-
 import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.R;
-
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;

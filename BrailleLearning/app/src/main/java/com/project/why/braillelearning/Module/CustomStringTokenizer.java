@@ -6,21 +6,34 @@ import java.util.ArrayList;
  * Created by hyuck on 2017-10-13.
  */
 
+/**
+ * 점자 번역에 이용될 문자 구분 class
+ * 약자 및 약어인 것과 아닌것으로 구분
+ */
 public class CustomStringTokenizer {
-    ArrayList<String> separatorArray = new ArrayList<>();
+    private ArrayList<String> separatorArray = new ArrayList<>();
 
-    public ArrayList<String> getSeparatorText(String separator, String text){
-        separatorArray.clear();
-        separatorArray.add(separator);
-        return getSeparatorText(text);
-    }
 
+    /**
+     * 구분하고 싶은 문자열 등록 후, 해당 문자열로 구분하여 구분된 문자열을 arraylist형태로 되돌려주는 함수
+     * @param separatorArray : 구분하고 싶은 구분문자열 arraylist
+     * @param text : 구분하고 싶은 문자열
+     * @return : 구분된 문자열 arraylist
+     */
     public ArrayList<String> getSeparatorText(ArrayList<String> separatorArray, String text){
         this.separatorArray.clear();
         this.separatorArray.addAll(separatorArray);
         return getSeparatorText(text);
     }
 
+
+    /**
+     * 문자열 구분 재귀 함수
+     * 공백 제거 후, 약자 및 약어인 것과 아닌 것으로 구분
+     * 문자의 순서는 유지
+     * @param targetText : 구분하기 위한 문자열
+     * @return :  약자 및 약어인 것과 아닌것으로 구분된 arraylist
+     */
     private ArrayList<String> getSeparatorText(String targetText) {
         targetText = deleteSpace(targetText);
 
@@ -91,7 +104,12 @@ public class CustomStringTokenizer {
 
     }
 
-    public String deleteSpace(String text) {
+    /**
+     * 문자열 공백 제거 함수
+     * @param text : 공백을 제거하고 싶은 문자열
+     * @return : 공백이 제거된 문자열
+     */
+     private String deleteSpace(String text) {
         String realText = "";
 
         for(int i=0 ; i<text.length() ; i++) {

@@ -1,7 +1,6 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.view.MotionEvent;
-
 import com.project.why.braillelearning.Global;
 
 /**
@@ -28,6 +27,11 @@ public class FingerCoordinate {
     }
 
 
+    /**
+     * HoverEvent down좌표 저장 함수
+     * @param event
+     * @param count
+     */
     public void setHoverDownCoordinate(MotionEvent event, int count){
         this.fingerCount = count;
 
@@ -40,6 +44,12 @@ public class FingerCoordinate {
         setHoverUpCoordinate(event, count);
     }
 
+
+    /**
+     * hover event up 좌표 저장 함수
+     * @param event
+     * @param count
+     */
     public void setHoverUpCoordinate(MotionEvent event, int count){
         this.fingerCount = count;
 
@@ -50,6 +60,15 @@ public class FingerCoordinate {
         }
     }
 
+
+    /**
+     * hover event의 터치 에러를 검출하기 위한 함수
+     * talkback의 경우 손가락 2개가 일정 범위 이상으로 벌어지면 터치된 좌표값이 찍히지 않게 됨
+     * 그때, error로 간주함
+     * @param event : 터치 event
+     * @return true : 오류 발생, false : 이상 없음
+     *
+     */
     public boolean checkHoverError(MotionEvent event){
         int x = (int) event.getX();
         int y = (int) event.getY();
@@ -67,6 +86,12 @@ public class FingerCoordinate {
         }
     }
 
+
+    /**
+     * down 좌표 저장 함수
+     * @param event : 터치 event
+     * @param count : 손가락 갯수
+     */
     public void setDownCoordinate(MotionEvent event, int count){
         this.fingerCount = count;
 
@@ -77,6 +102,12 @@ public class FingerCoordinate {
         }
     }
 
+
+    /**
+     * up 좌표 저장 함수
+     * @param event : 터치 event
+     * @param count : 손가락 갯수
+     */
     public void setUpCoordinate(MotionEvent event, int count){
         this.fingerCount = count;
 
@@ -87,6 +118,10 @@ public class FingerCoordinate {
         }
     }
 
+
+    /**
+     * 좌표 초기화 함수
+     */
     public void initialize(){
         for(int i=0 ; i<downX.length ; i++){
             downX[i] = 0;
@@ -98,14 +133,22 @@ public class FingerCoordinate {
         fingerCount = 0;
     }
 
-    public void downInitialize(){
+
+    /**
+     * down 좌표 초기화 함수
+     */
+    private void downInitialize(){
         for(int i=0 ; i<downX.length ; i++){
             downX[i] = 0;
             downY[i] = 0;
         }
     }
 
-    public void upInitialize(){
+
+    /**
+     * up좌표 초기화 함수
+     */
+    private void upInitialize(){
         for(int i=0 ; i<downX.length ; i++){
             upX[i] = 0;
             upY[i] = 0;

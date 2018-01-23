@@ -2,12 +2,9 @@ package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
 import android.os.Vibrator;
-
 import com.project.why.braillelearning.EnumConstant.DotType;
-import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Vibrate;
 import com.project.why.braillelearning.LearningModel.Dot;
-import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 
 /**
@@ -42,6 +39,9 @@ public class BasicSingleFinger implements SingleFingerFunction {
 
     /**
      * 1개의 손가락으로 점자를 읽기위한 event함수
+     * 터치된 좌표값과 화면에 점자 좌표값을 비교하여 진동 및 효과음 출력
+     * 돌출 점자 : 강한진동 및 남성음성으로 점자 번호 출력
+     * 비 돌출 점자 : 약한 진동 및 여성음성으로 점자 번호 출력
      * @param brailleMatrix : 현재 화면의 점자 data 좌표
      * @param fingerCoordinate : 손가락 1개의 좌표가 저장되어 있는 클래스
      * @return null;

@@ -17,5 +17,5 @@ package com.project.why.braillelearning.EnumConstant;
  * STUDENT : 학생모드
  */
 public enum BrailleLearningType {
-    MENU, TUTORIAL, BASIC, MASTER, TRANSLATION, QUIZ, MYNOTE, TEACHER, STUDENT
+    TUTORIAL, BASIC, MASTER, TRANSLATION, QUIZ, MYNOTE, TEACHER, STUDENT
 }

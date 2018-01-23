@@ -1,7 +1,6 @@
 package com.project.why.braillelearning.LearningModel;
 
 import android.content.Context;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
@@ -27,9 +26,10 @@ public class BrailleDataManager {
         this.brailleLearningType = brailleLearningType; 
     }
 
+
     /**
      * brailleLearningType에 따라, 점자 data를 불러오는 class가 선택됨
-     * @return json 읽어오는 class, database에서 읽어오는 class, server로부터 읽어오는 class
+     * @return json 점자 데이터를 읽어오는 class, database에서 점자 데이터를 읽어오는 class, server로부터 점자 데이터를 읽어오는 class
      */
     public GettingBraille getBrailleArrayList(){
         switch(brailleLearningType){

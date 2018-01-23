@@ -1,13 +1,11 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
-import android.util.Log;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningModel.QuizBrailleData;
-import com.project.why.braillelearning.R;
 
 import java.util.ArrayList;
 
@@ -60,12 +58,12 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
         }
     }
 
+
     /**
      * data를 새로고침하는 함수.
      * pageNumber에 따라 점자 data를 선택함
      */
     public void refreshData(){
-        Log.d("test","refreshdata");
         if(0 <= pageNumber && pageNumber < quizBrailleDataArrayList.size()){
             quizData = quizBrailleDataArrayList.get(pageNumber);
             data = quizData;
@@ -76,6 +74,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
         } else
             exit();
     }
+
 
     /**
      * viewObserver에게 데이터를 알림
@@ -107,6 +106,8 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
 
     /**
      * 손가락 3개 함수 재정의
+     * SPEECH : 음성인식
+     * MYNOTE : 나만의 단어장 저장
      * @param fingerCoordinate : 좌표값
      */
     @Override
@@ -134,7 +135,6 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     public void speechRecogntionResult(ArrayList<String> text) {
-        Log.d("test","call back method");
         if(text != null) {
             boolean result = checkAnswer(text);
             mediaSoundManager.start(result, pageNumber, quizData.getRawId());
@@ -142,6 +142,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
         }
         progress = false;
     }
+
 
     /**
      * 정답 확인 함수

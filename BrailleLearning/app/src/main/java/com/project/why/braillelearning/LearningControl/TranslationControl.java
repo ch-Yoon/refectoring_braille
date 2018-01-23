@@ -1,8 +1,6 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -31,8 +29,11 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
         speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
     }
 
+
     /**
      * 손가락 3개 함수 재정의
+     * SPEECH : 음성인식
+     * MYNOE : 나만의 단어장 저장
      * @param fingerCoordinate : 좌표값
      */
     @Override
@@ -53,6 +54,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
         }
     }
 
+
     /**
      * 음성인식에 대한 callback method
      * 음성인식에 대한 ArrayList가 전달됨
@@ -64,6 +66,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
         else
             mediaSoundManager.start(R.raw.retry);
     }
+
 
     /**
      * 점자 번역을 위한 함수
@@ -81,6 +84,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
         else
             mediaSoundManager.start("brailletranslation_fail");
     }
+
 
     /**
      * 학습화면 종료 함수

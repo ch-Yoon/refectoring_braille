@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -74,7 +73,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     @Override
     protected void onResume(){
         super.onResume();
-        Log.d("MenuActivity","onResume");
         refreshData();
         connectTouchEvent();
     }
@@ -124,7 +122,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     @Override
     protected void onPause(){
         super.onPause();
-        Log.d("MenuActivity","onPause");
         recycleImage();
         onStopSound();
         pauseTouchEvent();
@@ -228,7 +225,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      * 자신이 선택한 menu name을 학습화면으로 전달
      */
     public void enterBrailleLearning(){
-        Log.d("test","enterBrailleLearning");
         menuAddressDeque.removeLast();
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
@@ -270,7 +266,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     @Override
     public void onOneFingerFunction(FingerCoordinate fingerCoordinate) {
-        Log.d("MenuActivity","onfinger");
         FingerFunctionType type = FingerFunctionType.ENTER;
         mediaSoundManager.start(type);
         menuAddressDeque.addLast(0);
@@ -286,7 +281,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     @Override
     public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
-        Log.d("MenuActivity","twofinger");
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case BACK: // 상위 메뉴
@@ -327,7 +321,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     @Override
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        Log.d("MenuActivity","threefinger");
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case SPEECH:

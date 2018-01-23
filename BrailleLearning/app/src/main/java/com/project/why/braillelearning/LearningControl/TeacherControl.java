@@ -2,9 +2,6 @@ package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -13,14 +10,10 @@ import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.Dot;
 import com.project.why.braillelearning.LearningModel.JsonBrailleData;
-import com.project.why.braillelearning.Loading.MainActivity;
-import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -37,7 +30,6 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
     private SpeechRecognitionMoudle speechRecognitionMoudle;
     private boolean sendCheck = false;
     private String room = "0";
-    private boolean taskCheck = false;
 
     TeacherControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
@@ -52,6 +44,12 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
             viewObservers.nodifyBraille(data.getLetterName(), data.getBrailleMatrix());
     }
 
+
+    /**
+     * 손가락 1개 재정의 함수
+     * 점자릉 입력하기 위해 내부 구현
+     * @param fingerCoordinate : 좌표값
+     */
     @Override
     public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
         if(data != null) {
@@ -66,6 +64,13 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         }
     }
 
+
+    /**
+     * 손가락 3개 함수 재정의
+     * SPEECH : 음성인식
+     * MYNOTE : 나만의 단어장 저장
+     * @param fingerCoordinate : 좌표값
+     */
     @Override
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
@@ -80,6 +85,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                 break;
         }
     }
+
 
     /**
      * 음성인식에 대한 callback method
@@ -123,6 +129,12 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         }
     }
 
+    /**
+     * 새로운 페이지를 만들기 위한 함수
+     * 현재 화면이 아무런 점자가 입력되지 않았다면 새로운 페이지를 생성하지 않음.
+     * 현재 화면에 점자가 입력되었다면 새로운 페이지를 생성
+     * @return
+     */
     public boolean checkAddPage(){
         if(pageNumber != brailleDataArrayList.size()-1)
             return false;
@@ -143,12 +155,25 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         }
     }
 
+
+    /**
+     * 점자가 입력되지 않은 깨끗한 페이지(점자 칠판)을 만들기 위한 함수
+     * @param context
+     * @param jsonFileName
+     */
     private void addJsonBrailleData(Context context, Json jsonFileName) {
         JsonBrailleData jsonBrailleData = new JsonBrailleData(context, jsonFileName, BrailleLearningType.TEACHER);
         ArrayList<BrailleData> newArray = jsonBrailleData.getBrailleDataArray();
         brailleDataArrayList.addAll(newArray);
     }
 
+
+    /**
+     * 점자 정보를 server로 보내기 전 확인하는 함수
+     * 예, 또는 아니오로 말한 음성인식 결과를 통해 송신여부 결정
+     * @param text : 음성인식 결과 arraylist
+     * @return true(송신 동의), false(송신 비동의)
+     */
     public boolean checkAnswer(ArrayList<String> text){
         String yes[] = {"예","네"};
         String no[] = {"아니오","아니요","아니"};
@@ -172,14 +197,20 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         return false;
     }
 
+
+    /**
+     * server로 점자 데이터를 송신하기 위한 AsyncTask 생성 함수
+     */
     private void sendServer(){
-        if(taskCheck == false) {
-            SendServerTask task = new SendServerTask();
-            task.execute(data.getLetterName(), data.getStrBrailleMatrix(), data.getRawId());
-        } else
-            mediaSoundManager.start(R.raw.speechrecognition_fail);
+        SendServerTask task = new SendServerTask();
+        task.execute(data.getLetterName(), data.getStrBrailleMatrix(), data.getRawId());
     }
 
+
+    /**
+     * server로 점자 데이터를 송신하기 위한 AsyncTask
+     * 선생님이 말한 방번호와 입력한 점자 데이터를 server로 송신
+     */
     class SendServerTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
@@ -211,13 +242,12 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                 StringBuilder sb = new StringBuilder();
-                String line = null;
+                String line = "";
 
                 while((line = reader.readLine()) != null) {
                     sb.append(line);
                 }
 
-                Log.d("test",sb+"");
                 return sb.toString();
             }
             catch(Exception e){
@@ -229,10 +259,9 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if(result.equals("error") || result == "error") {
+            if(result.equals("error") || result == "error")
                 mediaSoundManager.start(R.raw.sendfail);
-                Log.d("test","task error");
-            } else {
+            else {
                 try {
                     JSONObject jsonObj = new JSONObject(result);
                     JSONArray jsonArray = jsonObj.getJSONArray("result");   //  mysql에서 불러온값을 저장.
@@ -251,7 +280,6 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                     e.printStackTrace();
                 }
             }
-            taskCheck = false;
         }
     }
 

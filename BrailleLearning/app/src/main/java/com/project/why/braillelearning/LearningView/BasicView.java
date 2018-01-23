@@ -67,6 +67,11 @@ public class BasicView extends View implements ViewObservers {
         textName.setText(letterName);
     }
 
+
+    /**
+     * 점자를 화면에 그리는 함수
+     * @param canvas
+     */
     public void setBraille(Canvas canvas) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);

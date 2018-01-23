@@ -1,10 +1,8 @@
 package com.project.why.braillelearning.MynoteDB;
 
 import android.content.Context;
-import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.LearningModel.BrailleData;
-
 import java.util.ArrayList;
 
 /**

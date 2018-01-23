@@ -16,6 +16,7 @@ public class MynoteControl extends BasicControl implements Control {
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
     }
 
+
     /**
      * data를 새로고침하는 함수.
      * 나만의 단어장의 경우, 데이터가 없으면 접속되지 않고 바로 학습이 종료됨
@@ -34,7 +35,12 @@ public class MynoteControl extends BasicControl implements Control {
     }
 
 
-
+    /**
+     * 손가락 3개 함수 재정의
+     * SPEECH : 음성인식
+     * MYNOTE : 나만의 단어장 삭제
+     * @param fingerCoordinate : 좌표값
+     */
     @Override
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);

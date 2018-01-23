@@ -1,8 +1,6 @@
 package com.project.why.braillelearning.Module;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningModel.Dot;
