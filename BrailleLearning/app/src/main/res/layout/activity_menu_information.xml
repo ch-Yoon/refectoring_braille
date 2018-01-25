@@ -2,19 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/information_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/information_layout"
     android:background="@color/AppBasicColor"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
     tools:context="com.project.why.braillelearning.Menu.MenuInformationActivity">
 
-    <ImageView
-        android:id="@+id/information_imageview"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@color/AppBasicColor" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/information_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="true"
+            app:srcCompat="@color/AppBasicColor" />
+
+        <ImageView
+            android:id="@+id/imageView_kakao"
+            android:layout_width="102dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp" />
+    </RelativeLayout>
+
 </LinearLayout>

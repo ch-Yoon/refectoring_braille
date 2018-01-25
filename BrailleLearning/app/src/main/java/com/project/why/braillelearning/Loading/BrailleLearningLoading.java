@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -30,7 +31,7 @@ public class BrailleLearningLoading extends Activity {
     private ImageView Loading_Animation_imageview; // 애니메이션 imageview
     private TimerTask LoadingTimer;
     private Timer timer; // 애니메이션을 위한 시간 timer
-    private int LoadingImageId[]; // 애니메이션 사진 id
+    private int LoadingImageId; // 애니메이션 사진 id
     private int LoadingAnimationIndex = 0; // 애니메이션을 위한 index
     private int MenuImageSize; // menuimagesize
     private boolean Blind_person = false; //토크백이 활성화 되어있을 경우 변수가 true로 바뀜
@@ -44,25 +45,12 @@ public class BrailleLearningLoading extends Activity {
         setContentView(R.layout.activity_braille_learning_loading);
         InitLoadingImage();
         Loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
-
-//        try {
-//            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        }
+        setLoadingImage();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-    //    setLoadingImage();
         Timer_Start(); // 애니메이션 시작
         Log.d("onResume","onResume");
         //startService(new Intent(this, AccessibilityCheckService.class));
@@ -90,6 +78,7 @@ public class BrailleLearningLoading extends Activity {
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
             decorView.setSystemUiVisibility(uiOption); // 전체화면 적용
             InitDisplaySize(); // 화면 해상도 구하기
+            setKakaoImage(); // by yeo
             setMenuImageSize();
             setLoadingImage();
         }
@@ -103,7 +92,11 @@ public class BrailleLearningLoading extends Activity {
         Global.DisplayX = size.x; // Display의 가로값. Global변수에 저장하여 상시 사용
         Global.DisplayY = size.y; // Display의 세로값. Global변수에 저장하여 상시 사용
     }
-
+    public void setKakaoImage(){
+        DisplayMetrics metrics = new DisplayMetrics();
+        int density = getResources().getDisplayMetrics().densityDpi;
+        System.out.println(density);
+    }
     public void setMenuImageSize(){ // 이미지 size setting
         MenuImageSize = (int)(Global.DisplayY*0.4); // imageview의 width와 height는 세로 높이의 80%
         Loading_Animation_imageview.getLayoutParams().height = MenuImageSize;
@@ -113,9 +106,7 @@ public class BrailleLearningLoading extends Activity {
 
     public void InitLoadingImage(){ // 로딩 이미지 초기화 함수
         imageResizeModule = new ImageResizeModule(getResources());
-        LoadingImageId = new int[]{R.drawable.enter0, R.drawable.enter1, R.drawable.enter2, R.drawable.enter3, R.drawable.enter4, //애니메이션에 사용될 image id
-                R.drawable.enter5, R.drawable.enter6, R.drawable.enter7, R.drawable.enter8, R.drawable.enter9, R.drawable.enter10,
-                R.drawable.enter11, R.drawable.enter12, R.drawable.enter13, R.drawable.enter14, R.drawable.enter15, R.drawable.enter16};
+        LoadingImageId = R.drawable.loadingimage;
     }
 
     public void InitFullScreen(){ // 전체화면 함수
@@ -125,7 +116,6 @@ public class BrailleLearningLoading extends Activity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE); // 액션바 제거
         decorView.setSystemUiVisibility(uiOption); // 전체화면 적용
     }
-
     public void Timer_Start(){ //1초의 딜레이 시간을 갖는 함수
         LoadingTimer = new TimerTask() {
             @Override
@@ -133,8 +123,10 @@ public class BrailleLearningLoading extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(Global.DisplayX !=0 && Global.DisplayY !=0)
-                            setLoadingImage();
+                        if(LoadingAnimationIndex == 30)
+                            Timer_Stop();
+                        else
+                            LoadingAnimationIndex++;
                     }
                 });
 
@@ -154,32 +146,18 @@ public class BrailleLearningLoading extends Activity {
             LoadingTimer.cancel();
             LoadingTimer = null;
         }
+        Loadingfinish();
     }
-
-    synchronized public void setLoadingImage(){ // 애니메이션 이미지 셋팅 함수
-        if(LoadingAnimationIndex < LoadingImageId.length) {
-            recycleImage();
-            Loading_Animation_imageview.setImageDrawable(ContextCompat.getDrawable(this, LoadingImageId[LoadingAnimationIndex++]));
-            //Loading_Animation_imageview.setImageDrawable(imageResizeModule.getDrawableImage(LoadingImageId[LoadingAnimationIndex++], MenuImageSize, MenuImageSize));
-        } else if(LoadingAnimationIndex++ == LoadingImageId.length){
-            try {
-                Timer_Stop();
-                Thread.sleep(TimerTaskWaitTime);
-            } catch(Exception e){
-                Log.d("Error",e.getMessage());
-            } finally {
-              //  if(Blind_person == false) {
-                    Intent i = new Intent(BrailleLearningLoading.this, MenuActivity.class);
-                    startActivity(i);
-                    overridePendingTransition(R.anim.fade, R.anim.hold);
-                    finish();
-           //     } else {
-
-             //   }
-            }
-        }
+    public void setLoadingImage(){ // 애니메이션 이미지 셋팅 함수
+        Loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
+        Loading_Animation_imageview.setImageDrawable(ContextCompat.getDrawable(this, LoadingImageId));
     }
-
+    public void Loadingfinish(){
+        Intent i = new Intent(BrailleLearningLoading.this, MenuActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.fade, R.anim.hold);
+        finish();
+    }
     public void recycleImage(){     //이미지 메모리 해제 함수
         if(Loading_Animation_imageview != null) {
             Drawable image = Loading_Animation_imageview.getDrawable();

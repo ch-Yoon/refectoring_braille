@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -27,6 +28,8 @@ import com.project.why.braillelearning.R;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import static com.project.why.braillelearning.R.drawable.kakao_image;
+
 
 /**
  * Menu를 화면에 출력하는 Activity
@@ -37,6 +40,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     private int PageNumber=0; // 메뉴 위치를 알기위한 변수
     private int MenuImageSize;
     private ImageView MenuImageView; // 메뉴 이미지뷰
+    private ImageView kakaoImageView;
     private MenuTreeManager menuTreeManager; // 메뉴 트리 manager
     private ImageResizeModule imageResizeModule;
     private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
@@ -74,9 +78,12 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     protected void onResume(){
         super.onResume();
         refreshData();
+        setkakaoLogo();
         connectTouchEvent();
     }
-
+    public void setkakaoLogo(){
+        kakaoImageView.setImageDrawable(ContextCompat.getDrawable(this, kakao_image));
+    }
 
     /**
      * 메뉴 초기화 함수
@@ -99,6 +106,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     public void initImageView(){
         MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
+        kakaoImageView = (ImageView) findViewById(R.id.imageView_kakao);
         MenuImageSize = (int)(Global.DisplayY*0.8); // imageview의 width와 height는 세로 높이의 80%
         MenuImageView.getLayoutParams().height = MenuImageSize;
         MenuImageView.getLayoutParams().width = MenuImageSize;
@@ -226,6 +234,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     public void enterBrailleLearning(){
         menuAddressDeque.removeLast();
+        recycleLogo();
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
         Intent i = new Intent(this, BrailleLearningActivity.class);
@@ -346,5 +355,8 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
             }
             MenuImageView.setImageDrawable(null);
         }
+    }
+    public void recycleLogo(){
+        kakaoImageView.setImageDrawable(null);
     }
 }

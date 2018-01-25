@@ -9,10 +9,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.project.why.braillelearning.LearningModel.Dot;
 import com.project.why.braillelearning.LearningModel.BrailleData;
+import com.project.why.braillelearning.R;
 
 /**
  * Created by hyuck on 2017-09-14.
@@ -27,6 +29,7 @@ public class BasicView extends View implements ViewObservers {
     private TextView textName;
     private String letterName;
     private Dot[][] brailleMatrix;
+    private ImageView imageView;
 
     public BasicView(Context context){
         super(context);
@@ -44,6 +47,7 @@ public class BasicView extends View implements ViewObservers {
             setTextName();
             setBraille(canvas);
         }
+        setKakaoLogo();
     }
 
     public void setTextName(){
@@ -63,10 +67,30 @@ public class BasicView extends View implements ViewObservers {
             textName.setLayoutParams(lp);
             ((FrameLayout) this.getParent()).addView(textName);
         }
-
         textName.setText(letterName);
     }
+    public void setKakaoLogo(){
+        if(imageView == null) {
+            imageView = new ImageView(context);
 
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    Gravity.RIGHT
+            );
+
+            imageView.setLayoutParams(lp);
+            imageView.setImageResource(R.drawable.kakao_image);
+            lp.topMargin = 80;
+            lp.rightMargin = 80;
+
+            ((FrameLayout) this.getParent()).addView(imageView);
+
+            imageView.getLayoutParams().width = 408;
+            imageView.getLayoutParams().height = 60;
+            imageView.requestLayout();
+        }
+    }
 
     /**
      * 점자를 화면에 그리는 함수
@@ -99,10 +123,8 @@ public class BasicView extends View implements ViewObservers {
      * @return
      */
     public int getColor(int dotType){
-        if(dotType == 7)
-            return Color.RED;
-        else if(dotType == 8)
-            return Color.CYAN;
+        if(dotType == 7 || dotType == 8)
+            return Color.rgb(23,26,45);
         else
             return Color.WHITE;
     }
@@ -119,6 +141,7 @@ public class BasicView extends View implements ViewObservers {
         letterName = "";
         brailleMatrix = null;
         textName = null;
+        recycleLogo();
     }
 
     /**
@@ -131,6 +154,9 @@ public class BasicView extends View implements ViewObservers {
         this.letterName = letterName;
         this.brailleMatrix = brailleMatrix;
         invalidate();
+    }
+    public void recycleLogo(){
+        imageView.setImageDrawable(null);
     }
 }
 

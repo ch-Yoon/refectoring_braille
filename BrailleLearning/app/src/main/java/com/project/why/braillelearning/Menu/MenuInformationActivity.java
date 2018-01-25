@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -25,6 +26,8 @@ import com.project.why.braillelearning.R;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.project.why.braillelearning.R.drawable.kakao_image;
+
 /**
  * 각 메뉴 접속시 안내 멘트를 출력해주는 activity
  */
@@ -44,6 +47,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     private MultiFinger multiFingerFunction;
     private CustomTouchConnectListener customTouchConnectListener;
     private boolean finish = false;
+    private ImageView logoImgaeview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         mediaStart();
         aniTimerStart(); // 애니메이션 시작
         connectTouchEvent();
+        setkakaoLogo();
     }
 
     @Override
@@ -94,7 +99,9 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         stopSound();
         pauseTouchEvent();
     }
-
+    public void setkakaoLogo(){
+        logoImgaeview.setImageDrawable(ContextCompat.getDrawable(this, kakao_image));
+    }
     public void setLayout(){
         layout = (LinearLayout) findViewById(R.id.information_layout);
         layout.setOnHoverListener(new View.OnHoverListener() {
@@ -163,6 +170,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
      */
     public void initImageView(){ // 이미지 size setting
         information_ImageView = (ImageView) findViewById(R.id.information_imageview);
+        logoImgaeview = (ImageView) findViewById(R.id.imageView_kakao);
         widthSize = (int)(Global.DisplayY*0.7); // imageview의 width는 세로 높이의 90%
         heightSize = (int)(widthSize*0.8); //imageView의 height는 width의 80%
         information_ImageView.getLayoutParams().height = heightSize;
