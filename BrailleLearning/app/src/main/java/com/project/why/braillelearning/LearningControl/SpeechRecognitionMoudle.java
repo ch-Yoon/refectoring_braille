@@ -1,11 +1,11 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener;
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient;
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager;
+import com.project.why.braillelearning.MediaPlayer.MediaPlayerStopCallbackListener;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.R;
 
@@ -18,20 +18,24 @@ import java.util.ArrayList;
 /**
  * 음성인식 모듈 class
  */
-public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
+public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPlayerStopCallbackListener {
     private SpeechRecognitionListener listener;
     private SpeechRecognizerClient client;
     private MediaSoundManager mediaSoundManager;
-    private boolean taskCheck = false;
     private boolean stop = false;
 
     public SpeechRecognitionMoudle(Context context, SpeechRecognitionListener listener){
         SpeechRecognizerManager.getInstance().initializeLibrary(context); // SDK 초기화
         this.listener = listener;
         mediaSoundManager = new MediaSoundManager(context);
-        stop = false;
     }
 
+    /**
+     * 화면이 pause가 될때 연결되어 있는 callbacklistener 해제
+     */
+    public void pause(){
+        mediaSoundManager.initialMediaPlayerStopCallbackListener();
+    }
 
     /**
      * 음성인식 시작 함수
@@ -39,11 +43,10 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
      */
     public void start(){
         try {
-            if(client == null){
-                if(taskCheck == false){
+            synchronized (this) {
+                if (client == null && (mediaSoundManager.getMediaPlaying() == false)) {
+                    mediaSoundManager.setMediaPlayerStopCallbackListener(this);
                     mediaSoundManager.start(R.raw.speechrecognition_start);
-                    CheckMediaTask checkMediaTask = new CheckMediaTask();
-                    checkMediaTask.execute();
                 }
             }
         } catch (Exception e){
@@ -59,12 +62,11 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
      */
     public void start(String text){
         try {
-            if(client == null){
-                if(taskCheck == false){
+            synchronized (this) {
+                if (client == null && (mediaSoundManager.getMediaPlaying() == false)) {
+                    mediaSoundManager.setMediaPlayerStopCallbackListener(this);
                     text += ",confirm";
                     mediaSoundManager.start(text);
-                    CheckMediaTask checkMediaTask = new CheckMediaTask();
-                    checkMediaTask.execute();
                 }
             }
         } catch (Exception e){
@@ -96,14 +98,20 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
     }
 
 
+    @Override
+    public void mediaPlayerStop() {
+        startSpeechRecognition();
+    }
 
     @Override
     public void onReady() {
     }
 
+
     @Override
     public void onBeginningOfSpeech() {
     }
+
 
     @Override
     public void onEndOfSpeech() {
@@ -125,6 +133,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
         listener.speechRecogntionResult(null);
     }
 
+
     @Override
     public void onPartialResult(String partialResult) {
     }
@@ -144,57 +153,14 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener {
             stop = false;
     }
 
+
     @Override
     public void onAudioLevel(float audioLevel) {
     }
 
+
     @Override
     public void onFinished() {
-    }
-
-
-    /**
-     * 음성file 재생 중 확인 AsyncTask
-     * 최대 10초동안 확인
-     */
-    private class CheckMediaTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            final int MAX_COUNT = 200; // 최대 10초
-            int count = 0;
-
-            while(true){
-                if(count <= MAX_COUNT) {
-                    if((mediaSoundManager.getMediaQueueSize() == 0) && (mediaSoundManager.checkTTSPlaying() == false)){
-                        if(mediaSoundManager.getMediaPlaying() == false)
-                            return true;
-                    } else {
-                        try {
-                            count++;
-                            Thread.sleep(50);
-                        } catch (Exception e) {
-                            return false;
-                        }
-                    }
-                } else
-                    return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if(result == true)
-                startSpeechRecognition();
-            else
-                onError(0,"SpeechRecognition error");
-            taskCheck = false;
-        }
     }
 }
 

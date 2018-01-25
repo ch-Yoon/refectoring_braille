@@ -185,7 +185,7 @@ public class DataConversionModule {
 
 
     public String getConversionBrailleText(Dot[][] brailleMatrix){
-        int COL = brailleMatrix.length; //4행
+        int COL = brailleMatrix.length;
         String brailleText = "";
         int realRow = getRowLength(brailleMatrix);
         for(int i=0 ; i<COL ; i++){
@@ -208,6 +208,7 @@ public class DataConversionModule {
         int col = brailleMatrix.length;
         int row = brailleMatrix[0].length;
         int targetRow = 0;
+
         for(int i=0 ; i<row ; i++){
             for(int j=0 ; j<col ; j++){
                 if(brailleMatrix[j][i].getTarget()){
@@ -217,7 +218,8 @@ public class DataConversionModule {
             }
         }
 
-        targetRow = ((targetRow/3)+1)*3;
+        if(targetRow != 0)
+            targetRow = ((targetRow/3)+1)*3;
 
         return targetRow;
     }

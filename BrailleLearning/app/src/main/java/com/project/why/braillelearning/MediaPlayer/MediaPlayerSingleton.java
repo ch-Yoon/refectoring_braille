@@ -29,6 +29,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     private int shieldId; // 특정 음성들이 종료되지 않도록 방어하는 변수
     private boolean mediaPlaying = false;
     private boolean menuInfoPlaying = false;
+    private MediaPlayerStopCallbackListener mediaPlayerStopCallbackListener;
 
     public static MediaPlayerSingleton getInstance(Context context) {
         ourInstance.setContext(context);
@@ -43,6 +44,13 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         this.context = context;
     }
 
+    public void setMediaPlayerStopCallbackListener(MediaPlayerStopCallbackListener listener){
+        this.mediaPlayerStopCallbackListener = listener;
+    }
+
+    public void initialMediaPlayerStopCallbackListener(){
+        this.mediaPlayerStopCallbackListener = null;
+    }
 
     /**
      * 일반적인 음성 file 출력 함수
@@ -90,7 +98,6 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
             if(!mediaPlayer.isPlaying()){
                 initializeMediaPlayer();
                 startMediaPlayer();
-
             }
         } else
             startMediaPlayer();
@@ -118,6 +125,12 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
             });
         } else {
             mediaPlaying = false;
+            if(getMediaPlaying() == false){
+                if(mediaPlayerStopCallbackListener != null) {
+                    mediaPlayerStopCallbackListener.mediaPlayerStop();
+                    initialMediaPlayerStopCallbackListener();
+                }
+            }
         }
     }
 
@@ -176,6 +189,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         }
 
         menuInfoPlaying = false;
+        mediaPlaying = false;
     }
 
     /**
@@ -185,7 +199,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
      */
     private boolean checkMediaShield(){
         if(queue.peek() == null) {
-            int gestureId[] = {R.raw.enter, R.raw.back, R.raw.right, R.raw.left, R.raw.empty, R.raw.alldelete};
+            int gestureId[] = {R.raw.enter, R.raw.back, R.raw.right, R.raw.left, R.raw.empty, R.raw.alldelete, R.raw.speechrecognition_start};
             for (int i = 0; i < gestureId.length; i++) {
                 if (shieldId == gestureId[i])
                     return true;
@@ -197,11 +211,10 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
 
     @Override
     public void onFinished() {
-        ttsClient = null;
         queue.clear();
         queue.addAll(tempQueue);
         checkMediaPlayer();
-
+        ttsClient = null;
     }
 
     public boolean getMenuInfoPlaying(){
@@ -213,12 +226,9 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         ttsClient = null;
     }
 
-    public int getMediaQueueSize(){
-        return queue.size();
-    }
 
     public boolean getMediaPlaying(){
-        if(queue.size() == 0 && mediaPlayer == null && ttsClient == null)
+        if(queue.size() == 0 && mediaPlayer == null && ttsClient == null && mediaPlaying == false)
             return false;
         else
             return true;

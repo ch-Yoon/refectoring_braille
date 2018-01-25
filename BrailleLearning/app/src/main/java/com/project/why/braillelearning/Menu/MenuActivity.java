@@ -58,6 +58,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         initTouchEvent();
     }
 
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -65,6 +66,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
             setFullScreen();
         }
     }
+
 
     public void setFullScreen(){ // 전체화면 함수
         getWindow().getDecorView().setSystemUiVisibility(
@@ -81,6 +83,8 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         setkakaoLogo();
         connectTouchEvent();
     }
+
+
     public void setkakaoLogo(){
         kakaoImageView.setImageDrawable(ContextCompat.getDrawable(this, kakao_image));
     }

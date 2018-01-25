@@ -36,6 +36,17 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
     }
 
+
+    /**
+     * 일시정지 되었을 때 함수
+     */
+    @Override
+    public void onPause() {
+        mediaSoundManager.stop();
+        speechRecognitionMoudle.pause();
+        pauseTouchEvent();
+    }
+
     /**
      * 음성은 재생하지 않고, draw만 새로고침하는 함수
      */
@@ -76,7 +87,10 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case SPEECH:
-                speechRecognitionMoudle.start();
+                if(checkInputBraille())
+                    speechRecognitionMoudle.start();
+                else
+                    mediaSoundManager.start(R.raw.teacher_no_input);
                 break;
             case MYNOTE:
                 mediaSoundManager.start(R.raw.impossble_function);
@@ -94,27 +108,35 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
     @Override
     public void speechRecogntionResult(ArrayList<String> text) {
         if(text != null) {
-            if(!sendCheck) {
-                sendCheck = true;
-                String letterName = text.get(0);
-                data.setLetterName(letterName);
-                data.refreshData();
-                nodifyViewObserver();
-                speechRecognitionMoudle.start(data.getRawId());
-            } else {
-                sendCheck = false;
-                boolean check = checkAnswer(text);
-                if(check) {
-                    sendServer();
-                } else {
-                    data.setLetterName("");
+            try{
+                if(!sendCheck) {
+                    sendCheck = true;
+                    String letterName = text.get(0);
+                    data.setLetterName(letterName);
                     data.refreshData();
                     nodifyViewObserver();
-                    mediaSoundManager.start(R.raw.send_cancel);
-                }
+                    speechRecognitionMoudle.start(data.getRawId());
+                } else {
+                    sendCheck = false;
+                    boolean check = checkAnswer(text);
+                    if(check) {
+                        sendServer();
+                    } else {
+                        data.setLetterName("");
+                        data.refreshData();
+                        nodifyViewObserver();
+                        mediaSoundManager.start(R.raw.send_cancel);
+                    }
 
-                if(checkAddPage())
-                    addJsonBrailleData(context, Json.TEACHER);
+                    if(checkPage())
+                        addJsonBrailleData(context, Json.TEACHER);
+                }
+            } catch(Exception e){
+                sendCheck = false;
+                data.setLetterName("");
+                data.refreshData();
+                nodifyViewObserver();
+                mediaSoundManager.start(R.raw.send_cancel);
             }
         } else {
             ((BrailleLearningActivity)context).runOnUiThread(new Runnable() { // onError가 호출되었을 경우
@@ -135,24 +157,28 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      * 현재 화면에 점자가 입력되었다면 새로운 페이지를 생성
      * @return
      */
-    public boolean checkAddPage(){
+    public boolean checkPage(){
         if(pageNumber != brailleDataArrayList.size()-1)
             return false;
-        else {
-            Dot[][] brailleMatrix = data.getBrailleMatrix();
-            int col = brailleMatrix.length;
-            int row = brailleMatrix[0].length;
+        else
+            return checkInputBraille();
+    }
 
-            for (int i = 0; i < col; i++) {
-                for (int j = 0; j < row; j++) {
-                    boolean target = brailleMatrix[i][j].getTarget();
-                    if (target == true)
-                        return true;
-                }
+
+    public boolean checkInputBraille(){
+        Dot[][] brailleMatrix = data.getBrailleMatrix();
+        int col = brailleMatrix.length;
+        int row = brailleMatrix[0].length;
+
+        for (int i = 0; i < col; i++) {
+            for (int j = 0; j < row; j++) {
+                boolean target = brailleMatrix[i][j].getTarget();
+                if (target == true)
+                    return true;
             }
-
-            return false;
         }
+
+        return false;
     }
 
 

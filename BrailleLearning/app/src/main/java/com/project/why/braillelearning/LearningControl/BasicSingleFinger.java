@@ -54,6 +54,7 @@ public class BasicSingleFinger implements SingleFingerFunction {
             float x = fingerCoordinate.getDownX()[0];
             float y = fingerCoordinate.getDownY()[0];
 
+
             if (checkCoordinateInside(brailleMatrix, x, y)) {
                 for (int i = 0; i < col; i++) {
                     for (int j = 0; j < row; j++) {
@@ -97,7 +98,7 @@ public class BasicSingleFinger implements SingleFingerFunction {
 
 
     /**
-     * touch된 손가락의 좌표가 점자 영역 안쪽인지, 바깥쪽인지 check하는 함수
+     * touch된 손가락의 좌표가 점자 영역 안쪽인지, 바깥쪽인지 check 하는 함수
      * @param brailleMatrix : 점자 행렬
      * @param x : 손가락 1개의 x 좌표
      * @param y : 손가락 1개의 y 좌표
@@ -106,11 +107,12 @@ public class BasicSingleFinger implements SingleFingerFunction {
     public boolean checkCoordinateInside(Dot[][] brailleMatrix, float x, float y){
         int row = brailleMatrix[0].length;
         float maxY = brailleMatrix[0][0].getY() - brailleMatrix[0][0].getTouchAreaRidus();
-        float maxX = brailleMatrix[0][row-1].getX() + brailleMatrix[0][row-1].getTouchAreaRidus();
-        if(maxY <= y && x <= maxX)  // 터치 좌표가 점자 영역 안쪽일경우
+        float maxX = brailleMatrix[0][row - 1].getX() + brailleMatrix[0][row - 1].getTouchAreaRidus();
+        if (maxY <= y && x <= maxX)  // 터치 좌표가 점자 영역 안쪽일경우
             return true;
         else
             return false;
+
     }
 
     /**

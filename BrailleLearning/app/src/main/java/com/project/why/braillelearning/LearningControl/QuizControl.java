@@ -29,6 +29,16 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
     }
 
     /**
+     * 일시정지 되었을 때 함수
+     */
+    @Override
+    public void onPause() {
+        mediaSoundManager.stop();
+        speechRecognitionMoudle.pause();
+        pauseTouchEvent();
+    }
+
+    /**
      * 퀴즈를 위한 data set 함수
      * json에서 불러온 braille Data array에서 랜덤으로 3개의 값을 꺼낸 뒤, quiz진행에 맞는 data로 가공
      */

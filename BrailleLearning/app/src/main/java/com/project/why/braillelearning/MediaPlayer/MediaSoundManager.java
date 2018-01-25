@@ -2,7 +2,6 @@ package com.project.why.braillelearning.MediaPlayer;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.media.MediaPlayer;
 import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.R;
@@ -27,6 +26,13 @@ public class MediaSoundManager {
         this.context = context;
     }
 
+    public void setMediaPlayerStopCallbackListener(MediaPlayerStopCallbackListener listener){
+        mediaPlayerSingleton.setMediaPlayerStopCallbackListener(listener);
+    }
+
+    public void initialMediaPlayerStopCallbackListener(){
+        mediaPlayerSingleton.initialMediaPlayerStopCallbackListener();
+    }
     /**
      * int형 음성 file id들을 출력하는 함수
      * 전달받은 int형 soundid를 queue에 담아 mediaPlayerSingleton에 전달함
@@ -37,6 +43,7 @@ public class MediaSoundManager {
         soundIdQueue.add(soundId);
         mediaPlayerSingleton.start(soundIdQueue);
     }
+
 
     /**
      * 손가락 1개를 이용하여 점자를 읽을 때, 점자 번호와 구분선, 경고음을 출력하는 함수
@@ -273,14 +280,6 @@ public class MediaSoundManager {
 
     public void allStop(){
         mediaPlayerSingleton.initializeMediaPlayer();
-    }
-
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayerSingleton.getMediaPlayer();
-    }
-
-    public int getMediaQueueSize(){
-        return mediaPlayerSingleton.getMediaQueueSize();
     }
 
     public boolean getMediaPlaying(){

@@ -41,6 +41,16 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
 
 
     /**
+     * 일시정지 되었을 때 함수
+     */
+    @Override
+    public void onPause() {
+        mediaSoundManager.stop();
+        speechRecognitionMoudle.pause();
+        pauseTouchEvent();
+    }
+
+    /**
      * 손가락 2개 함수 재정의
      * BACK : 뒤로가기
      * RIGHT : 오른쪽 페이지 이동
@@ -129,6 +139,8 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
                     }
                 } else
                     mediaSoundManager.start(R.raw.speechrecognition_fail);
+            } else {
+                mediaSoundManager.start(R.raw.no_room);
             }
         }
     }

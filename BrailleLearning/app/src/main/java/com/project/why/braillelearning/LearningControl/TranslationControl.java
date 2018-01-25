@@ -31,6 +31,16 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
 
 
     /**
+     * 일시정지 되었을 때 함수
+     */
+    @Override
+    public void onPause() {
+        mediaSoundManager.stop();
+        speechRecognitionMoudle.pause();
+        pauseTouchEvent();
+    }
+
+    /**
      * 손가락 3개 함수 재정의
      * SPEECH : 음성인식
      * MYNOE : 나만의 단어장 저장
