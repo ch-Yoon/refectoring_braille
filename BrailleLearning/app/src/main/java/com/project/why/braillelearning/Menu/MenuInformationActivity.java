@@ -5,14 +5,14 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.project.why.braillelearning.CustomTouch.CustomMenuInfoTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
-import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -25,8 +25,6 @@ import com.project.why.braillelearning.R;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.project.why.braillelearning.R.drawable.kakao_image;
 
 /**
  * 각 메뉴 접속시 안내 멘트를 출력해주는 activity
@@ -69,6 +67,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
             setFullScreen();
+            onFocusRefresh();
         }
     }
 
@@ -96,12 +95,20 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         super.onPause();
         aniTimerStop();
         recycleImage();
+        recylceRogo();
         stopSound();
         pauseTouchEvent();
     }
+
+
     public void setkakaoLogo(){
-        logoImgaeview.setImageDrawable(ContextCompat.getDrawable(this, kakao_image));
+        if(logoImgaeview == null) {
+            logoImgaeview = (ImageView) findViewById(R.id.imageView_kakao);
+            logoImgaeview.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
+        }
     }
+
+
     public void setLayout(){
         layout = (LinearLayout) findViewById(R.id.information_layout);
         layout.setOnHoverListener(new View.OnHoverListener() {
@@ -170,7 +177,6 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
      */
     public void initImageView(){ // 이미지 size setting
         information_ImageView = (ImageView) findViewById(R.id.information_imageview);
-        logoImgaeview = (ImageView) findViewById(R.id.imageView_kakao);
         widthSize = (int)(Global.DisplayY*0.7); // imageview의 width는 세로 높이의 90%
         heightSize = (int)(widthSize*0.8); //imageView의 height는 width의 80%
         information_ImageView.getLayoutParams().height = heightSize;
@@ -192,7 +198,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
 
 
     public void initTouchEvent(){
-        customTouchConnectListener = new CustomTouchEvent(this, this);
+        customTouchConnectListener = new CustomMenuInfoTouchEvent(this, this);
         connectTouchEvent();
     }
 
@@ -207,6 +213,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     @Override
     public void onFocusRefresh() {
         layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+        layout.requestFocus();
     }
 
     @Override
@@ -300,6 +307,18 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
                 image = null;
             }
             information_ImageView.setImageDrawable(null);
+        }
+    }
+
+    private void recylceRogo(){
+        if(logoImgaeview != null){
+            Drawable image = logoImgaeview.getDrawable();
+            if(image instanceof BitmapDrawable){
+                ((BitmapDrawable)image).getBitmap().recycle();
+                image.setCallback(null);
+            }
+            logoImgaeview.setImageDrawable(null);
+            logoImgaeview = null;
         }
     }
 

@@ -37,7 +37,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     private AccessibilityManager am;
     protected AccessibilityEventSingleton accessibilityEventSingleton;
     private Context context;
-    private CustomTouchEventListener customTouchEventListener;
+    protected CustomTouchEventListener customTouchEventListener;
 
     public CustomTouchEvent(Context context, CustomTouchEventListener customTouchEventListener){
         this.context = context;
@@ -160,7 +160,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
             if (pointer_Count == ONE_FINGER)
                 blindOneFIngerTouch(event);
             else {
-                switch (event.getAction()  & MotionEvent.ACTION_MASK) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
                         multiFinger = true;
 

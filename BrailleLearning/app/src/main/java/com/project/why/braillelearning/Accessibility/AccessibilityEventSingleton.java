@@ -133,7 +133,9 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
      */
     public void checkPermissions(){
         if (!checkAccessibilityPermissions()) {
-            context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+            context.startActivity(new Intent(context, AccessibilityInfoActivity.class));
+
+//            context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
         }
     }
 

@@ -248,12 +248,12 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
             try{
                 String lettername = params[0];
                 String brailleText = params[1];
-                String rawId = params[2];
+                //String rawId = params[2];
 
                 String link = Global.teacherServerURL;
                 String inputData  = URLEncoder.encode("letterName", "UTF-8") + "=" + URLEncoder.encode(lettername, "UTF-8");
                 inputData += "&" + URLEncoder.encode("brailleText", "UTF-8") + "=" + URLEncoder.encode(brailleText, "UTF-8");
-                inputData += "&" + URLEncoder.encode("rawID", "UTF-8") + "=" + URLEncoder.encode(rawId, "UTF-8");
+                //inputData += "&" + URLEncoder.encode("rawID", "UTF-8") + "=" + URLEncoder.encode(rawId, "UTF-8");
                 inputData += "&" + URLEncoder.encode("room", "UTF-8") + "=" + URLEncoder.encode(room, "UTF-8");
 
                 URL url = new URL(link);
@@ -296,7 +296,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                         JSONObject c = jsonArray.getJSONObject(i);
                         String str = c.getString("id");    // 저장코드들
                         if(0 < str.length()) {
-                            String text = str + " 번! " + str+",send_ok";
+                            String text = str + "!번! " + str+",send_ok";
                             mediaSoundManager.start(text);
                             room = str;
                             break;

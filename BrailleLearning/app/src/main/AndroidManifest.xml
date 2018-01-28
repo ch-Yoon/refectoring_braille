@@ -31,8 +31,8 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".LearningControl.BrailleLearningActivity"
-            android:label=""
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label=""
             android:screenOrientation="sensorLandscape" />
 
         <meta-data
@@ -48,7 +48,7 @@
             android:name=".Accessibility.AccessibilityCheckService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -57,6 +57,11 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
+
+        <activity android:name=".Accessibility.AccessibilityInfoActivity"
+            android:label="@string/guide_activity"
+            android:screenOrientation="sensorLandscape" />
+
     </application>
 
 </manifest>

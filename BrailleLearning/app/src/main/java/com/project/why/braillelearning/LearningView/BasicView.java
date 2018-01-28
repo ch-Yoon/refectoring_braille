@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -13,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.project.why.braillelearning.LearningModel.Dot;
-import com.project.why.braillelearning.LearningModel.BrailleData;
+import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
 
 /**
@@ -30,10 +32,12 @@ public class BasicView extends View implements ViewObservers {
     private String letterName;
     private Dot[][] brailleMatrix;
     private ImageView imageView;
+    private ImageResizeModule imageResizeModule;
 
     public BasicView(Context context){
         super(context);
         this.context = context;
+        imageResizeModule = new ImageResizeModule(getResources());
     }
 
     @Override
@@ -69,6 +73,7 @@ public class BasicView extends View implements ViewObservers {
         }
         textName.setText(letterName);
     }
+
     public void setKakaoLogo(){
         if(imageView == null) {
             imageView = new ImageView(context);
@@ -80,7 +85,6 @@ public class BasicView extends View implements ViewObservers {
             );
 
             imageView.setLayoutParams(lp);
-            imageView.setImageResource(R.drawable.kakao_image);
             lp.topMargin = 80;
             lp.rightMargin = 80;
 
@@ -88,6 +92,7 @@ public class BasicView extends View implements ViewObservers {
 
             imageView.getLayoutParams().width = 408;
             imageView.getLayoutParams().height = 60;
+            imageView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
             imageView.requestLayout();
         }
     }
@@ -155,8 +160,17 @@ public class BasicView extends View implements ViewObservers {
         this.brailleMatrix = brailleMatrix;
         invalidate();
     }
+
+
     public void recycleLogo(){
-        imageView.setImageDrawable(null);
+        if(imageView != null){
+            Drawable image = imageView.getDrawable();
+            if(image instanceof BitmapDrawable){
+                ((BitmapDrawable)image).getBitmap().recycle();
+                image.setCallback(null);
+            }
+            imageView.setImageDrawable(null);
+        }
     }
 }
 

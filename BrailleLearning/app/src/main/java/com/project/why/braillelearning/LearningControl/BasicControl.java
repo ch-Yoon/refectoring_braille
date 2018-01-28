@@ -59,6 +59,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
         initTouchEvent();
     }
 
+
     /**
      * 점자 학습에 필요한 점자 data를 얻는 함수
      * @param context : 현재 Activity에 대한 context
@@ -76,6 +77,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
         else
             return new ArrayList<>();
     }
+
 
     /**
      * 손가락 1개에 대한 이벤트 모듈 얻는 함수

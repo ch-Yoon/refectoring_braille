@@ -29,7 +29,7 @@ public class BrailleLearningLoading extends Activity {
     private TimerTask LoadingTimer;
     private Timer timer; // 애니메이션을 위한 시간 timer
     private int MenuImageSize; // menuimagesize
-    private final int TimerTaskTime = 3000; // 0.05초
+    private final int TimerTaskTime = 2000; // 0.05초
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

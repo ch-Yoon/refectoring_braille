@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -64,6 +65,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
             setFullScreen();
+            requestFocus();
         }
     }
 
@@ -86,7 +88,10 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
 
 
     public void setkakaoLogo(){
-        kakaoImageView.setImageDrawable(ContextCompat.getDrawable(this, kakao_image));
+        if(kakaoImageView == null) {
+            kakaoImageView = (ImageView) findViewById(R.id.imageView_kakao);
+            kakaoImageView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
+        }
     }
 
     /**
@@ -110,7 +115,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     public void initImageView(){
         MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
-        kakaoImageView = (ImageView) findViewById(R.id.imageView_kakao);
         MenuImageSize = (int)(Global.DisplayY*0.8); // imageview의 width와 height는 세로 높이의 80%
         MenuImageView.getLayoutParams().height = MenuImageSize;
         MenuImageView.getLayoutParams().width = MenuImageSize;
@@ -135,6 +139,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     protected void onPause(){
         super.onPause();
         recycleImage();
+        recycleLogo();
         onStopSound();
         pauseTouchEvent();
     }
@@ -254,8 +259,13 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     @Override
     public void onFocusRefresh() {
-        layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+        requestFocus();
         refreshSound();
+    }
+
+    private void requestFocus(){
+        layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+        layout.requestFocus();
     }
 
     @Override
@@ -360,7 +370,17 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
             MenuImageView.setImageDrawable(null);
         }
     }
+
+
     public void recycleLogo(){
-        kakaoImageView.setImageDrawable(null);
+        if(kakaoImageView != null){
+            Drawable image = kakaoImageView.getDrawable();
+            if(image instanceof BitmapDrawable){
+                ((BitmapDrawable)image).getBitmap().recycle();
+                image.setCallback(null);
+            }
+            kakaoImageView.setImageDrawable(null);
+            kakaoImageView = null;
+        }
     }
 }

@@ -126,11 +126,12 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPl
     @Override
     public void onError(int errorCode, String errorMsg) {
         client = null;
-        if(stop == false)
+        if(stop == false) {
             mediaSoundManager.start("speechrecognition_fail");
-        else
+            listener.speechRecogntionResult(null);
+        } else
             stop = false;
-        listener.speechRecogntionResult(null);
+
     }
 
 

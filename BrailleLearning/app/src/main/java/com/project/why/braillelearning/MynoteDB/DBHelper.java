@@ -121,6 +121,8 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
 
         return brailleDataArrayList;
     }
+
+
     @Override
     public ArrayList<BrailleData> getBrailleDataArray(){
         ArrayList<BrailleData> brailleDataArrayList = getResult();

@@ -43,7 +43,6 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         brailleLearningType =  object.getBrailleLearningType();
         databaseTableName =  object.getDatabaseTableName();
         startMenuInfo();
-
     }
 
 
@@ -54,6 +53,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         Intent i = new Intent(this, MenuInformationActivity.class);
         i.putExtra("BRAILLELEARNINGTYPE",brailleLearningType);
         startActivityForResult(i, MENU_INFO);
+        overridePendingTransition(R.anim.fade, R.anim.hold);
     }
 
 

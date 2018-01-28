@@ -102,7 +102,7 @@ public class TeacherSingleFinger extends BasicSingleFinger {
                 }
             };
             mTimer = new Timer();
-            mTimer.schedule(mTask, 1000, 1000); // 1초마다 생성
+            mTimer.schedule(mTask, 750, 750);
         }
     }
 
