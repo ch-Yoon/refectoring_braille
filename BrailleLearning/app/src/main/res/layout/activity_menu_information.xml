@@ -8,6 +8,7 @@
     android:background="@color/AppBasicColor"
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
+    android:focusable="true"
     tools:context="com.project.why.braillelearning.Menu.MenuInformationActivity">
 
     <RelativeLayout

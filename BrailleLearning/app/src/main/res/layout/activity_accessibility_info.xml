@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/info_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical"
     tools:context="com.project.why.braillelearning.Accessibility.AccessibilityInfoActivity">
 
     <TextView
-        android:focusable="true"
         android:id="@+id/accessibility_info_textview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center_vertical|fill_vertical"
         android:lineSpacingExtra="10sp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textSize="1sp" />
 
 </LinearLayout>
