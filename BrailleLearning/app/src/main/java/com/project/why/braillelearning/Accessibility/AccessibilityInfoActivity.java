@@ -5,14 +5,18 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.project.why.braillelearning.ActivityManagerSingleton;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.R;
+
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,11 +27,14 @@ public class AccessibilityInfoActivity extends Activity {
     private int baseHeight = 0;
     private int textSize = 5;
     private boolean resizeStart = false;
+    private long backPressTime = 0;
+    private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accessibility_info);
-
+        activityManagerSingleton.addArrayList(this);
         guideTextView = (TextView) findViewById(R.id.accessibility_info_textview);
         guideTextView.setOnHoverListener(new View.OnHoverListener() {
             @Override
@@ -53,6 +60,7 @@ public class AccessibilityInfoActivity extends Activity {
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
             setFullScreen();
             setResizeText();
+            focusRequest();
         }
     }
 
@@ -83,7 +91,6 @@ public class AccessibilityInfoActivity extends Activity {
                                         guideTextView.setTextSize(textSize);
                                         guideTextView.setVisibility(View.INVISIBLE);
                                         guideTextView.invalidate();
-                                        Log.d("dddd","aaaaaa");
                                     }
                                 });
 
@@ -101,8 +108,6 @@ public class AccessibilityInfoActivity extends Activity {
                                                 textSize += 3;
                                             }
                                         });
-
-
                                     }
                                 } else {
                                     runOnUiThread(new Runnable() {
@@ -130,6 +135,7 @@ public class AccessibilityInfoActivity extends Activity {
         thread.start();
     }
 
+
     /**
      * 전체화면 함수
      * 소프트키는 숨기지 않는다.
@@ -152,7 +158,6 @@ public class AccessibilityInfoActivity extends Activity {
 
     @Override
     protected void onResume(){
-        focusRequest();
         super.onResume();
     }
 
@@ -192,4 +197,20 @@ public class AccessibilityInfoActivity extends Activity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if(backPressTime == 0) {
+            Toast.makeText(this, "뒤로가기 버튼을 10초 내에 한 번 더 누르면 어플리케이션이 종료됩니다.", Toast.LENGTH_SHORT).show();
+            backPressTime = System.currentTimeMillis();
+        } else {
+            long time = System.currentTimeMillis();
+            time = time - backPressTime;
+            if(time < 10000) {
+                activityManagerSingleton.allActivityFinish();
+            } else {
+                Toast.makeText(this, "뒤로가기 버튼을 10초 내에 한 번 더 누르면 어플리케이션이 종료됩니다.", Toast.LENGTH_SHORT).show();
+                backPressTime = System.currentTimeMillis();
+            }
+        }
+    }
 }

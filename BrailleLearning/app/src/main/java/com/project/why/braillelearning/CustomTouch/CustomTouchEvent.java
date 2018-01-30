@@ -126,7 +126,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
      */
     @Override
     public void touchEvent(MotionEvent event){
-        checkBlindPerson();
+        checkBlind(event);
 
         int pointer_Count = event.getPointerCount(); // 현재 발생된 터치 event의 수
 
@@ -302,6 +302,17 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
         initActionTime();
     }
 
+
+    private void checkBlind(MotionEvent event){
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                checkBlindPerson();
+                break;
+            case MotionEvent.ACTION_DOWN:
+                checkBlindPerson();
+                break;
+        }
+    }
 
     /**
      * ACTION_DOWN과 ACTION_UP의 이벤트 발생 시간을 초기화 시키는 함수

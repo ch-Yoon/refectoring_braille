@@ -108,9 +108,9 @@ public class MultiFinger{
                 type = FingerFunctionType.LEFT;
         } else if (DragX == false && DragY == true) { // y축만 화면전환 조건을 충족하였을 경우
             if (Drag_countY > 0) // 특수기능
-                type = FingerFunctionType.REFRESH;
-            else // 뒤로가기
                 type = FingerFunctionType.BACK;
+            else // 뒤로가기
+                type = FingerFunctionType.REFRESH;
         } else if (DragX == true && DragY == true) { // x축 화면전환 조건과 y축 화면전환 조건 모두 충족하였을 경우 이동거리로 구분
             double gapX = 0;
             double gapY = 0;
@@ -127,9 +127,9 @@ public class MultiFinger{
                     type = FingerFunctionType.LEFT;
             } else if (gapY > gapX) { // y축의 이동거리가 클 경우
                 if (Drag_countY > 0) // 특수기능
-                    type = FingerFunctionType.REFRESH;
-                else // 뒤로가기
                     type = FingerFunctionType.BACK;
+                else // 뒤로가기
+                    type = FingerFunctionType.REFRESH;
             }
         }
 

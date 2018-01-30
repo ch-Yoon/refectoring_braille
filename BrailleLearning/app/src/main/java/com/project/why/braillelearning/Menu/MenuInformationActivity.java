@@ -7,10 +7,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.project.why.braillelearning.ActivityManagerSingleton;
 import com.project.why.braillelearning.CustomTouch.CustomMenuInfoTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
@@ -46,11 +48,13 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     private CustomTouchConnectListener customTouchConnectListener;
     private boolean finish = false;
     private ImageView logoImgaeview;
+    private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_information);
+        activityManagerSingleton.addArrayList(this);
         Intent i = getIntent();
         brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
         mediaSoundManager = new MediaSoundManager(this);
@@ -84,6 +88,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     @Override
     protected void onResume(){
         super.onResume();
+        screenAlwaysOnSetting();
         mediaStart();
         aniTimerStart(); // 애니메이션 시작
         connectTouchEvent();
@@ -93,11 +98,20 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     @Override
     protected void onPause(){
         super.onPause();
+        screenAlwaysOnDisable();
         aniTimerStop();
         recycleImage();
         recylceRogo();
         stopSound();
         pauseTouchEvent();
+    }
+
+    private void screenAlwaysOnSetting(){
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    private void screenAlwaysOnDisable(){
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
 
@@ -126,32 +140,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
      */
     public void mediaStart(){
         stopSound();
-        switch (brailleLearningType){
-            case TUTORIAL:
-                mediaSoundManager.start(R.raw.tutorial_info);
-                break;
-            case BASIC:
-                mediaSoundManager.start(R.raw.basic_info);
-                break;
-            case MASTER:
-                mediaSoundManager.start(R.raw.master_info);
-                break;
-            case TRANSLATION:
-                mediaSoundManager.start(R.raw.translation_info);
-                break;
-            case QUIZ:
-                mediaSoundManager.start(R.raw.quiz_info);
-                break;
-            case MYNOTE:
-                mediaSoundManager.start(R.raw.mynote_info);
-                break;
-            case TEACHER:
-                mediaSoundManager.start(R.raw.teachermode_info);
-                break;
-            case STUDENT:
-                mediaSoundManager.start(R.raw.studentmode_info);
-                break;
-        }
+        mediaSoundManager.start(brailleLearningType);
     }
 
     @Override
@@ -254,6 +243,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
     }
 
+
     public void aniTimerStart(){ //1초의 딜레이 시간을 갖는 함수
         aniTimerTask = new TimerTask() {
             @Override
@@ -273,6 +263,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         aniTimer.schedule(aniTimerTask,0,TimerTaskTime); // 0.05초의 딜레이시간
     }
 
+
     public void aniTimerStop(){ // 스레드 중지
         if(aniTimerTask != null){
             aniTimerTask.cancel();
@@ -285,10 +276,12 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         }
     }
 
+
     public void initAniDrawableId(){
         imageResizeModule = new ImageResizeModule(getResources());
         aniDrawableId = new int[]{R.drawable.speech0, R.drawable.speech1, R.drawable.speech2, R.drawable.speech3, R.drawable.speech4, R.drawable.speech5};
     }
+
 
     synchronized public void playAnimation(){ // 애니메이션 이미지 셋팅 함수
         if(index == aniDrawableId.length)
@@ -297,6 +290,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         recycleImage();
         information_ImageView.setImageDrawable(imageResizeModule.getDrawableImage(aniDrawableId[index++], widthSize, heightSize));
     }
+
 
     public void recycleImage(){     //이미지 메모리 해제 함수
         if(information_ImageView != null) {
@@ -338,6 +332,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
             aniTimerStop();
             stopSound();
 
+            activityManagerSingleton.removeArrayList();
             finish();
         }
     }
@@ -345,6 +340,5 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     public void checkSoundPlaying(){
         if(mediaSoundManager.getMenuInfoPlaying() == false && mediaSoundManager.getMediaPlaying() == false )
             exit(0);
-
     }
 }

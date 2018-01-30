@@ -2,11 +2,10 @@ package com.project.why.braillelearning.Menu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -14,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import com.project.why.braillelearning.ActivityManagerSingleton;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
@@ -28,8 +28,6 @@ import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
 import java.util.Deque;
 import java.util.LinkedList;
-
-import static com.project.why.braillelearning.R.drawable.kakao_image;
 
 
 /**
@@ -49,14 +47,17 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     private MediaSoundManager mediaSoundManager;
     private MultiFinger multiFingerFunction;
     private CustomTouchConnectListener customTouchConnectListener;
+    private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_braille_learning_menu);
+        activityManagerSingleton.addArrayList(this);
         InitMenu();
         setLayout();
         initTouchEvent();
+        checkFirstRun();
     }
 
 
@@ -84,6 +85,28 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         refreshData();
         setkakaoLogo();
         connectTouchEvent();
+    }
+
+    private void checkFirstRun(){
+        String state = getPreferences();
+        if(state != "TRUE" && !state.equals("TRUE")){
+            savePreferences();
+            menuAddressDeque.addLast(0);
+            enterBrailleLearning();
+        }
+    }
+
+    private String getPreferences(){
+        SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
+        String state = pref.getString("FIRST_RUN","");
+        return state;
+    }
+
+    private void savePreferences(){
+        SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("FIRST_RUN","TRUE");
+        editor.commit();
     }
 
 
@@ -149,7 +172,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         super.onDestroy();
     }
 
-
     /**
      * 손가락 1개, 2개에 대한 event를 발생하는 touchevent 함수
      * @param event : 발생된 touchevent
@@ -169,7 +191,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     public void initTouchEvent(){
         customTouchConnectListener = new CustomTouchEvent(this, this);
-        connectTouchEvent();
     }
 
 
@@ -193,8 +214,10 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      * 만약 menuAddressDeque가 비어있을 경우, Application을 종료하는 것을 의미
      */
     public void refreshData() { // 메뉴 이미지 설정 함수
-        if(menuAddressDeque.isEmpty())  // 메뉴 Adress Deque가 비어있으면 종료
+        if(menuAddressDeque.isEmpty()) { // 메뉴 Adress Deque가 비어있으면 종료
+            activityManagerSingleton.removeArrayList();
             finish();
+        }
         else {
             runOnUiThread(new Runnable() {
                 @Override
@@ -243,7 +266,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     public void enterBrailleLearning(){
         menuAddressDeque.removeLast();
-        recycleLogo();
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
         Intent i = new Intent(this, BrailleLearningActivity.class);

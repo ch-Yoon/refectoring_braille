@@ -2,12 +2,17 @@ package com.project.why.braillelearning.MediaPlayer;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.view.accessibility.AccessibilityManager;
+
+import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.R;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
+
+import static android.content.Context.ACCESSIBILITY_SERVICE;
 
 /**
  * Created by hyuck on 2017-11-08.
@@ -44,6 +49,39 @@ public class MediaSoundManager {
         mediaPlayerSingleton.start(soundIdQueue);
     }
 
+    public void start(BrailleLearningType brailleLearningType){
+        switch (brailleLearningType){
+            case TUTORIAL:
+                AccessibilityManager am = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
+                boolean blindMode = am.isTouchExplorationEnabled();
+                if(blindMode == true)
+                    start(R.raw.tutorial_info_blind);
+                else
+                    start(R.raw.tutorial_info_basic);
+                break;
+            case BASIC:
+                start(R.raw.basic_info);
+                break;
+            case MASTER:
+                start(R.raw.master_info);
+                break;
+            case TRANSLATION:
+                start(R.raw.translation_info);
+                break;
+            case QUIZ:
+                start(R.raw.quiz_info);
+                break;
+            case MYNOTE:
+                start(R.raw.mynote_info);
+                break;
+            case TEACHER:
+                start(R.raw.teachermode_info);
+                break;
+            case STUDENT:
+                start(R.raw.studentmode_info);
+                break;
+        }
+    }
 
     /**
      * 손가락 1개를 이용하여 점자를 읽을 때, 점자 번호와 구분선, 경고음을 출력하는 함수
