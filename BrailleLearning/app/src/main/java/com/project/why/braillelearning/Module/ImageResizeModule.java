@@ -39,7 +39,7 @@ public class ImageResizeModule {
     }
 
     // 이미지 용량을 몇배로 줄일건지 결정하는 함수
-    public int getInSampleSize(BitmapFactory.Options options, int real_width, int real_height){
+    private int getInSampleSize(BitmapFactory.Options options, int real_width, int real_height){
         int inSampleSize = 1; // 따로 지정하지 않는다면 기본적으로 1
         int virtual_height = options.outHeight;
         int virtual_width = options.outWidth;

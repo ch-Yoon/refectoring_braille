@@ -23,8 +23,14 @@ public class ActivityManagerSingleton {
         activityArrayList.add(activity);
     }
 
-    public void removeArrayList(){
+    private void removeLast(){
         activityArrayList.remove(activityArrayList.size()-1);
+    }
+
+    public void nowActivityFinish(){
+        Activity activity = activityArrayList.get(activityArrayList.size()-1);
+        activity.finish();
+        removeLast();
     }
 
     public void allActivityFinish(){
@@ -32,7 +38,7 @@ public class ActivityManagerSingleton {
         for(int i=size ; 0<=i ; i--){
             Activity activity = activityArrayList.get(i);
             activity.finish();
-            removeArrayList();
+            removeLast();
         }
     }
 }

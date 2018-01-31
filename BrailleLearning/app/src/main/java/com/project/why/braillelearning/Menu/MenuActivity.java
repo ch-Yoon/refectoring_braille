@@ -71,7 +71,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
-    public void setFullScreen(){ // 전체화면 함수
+    private void setFullScreen(){ // 전체화면 함수
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -110,7 +110,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
-    public void setkakaoLogo(){
+    private void setkakaoLogo(){
         if(kakaoImageView == null) {
             kakaoImageView = (ImageView) findViewById(R.id.imageView_kakao);
             kakaoImageView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
@@ -120,7 +120,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     /**
      * 메뉴 초기화 함수
      */
-    public void InitMenu(){
+    private void InitMenu(){
         initImageView(); // 메뉴 imageview 사이즈 조절
         imageResizeModule = new ImageResizeModule(getResources());
         mediaSoundManager = new MediaSoundManager(this);
@@ -136,7 +136,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     /**
      * 메뉴 imageview setting 함수
      */
-    public void initImageView(){
+    private void initImageView(){
         MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
         MenuImageSize = (int)(Global.DisplayY*0.8); // imageview의 width와 height는 세로 높이의 80%
         MenuImageView.getLayoutParams().height = MenuImageSize;
@@ -147,7 +147,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     /**
      * layout 설정
      */
-    public void setLayout(){
+    private void setLayout(){
         layout = (LinearLayout) findViewById(R.id.menu_layout);
         layout.setOnHoverListener(new View.OnHoverListener() {
             @Override
@@ -189,7 +189,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     /**
      * touchevent module 초기화
      */
-    public void initTouchEvent(){
+    private void initTouchEvent(){
         customTouchConnectListener = new CustomTouchEvent(this, this);
     }
 
@@ -197,14 +197,14 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     /**
      * touchevent module 연결
      */
-    public void connectTouchEvent(){
+    private void connectTouchEvent(){
         customTouchConnectListener.onResume();
     }
 
     /**
      * touchevent module 일시중지
      */
-    public void pauseTouchEvent(){
+    private void pauseTouchEvent(){
         customTouchConnectListener.onPause();
     }
 
@@ -213,11 +213,9 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      * 화면 새로고침 함수
      * 만약 menuAddressDeque가 비어있을 경우, Application을 종료하는 것을 의미
      */
-    public void refreshData() { // 메뉴 이미지 설정 함수
-        if(menuAddressDeque.isEmpty()) { // 메뉴 Adress Deque가 비어있으면 종료
-            activityManagerSingleton.removeArrayList();
-            finish();
-        }
+    private void refreshData() { // 메뉴 이미지 설정 함수
+        if(menuAddressDeque.isEmpty())  // 메뉴 Adress Deque가 비어있으면 종료
+            activityManagerSingleton.allActivityFinish();
         else {
             runOnUiThread(new Runnable() {
                 @Override
@@ -237,7 +235,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      * 이미지 새로고침 함수
      * @param menuNode : 현재 화면을 의미하는 treeNode
      */
-    public void refreshImage(TreeNode menuNode){
+    private void refreshImage(TreeNode menuNode){
         recycleImage();
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.image_fade);
         MenuImageView.startAnimation(animation);
@@ -249,12 +247,12 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      * 음성 새로고침 함수
      * @param menuNode : 현재 화면을 의미하는 treeNode
      */
-    public void refreshSound(TreeNode menuNode){
+    private void refreshSound(TreeNode menuNode){
         int id = menuNode.getSoundId();
         mediaSoundManager.start(id);
     }
 
-    public void refreshSound(){
+    private void refreshSound(){
         onStopSound();
         TreeNode menuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
         refreshSound(menuNode);
@@ -264,7 +262,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      * 점자 학습 화면으로 들어가는 함수
      * 자신이 선택한 menu name을 학습화면으로 전달
      */
-    public void enterBrailleLearning(){
+    private void enterBrailleLearning(){
         menuAddressDeque.removeLast();
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
@@ -382,7 +380,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     /**
      * 이미지 메모리 해제 함수
      */
-    public void recycleImage(){     //이미지 메모리 해제 함수
+    private void recycleImage(){     //이미지 메모리 해제 함수
         if(MenuImageView != null) {
             Drawable image = MenuImageView.getDrawable();
             if(image instanceof BitmapDrawable){
@@ -394,7 +392,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
-    public void recycleLogo(){
+    private void recycleLogo(){
         if(kakaoImageView != null){
             Drawable image = kakaoImageView.getDrawable();
             if(image instanceof BitmapDrawable){

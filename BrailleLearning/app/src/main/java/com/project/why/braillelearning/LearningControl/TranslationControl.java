@@ -83,7 +83,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
      * 전달된 글자를 번역함
      * @param letterName : 음성인식 후 전달된 글자
      */
-    public void startBrailleTranslation(String letterName){
+    private void startBrailleTranslation(String letterName){
         BrailleData translationBrailleData = brailleTranslationModule.translation(letterName);
         if(translationBrailleData != null) {
             brailleDataArrayList.add(translationBrailleData);

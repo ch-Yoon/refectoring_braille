@@ -1,26 +1,20 @@
 package com.project.why.braillelearning.Loading;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
 import com.project.why.braillelearning.ActivityManagerSingleton;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.Menu.MenuActivity;
-import com.project.why.braillelearning.Module.FullScreenModule;
 import com.project.why.braillelearning.Module.ImageResizeModule;
-import com.project.why.braillelearning.Accessibility.AccessibilityCheckService;
 import com.project.why.braillelearning.R;
 
 import java.util.Timer;
@@ -76,7 +70,7 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    public void InitDisplaySize(){  // Display 해상도를 구하기 위한 메소드
+    private void InitDisplaySize(){  // Display 해상도를 구하기 위한 메소드
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -85,7 +79,7 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    public void setMenuImageSize(){ // 이미지 size setting
+    private void setMenuImageSize(){ // 이미지 size setting
         MenuImageSize = (int)(Global.DisplayY*0.2); // imageview의 width와 height는 2:1 비율
         Loading_Animation_imageview.getLayoutParams().height = MenuImageSize;
         Loading_Animation_imageview.getLayoutParams().width = MenuImageSize*2;
@@ -93,7 +87,7 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    public void InitFullScreen(){ // 전체화면 함수
+    private void InitFullScreen(){ // 전체화면 함수
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -101,7 +95,7 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    public void Timer_Start(){ //1초의 딜레이 시간을 갖는 함수
+    private void Timer_Start(){ //1초의 딜레이 시간을 갖는 함수
         LoadingTimer = new TimerTask() {
             @Override
             public void run() {
@@ -120,7 +114,7 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    public void Timer_Stop(){ // 스레드 중지
+    private void Timer_Stop(){ // 스레드 중지
         if(timer != null){
             timer.cancel();
             timer = null;
@@ -133,23 +127,22 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    public void setLoadingImage(){ // 애니메이션 이미지 셋팅 함수
+    private void setLoadingImage(){ // 애니메이션 이미지 셋팅 함수
         if(Loading_Animation_imageview == null)
             Loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
         Loading_Animation_imageview.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.loadingimage, MenuImageSize*2, MenuImageSize));
     }
 
 
-    public void loadingfinish(){
-        activityManagerSingleton.removeArrayList();
+    private void loadingfinish(){
         Intent i = new Intent(BrailleLearningLoading.this, MenuActivity.class);
         startActivity(i);
         overridePendingTransition(R.anim.fade, R.anim.hold);
-        finish();
+        activityManagerSingleton.nowActivityFinish();
     }
 
 
-    public void recycleImage(){     //이미지 메모리 해제 함수
+    private void recycleImage(){     //이미지 메모리 해제 함수
         if(Loading_Animation_imageview != null) {
             Drawable image = Loading_Animation_imageview.getDrawable();
             if(image instanceof BitmapDrawable){

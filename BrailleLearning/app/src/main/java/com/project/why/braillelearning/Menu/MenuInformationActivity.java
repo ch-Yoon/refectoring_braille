@@ -115,7 +115,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    public void setkakaoLogo(){
+    private void setkakaoLogo(){
         if(logoImgaeview == null) {
             logoImgaeview = (ImageView) findViewById(R.id.imageView_kakao);
             logoImgaeview.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
@@ -123,7 +123,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    public void setLayout(){
+    private void setLayout(){
         layout = (LinearLayout) findViewById(R.id.information_layout);
         layout.setOnHoverListener(new View.OnHoverListener() {
             @Override
@@ -138,7 +138,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     /**
      * 메뉴 음성 가이드 출력 함수
      */
-    public void mediaStart(){
+    private void mediaStart(){
         stopSound();
         mediaSoundManager.start(brailleLearningType);
     }
@@ -164,7 +164,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     /**
      * imageView setting 함수
      */
-    public void initImageView(){ // 이미지 size setting
+    private void initImageView(){ // 이미지 size setting
         information_ImageView = (ImageView) findViewById(R.id.information_imageview);
         widthSize = (int)(Global.DisplayY*0.7); // imageview의 width는 세로 높이의 90%
         heightSize = (int)(widthSize*0.8); //imageView의 height는 width의 80%
@@ -186,16 +186,16 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    public void initTouchEvent(){
+    private void initTouchEvent(){
         customTouchConnectListener = new CustomMenuInfoTouchEvent(this, this);
         connectTouchEvent();
     }
 
-    public void connectTouchEvent(){
+    private void connectTouchEvent(){
         customTouchConnectListener.onResume();
     }
 
-    public void pauseTouchEvent(){
+    private void pauseTouchEvent(){
         customTouchConnectListener.onPause();
     }
 
@@ -244,7 +244,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    public void aniTimerStart(){ //1초의 딜레이 시간을 갖는 함수
+    private void aniTimerStart(){ //1초의 딜레이 시간을 갖는 함수
         aniTimerTask = new TimerTask() {
             @Override
             public void run() {
@@ -264,7 +264,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    public void aniTimerStop(){ // 스레드 중지
+    private void aniTimerStop(){ // 스레드 중지
         if(aniTimerTask != null){
             aniTimerTask.cancel();
             aniTimerTask = null;
@@ -277,13 +277,13 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    public void initAniDrawableId(){
+    private void initAniDrawableId(){
         imageResizeModule = new ImageResizeModule(getResources());
         aniDrawableId = new int[]{R.drawable.speech0, R.drawable.speech1, R.drawable.speech2, R.drawable.speech3, R.drawable.speech4, R.drawable.speech5};
     }
 
 
-    synchronized public void playAnimation(){ // 애니메이션 이미지 셋팅 함수
+    synchronized private void playAnimation(){ // 애니메이션 이미지 셋팅 함수
         if(index == aniDrawableId.length)
             index = 0;
 
@@ -292,13 +292,12 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    public void recycleImage(){     //이미지 메모리 해제 함수
+    private void recycleImage(){     //이미지 메모리 해제 함수
         if(information_ImageView != null) {
             Drawable image = information_ImageView.getDrawable();
             if(image instanceof BitmapDrawable){
                 ((BitmapDrawable)image).getBitmap().recycle();
                 image.setCallback(null);
-                image = null;
             }
             information_ImageView.setImageDrawable(null);
         }
@@ -316,7 +315,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         }
     }
 
-    public synchronized void exit(int result){
+    private synchronized void exit(int result){
         if(finish == false) {
             finish = true;
             if (result == 0) {
@@ -332,12 +331,11 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
             aniTimerStop();
             stopSound();
 
-            activityManagerSingleton.removeArrayList();
-            finish();
+            activityManagerSingleton.nowActivityFinish();
         }
     }
 
-    public void checkSoundPlaying(){
+    private void checkSoundPlaying(){
         if(mediaSoundManager.getMenuInfoPlaying() == false && mediaSoundManager.getMediaPlaying() == false )
             exit(0);
     }

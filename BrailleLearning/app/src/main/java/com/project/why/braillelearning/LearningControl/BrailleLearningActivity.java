@@ -26,7 +26,7 @@ import com.project.why.braillelearning.R;
  * 점자 정보를 담고 있는 Object의 값들로 화면에 점자를 그리는 View와 점자 학습 Control을 결정함
  */
 public class BrailleLearningActivity extends Activity implements ControlListener {
-    public static final int MENU_INFO = 0;
+    private static final int MENU_INFO = 0;
     private GettingInformation object;
     private Control learningModule;
     private ViewObservers learningView;
@@ -121,7 +121,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     /**
      * 전체화면 적용 함수
      */
-    public void setFullScreen(){ // 전체화면 함수
+    private void setFullScreen(){ // 전체화면 함수
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -132,7 +132,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     /**
      * 점자 학습 모듈을 setting하는 함수
      */
-    public void initBrailleControl(){
+    private void initBrailleControl(){
         BrailleLearningModuleFactory brailleLearningModuleManager = new BrailleLearningModuleManager(this, this, jsonFileName, databaseTableName, brailleLearningType);
         learningModule = brailleLearningModuleManager.getLearningModule();
     }
@@ -141,7 +141,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     /**
      * 점자 화면 view를 setting하는 함수
      */
-    public void initBrailleView(){
+    private void initBrailleView(){
         BasicView basicView = new BasicView(this);
         learningView = basicView;
         learningModule.addObservers(learningView);    // view를 learning module observer로 등록
@@ -163,7 +163,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
      * @param menuName : 선택된 메뉴 이름
      * @return : 점자 학습 정보 class 리턴
      */
-    public GettingInformation getBrailleInformationObject(Menu menuName){
+    private GettingInformation getBrailleInformationObject(Menu menuName){
         BrailleInformationFactory brailleInformationFactory = new BrailleFactory();
         GettingInformation object = brailleInformationFactory.getInformationObject(menuName);
         return object;
@@ -187,7 +187,6 @@ public class BrailleLearningActivity extends Activity implements ControlListener
      */
     @Override
     public void exit() {
-        activityManagerSingleton.removeArrayList();
-        finish();
+        activityManagerSingleton.nowActivityFinish();
     }
 }

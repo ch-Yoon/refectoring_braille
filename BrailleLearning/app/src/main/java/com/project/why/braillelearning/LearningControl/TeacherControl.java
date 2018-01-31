@@ -157,7 +157,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      * 현재 화면에 점자가 입력되었다면 새로운 페이지를 생성
      * @return
      */
-    public boolean checkPage(){
+    private boolean checkPage(){
         if(pageNumber != brailleDataArrayList.size()-1)
             return false;
         else
@@ -165,7 +165,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
     }
 
 
-    public boolean checkInputBraille(){
+    private boolean checkInputBraille(){
         Dot[][] brailleMatrix = data.getBrailleMatrix();
         int col = brailleMatrix.length;
         int row = brailleMatrix[0].length;
@@ -200,7 +200,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      * @param text : 음성인식 결과 arraylist
      * @return true(송신 동의), false(송신 비동의)
      */
-    public boolean checkAnswer(ArrayList<String> text){
+    private boolean checkAnswer(ArrayList<String> text){
         String yes[] = {"예","네"};
         String no[] = {"아니오","아니요","아니"};
 

@@ -72,10 +72,6 @@ public class TreeNode {
         this.ParentTreeNode = ParentTreeNode;
     }
 
-    public TreeNode getParentTreeNode(){ // 부모 노드를 반환하는 함수
-        return ParentTreeNode;
-    }
-
     /**
      * 하위 메뉴 리스트 중 특정 index의 TreeNode를 반환하는 함수
      * @param index
@@ -90,10 +86,6 @@ public class TreeNode {
 
     public Menu getTreeName(){
         return menuName;
-    }
-
-    public ArrayList<TreeNode> getChildTreeNodeArray(){
-        return ChildTreeNodeArray;
     }
 
     /**

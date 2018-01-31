@@ -145,7 +145,7 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
      * 가져온 app목록 중 현재 입의 패키지 명과 동일한 패키지 명이 존재한다면 현재 앱이 접근성 권한이 설정되어 있는것으로 간주한다.
      * @return true(접근성 권한 설정 ok), false(접근성 권한 설정 no)
      */
-    public boolean checkAccessibilityPermissions() {
+    private boolean checkAccessibilityPermissions() {
         accessibilityManager = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
 
         // getEnabledAccessibilityServiceList는 현재 접근성 권한을 가진 리스트를 가져오게 된다

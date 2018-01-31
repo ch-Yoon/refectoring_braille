@@ -68,7 +68,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      * @param brailleLearningType : 진행하려는 점자 학습의 type
      * @return : 점자 data를 갖고 있는 BrailleData 리턴
      */
-    public ArrayList<BrailleData> getBrailleDataArray(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType) {
+    private ArrayList<BrailleData> getBrailleDataArray(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType) {
         BrailleDataManager brailleDataManager = new BrailleDataManager(context, jsonFileName, databaseFileName, brailleLearningType);
         GettingBraille gettingBraille = brailleDataManager.getBrailleArrayList();
 
@@ -85,7 +85,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      * @param brailleLearningType : 진행하려는 점자 학습의 type
      * @return : 손가락 1개에 대한 이벤트 모듈 리턴
      */
-    public SingleFingerFunction getSingleFingerFunction(Context context, BrailleLearningType brailleLearningType){
+    private SingleFingerFunction getSingleFingerFunction(Context context, BrailleLearningType brailleLearningType){
         SingleFIngerFactory singleFIngerFactory = new SingleFIngerFactory(context, brailleLearningType);
         return singleFIngerFactory.getSingleFingerMoudle();
     }
@@ -99,7 +99,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      * data를 새로고침하는 함수.
      * pageNumber에 따라 점자 data를 선택함
      */
-    public void refreshData(){
+    protected void refreshData(){
         if(0 <= pageNumber && pageNumber < brailleDataArrayList.size()){
             data = brailleDataArrayList.get(pageNumber);
             if(data != null)
@@ -111,7 +111,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
     /**
      * customTouch class선언
      */
-    public void initTouchEvent(){
+    private void initTouchEvent(){
         customTouchConnectListener = new CustomLearningTouchEvent(context, this);
         connectTouchEvent();
     }
@@ -120,7 +120,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
     /**
      * customTouch class와 interface로 연결
      */
-    public void connectTouchEvent(){
+    private void connectTouchEvent(){
         customTouchConnectListener.onResume();
     }
 
@@ -128,7 +128,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
     /**
      * customTouch class pause
      */
-    public void pauseTouchEvent(){
+    protected void pauseTouchEvent(){
         customTouchConnectListener.onPause();
     }
 
@@ -267,7 +267,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
     /**
      * 학습화면 종료 함수
      */
-    public void exit(){
+    protected void exit(){
         controlListener.exit();
     }
 }

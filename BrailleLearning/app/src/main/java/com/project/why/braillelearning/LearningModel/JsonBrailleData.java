@@ -35,7 +35,7 @@ public class JsonBrailleData implements GettingBraille {
     /**
      * json file로부터 data를 읽어와 BrailleData에 저장 후, 각각의 BrailleData들을 Arraylist에 저장함
      */
-    public void readJsonBraillData(){ // json 읽기
+    private void readJsonBraillData(){ // json 읽기
         try {
             AssetManager assetManager = context.getAssets();
             AssetManager.AssetInputStream ais = (AssetManager.AssetInputStream) assetManager.open("json/" + jsonFileName.getName() + ".json");

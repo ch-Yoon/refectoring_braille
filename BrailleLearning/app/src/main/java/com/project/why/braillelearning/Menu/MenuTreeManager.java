@@ -16,7 +16,6 @@ import java.util.LinkedList;
 public class MenuTreeManager {
     private TreeNode RootNode; // 최상단 rootnode
 
-
     MenuTreeManager(){
         RootNode = new TreeNode();
         setImageTree();
@@ -25,7 +24,7 @@ public class MenuTreeManager {
     /**
      * menu들을 tree구조로 등록하는 함수
      */
-    public void setImageTree(){
+    private void setImageTree(){
         // 점자 학습 메뉴 트리 등록 (대 메뉴) : 사용설명서, 기초과정, 숙련과정, 점자번역, 퀴즈, 나만의 단어장, 선생님과의 대화
         TreeNode Tutorial = RootNode.addChildTreeNode(Menu.TUTORIAL, R.drawable.tutorial, R.raw.tutorial);
         TreeNode BasicPractice = RootNode.addChildTreeNode(Menu.BASIC, R.drawable.basic_practice, R.raw.basic_practice);
@@ -67,10 +66,6 @@ public class MenuTreeManager {
         // 선생님과의 대화 하위메뉴 트리 등록(중 메뉴) : 선생님 모드, 학생 모드
         TreeNode CommunicationTeacher = Communication.addChildTreeNode(Menu.TEACHER_COMMUNICATION, R.drawable.teacher_mode, R.raw.teacher_mode);
         TreeNode CommunicationStudent = Communication.addChildTreeNode(Menu.STUDENT_COMMUNICATION, R.drawable.student_mode, R.raw.student_mode);
-    }
-
-    public void setTree(TreeNode TargetNode){
-        RootNode = TargetNode;
     }
 
     /**

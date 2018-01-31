@@ -42,7 +42,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      * 퀴즈를 위한 data set 함수
      * json에서 불러온 braille Data array에서 랜덤으로 3개의 값을 꺼낸 뒤, quiz진행에 맞는 data로 가공
      */
-    public void setRandomQuizBrailleData(){
+    private void setRandomQuizBrailleData(){
         final int quizCount = 3;
         int randomArray[] = new int[quizCount]; //3문제
         for(int i=0 ; i<randomArray.length ; i++)
@@ -73,7 +73,8 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      * data를 새로고침하는 함수.
      * pageNumber에 따라 점자 data를 선택함
      */
-    public void refreshData(){
+    @Override
+    protected void refreshData(){
         if(0 <= pageNumber && pageNumber < quizBrailleDataArrayList.size()){
             quizData = quizBrailleDataArrayList.get(pageNumber);
             data = quizData;
@@ -159,7 +160,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      * @param text : 음성인식 결과 ArrayList
      * @return : true(정답), false(오답)
      */
-    public boolean checkAnswer(ArrayList<String> text){
+    private boolean checkAnswer(ArrayList<String> text){
         boolean result = false;
         for(int i=0 ; i<text.size() ; i++){
             String quizAnster = quizData.getAssistanceLetterName();

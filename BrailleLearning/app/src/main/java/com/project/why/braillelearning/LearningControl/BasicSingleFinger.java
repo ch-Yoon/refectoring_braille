@@ -104,7 +104,7 @@ public class BasicSingleFinger implements SingleFingerFunction {
      * @param y : 손가락 1개의 y 좌표
      * @return true(점자 영역 안쪽), false(점자 영역 아님)
      */
-    public boolean checkCoordinateInside(Dot[][] brailleMatrix, float x, float y){
+    private boolean checkCoordinateInside(Dot[][] brailleMatrix, float x, float y){
         int row = brailleMatrix[0].length;
         float maxY = brailleMatrix[0][0].getY() - brailleMatrix[0][0].getTouchAreaRidus();
         float maxX = brailleMatrix[0][row - 1].getX() + brailleMatrix[0][row - 1].getTouchAreaRidus();

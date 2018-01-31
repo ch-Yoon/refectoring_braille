@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -46,7 +47,7 @@ public class BasicView extends View implements ViewObservers {
         drawBraille(canvas);
     }
 
-    public void drawBraille(Canvas canvas){
+    private void drawBraille(Canvas canvas){
         if(brailleMatrix != null){
             setTextName();
             setBraille(canvas);
@@ -54,7 +55,7 @@ public class BasicView extends View implements ViewObservers {
         setKakaoLogo();
     }
 
-    public void setTextName(){
+    private void setTextName(){
         if(textName == null) {
             textName = new TextView(context);
 
@@ -74,7 +75,7 @@ public class BasicView extends View implements ViewObservers {
         textName.setText(letterName);
     }
 
-    public void setKakaoLogo(){
+    private void setKakaoLogo(){
         if(imageView == null) {
             imageView = new ImageView(context);
 
@@ -101,7 +102,7 @@ public class BasicView extends View implements ViewObservers {
      * 점자를 화면에 그리는 함수
      * @param canvas
      */
-    public void setBraille(Canvas canvas) {
+    private void setBraille(Canvas canvas) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
 
@@ -127,9 +128,9 @@ public class BasicView extends View implements ViewObservers {
      * @param dotType : 점자 번호
      * @return
      */
-    public int getColor(int dotType){
+    private int getColor(int dotType){
         if(dotType == 7 || dotType == 8)
-            return Color.rgb(23,26,45);
+            return ContextCompat.getColor(context, R.color.AppBasicColor);
         else
             return Color.WHITE;
     }
@@ -162,7 +163,7 @@ public class BasicView extends View implements ViewObservers {
     }
 
 
-    public void recycleLogo(){
+    private void recycleLogo(){
         if(imageView != null){
             Drawable image = imageView.getDrawable();
             if(image instanceof BitmapDrawable){

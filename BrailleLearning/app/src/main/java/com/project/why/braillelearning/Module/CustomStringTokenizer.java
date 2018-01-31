@@ -13,12 +13,11 @@ import java.util.ArrayList;
 public class CustomStringTokenizer {
     private ArrayList<String> separatorArray = new ArrayList<>();
 
-
     /**
-     * 구분하고 싶은 문자열 등록 후, 해당 문자열로 구분하여 구분된 문자열을 arraylist형태로 되돌려주는 함수
+     * 구분하고 싶은 문자열 등록 후, 등록된 문자열로 문장을 분해한 뒤, 분해된 문장을 arraylist 형태로 되돌려주는 함수
      * @param separatorArray : 구분하고 싶은 구분문자열 arraylist
-     * @param text : 구분하고 싶은 문자열
-     * @return : 구분된 문자열 arraylist
+     * @param text : 구분하고 싶은 문장
+     * @return : 분해된 문장 arraylist
      */
     public ArrayList<String> getSeparatorText(ArrayList<String> separatorArray, String text){
         this.separatorArray.clear();
@@ -29,10 +28,10 @@ public class CustomStringTokenizer {
 
     /**
      * 문자열 구분 재귀 함수
-     * 공백 제거 후, 약자 및 약어인 것과 아닌 것으로 구분
-     * 문자의 순서는 유지
+     * 공백 제거 후, 등록된 구분 문자열과 아닌것으로 분해
+     * 문장의 순서는 유지
      * @param targetText : 구분하기 위한 문자열
-     * @return :  약자 및 약어인 것과 아닌것으로 구분된 arraylist
+     * @return :  등록된 구분 문자열과 아닌것으로 분해된 arraylist
      */
     private ArrayList<String> getSeparatorText(String targetText) {
         targetText = deleteSpace(targetText);

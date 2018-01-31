@@ -204,6 +204,7 @@ public class DataConversionModule {
         return brailleText;
     }
 
+
     public int getRowLength(Dot[][] brailleMatrix){
         int col = brailleMatrix.length;
         int row = brailleMatrix[0].length;

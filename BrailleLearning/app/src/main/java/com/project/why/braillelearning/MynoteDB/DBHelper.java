@@ -18,7 +18,7 @@ import java.util.HashMap;
  */
 
 public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
-    public static final int LETTERNAME = 1, BRAILLEMATRIX = 2, ASSISTANCENAME = 3, RAWID = 4;
+    private static final int LETTERNAME = 1, BRAILLEMATRIX = 2, ASSISTANCENAME = 3, RAWID = 4;
     private HashMap<String, BrailleData> mapDB = new HashMap<>();
     private Database databaseName ;
     private MediaSoundManager mediaSoundManager;
@@ -99,7 +99,7 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
         return brailleDataArrayList;
     }
 
-    public void addHashMap(ArrayList<BrailleData> allData){ // 해쉬맵에 모든 점자정보를 저장
+    private void addHashMap(ArrayList<BrailleData> allData){ // 해쉬맵에 모든 점자정보를 저장
         mapDB.clear();
 
         for(int i = 0; i < allData.size(); i++)

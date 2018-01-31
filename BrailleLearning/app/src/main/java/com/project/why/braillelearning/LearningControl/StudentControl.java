@@ -152,7 +152,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
      * @param text : 음성인식 결과 arraylist
      * @return : 방 번호
      */
-    public String getRoomNumber(ArrayList<String> text){
+    private String getRoomNumber(ArrayList<String> text){
         boolean number = false;
         for(int i=0 ; i<text.size() ; i++){
             String target = text.get(i);
