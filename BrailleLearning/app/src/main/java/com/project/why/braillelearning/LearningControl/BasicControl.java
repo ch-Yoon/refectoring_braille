@@ -45,6 +45,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
     protected DBManager dbManager;
     protected int pageNumber = 0 ;
     protected Context context;
+    protected boolean touchLock = false;
     private CustomTouchConnectListener customTouchConnectListener;
 
     BasicControl(Context context,Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
@@ -149,6 +150,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      */
     @Override
     public void onPause() {
+        touchLock = false;
         mediaSoundManager.stop();
         pauseTouchEvent();
     }
@@ -185,10 +187,12 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      */
     @Override
     public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
-        if(data != null)
-            oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
-        else
-            oneFingerFunction.oneFingerFunction(null, fingerCoordinate);
+        if(touchLock == false) {
+            if (data != null)
+                oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
+            else
+                oneFingerFunction.oneFingerFunction(null, fingerCoordinate);
+        }
     }
 
 
@@ -202,34 +206,40 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      */
     @Override
     public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case BACK:
-                exit();
-                break;
-            case RIGHT:
-                if (pageNumber < brailleDataArrayList.size()-1) {
-                    pageNumber++;
-                    nodifyObservers();
+        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate, touchLock);
+        if(type == FingerFunctionType.BACK)
+            exit();
+        else {
+            if(touchLock == false){
+                switch (type) {
+                    case RIGHT:
+                        if(touchLock == false) {
+                            if (pageNumber < brailleDataArrayList.size() - 1) {
+                                pageNumber++;
+                                nodifyObservers();
+                            } else {
+                                mediaSoundManager.allStop();
+                                mediaSoundManager.start(R.raw.last_page);
+                            }
+                        }
+                        break;
+                    case LEFT:
+                        if(touchLock == false) {
+                            if (0 < pageNumber) {
+                                pageNumber--;
+                                nodifyObservers();
+                            } else {
+                                mediaSoundManager.allStop();
+                                mediaSoundManager.start(R.raw.first_page);
+                            }
+                        }
+                        break;
+                    case REFRESH:
+                        if(touchLock == false)
+                            nodifyObservers();
+                        break;
                 }
-                else {
-                    mediaSoundManager.allStop();
-                    mediaSoundManager.start(R.raw.last_page);
-                }
-                break;
-            case LEFT:
-                if (0 < pageNumber) {
-                    pageNumber--;
-                    nodifyObservers();
-                }
-                else {
-                    mediaSoundManager.allStop();
-                    mediaSoundManager.start(R.raw.first_page);
-                }
-                break;
-            case REFRESH:
-                nodifyObservers();
-                break;
+            }
         }
     }
 
@@ -242,14 +252,16 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      */
     @Override
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case SPEECH:
-                mediaSoundManager.start(R.raw.impossble_function);
-                break;
-            case MYNOTE:
-                dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
-                break;
+        if(touchLock == false) {
+            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
+            switch (type) {
+                case SPEECH:
+                    mediaSoundManager.start(R.raw.impossble_function);
+                    break;
+                case MYNOTE:
+                    dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+                    break;
+            }
         }
     }
 

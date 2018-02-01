@@ -1,7 +1,9 @@
 package com.project.why.braillelearning.Menu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,12 +11,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.project.why.braillelearning.ActivityManagerSingleton;
-import com.project.why.braillelearning.CustomTouch.CustomMenuInfoTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
+import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -49,6 +54,8 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     private boolean finish = false;
     private ImageView logoImgaeview;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
+    private ImageView menuinfofocus_ImageView;
+    private AccessibilityManager accessibilityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +178,9 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         information_ImageView.getLayoutParams().height = heightSize;
         information_ImageView.getLayoutParams().width = widthSize;
         information_ImageView.requestLayout();
+
+        menuinfofocus_ImageView = (ImageView) findViewById(R.id.menuinfofocus_imageview);
+        accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
 
     /**
@@ -187,7 +197,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
 
 
     private void initTouchEvent(){
-        customTouchConnectListener = new CustomMenuInfoTouchEvent(this, this);
+        customTouchConnectListener = new CustomTouchEvent(this, this);
         connectTouchEvent();
     }
 
@@ -201,8 +211,22 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
 
     @Override
     public void onFocusRefresh() {
-        layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
-        layout.requestFocus();
+        focusSetting();
+    }
+
+    /**
+     * focus setting 함수
+     */
+    private void focusSetting(){
+        if(accessibilityManager.isTouchExplorationEnabled() == false) {
+            Animation animation = AnimationUtils.loadAnimation(MenuInformationActivity.this, R.anim.focus_fade);
+            menuinfofocus_ImageView.startAnimation(animation);
+            menuinfofocus_ImageView.setBackgroundResource(R.drawable.focusborder);
+            mediaSoundManager.focusSoundStart();
+        } else {
+            layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+            layout.requestFocus();
+        }
     }
 
     @Override
@@ -318,21 +342,43 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     private synchronized void exit(int result){
         if(finish == false) {
             finish = true;
-            if (result == 0) {
-                if (brailleLearningType == BrailleLearningType.TUTORIAL)
-                    setResult(RESULT_CANCELED);
-                else {
-                    mediaSoundManager.start(FingerFunctionType.ENTER);
-                    setResult(RESULT_OK);
-                }
-            } else if (result == 1)
-                setResult(RESULT_CANCELED);
-
             aniTimerStop();
             stopSound();
 
-            activityManagerSingleton.nowActivityFinish();
+            if (result == 0) {
+                if (brailleLearningType == BrailleLearningType.TUTORIAL) {
+                    setResult(RESULT_CANCELED);
+                    activityManagerSingleton.nowActivityFinish();
+                    savePreferences();
+                }
+                else {
+                    mediaSoundManager.start(FingerFunctionType.ENTER);
+                    setResult(RESULT_OK);
+                    activityManagerSingleton.nowActivityFinish();
+                }
+            } else if (result == 1) {
+                if(brailleLearningType == BrailleLearningType.TUTORIAL){
+                    SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
+                    String state = pref.getString("FIRST_RUN","FALSE");
+
+                    if(state == "FALSE" || state.equals("FALSE"))
+                        activityManagerSingleton.allActivityFinish();
+                    else
+                        activityManagerSingleton.nowActivityFinish();
+
+                } else {
+                    setResult(RESULT_CANCELED);
+                    activityManagerSingleton.nowActivityFinish();
+                }
+            }
         }
+    }
+
+    private void savePreferences(){
+        SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("FIRST_RUN","TRUE");
+        editor.commit();
     }
 
     private void checkSoundPlaying(){

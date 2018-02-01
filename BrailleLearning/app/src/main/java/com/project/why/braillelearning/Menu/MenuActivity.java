@@ -1,6 +1,7 @@
 package com.project.why.braillelearning.Menu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -28,6 +30,8 @@ import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -48,6 +52,10 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     private MultiFinger multiFingerFunction;
     private CustomTouchConnectListener customTouchConnectListener;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
+    private ImageView menuFocus;
+    private AccessibilityManager accessibilityManager;
+    private TimerTask focusTimerTask;
+    private Timer focusTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +74,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
             setFullScreen();
-            requestFocus();
         }
     }
 
@@ -87,26 +94,17 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         connectTouchEvent();
     }
 
+
+    /**
+     * 앱 설치 후 최초 실행인지 확인하는 함수
+     */
     private void checkFirstRun(){
-        String state = getPreferences();
-        if(state != "TRUE" && !state.equals("TRUE")){
-            savePreferences();
+        SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
+        String state = pref.getString("FIRST_RUN","FALSE");
+        if(state == "FALSE" || state.equals("FALSE")){
             menuAddressDeque.addLast(0);
             enterBrailleLearning();
         }
-    }
-
-    private String getPreferences(){
-        SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
-        String state = pref.getString("FIRST_RUN","");
-        return state;
-    }
-
-    private void savePreferences(){
-        SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("FIRST_RUN","TRUE");
-        editor.commit();
     }
 
 
@@ -116,6 +114,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
             kakaoImageView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
         }
     }
+
 
     /**
      * 메뉴 초기화 함수
@@ -129,6 +128,8 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         menuAddressDeque.addLast(PageNumber);
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         multiFingerFunction = new MultiFinger(this);
+        menuFocus = (ImageView) findViewById(R.id.menufocus_imageview);
+        accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
         setFullScreen();
     }
 
@@ -144,6 +145,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         MenuImageView.requestLayout();
     }
 
+
     /**
      * layout 설정
      */
@@ -158,6 +160,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         });
     }
 
+
     @Override
     protected void onPause(){
         super.onPause();
@@ -167,10 +170,12 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         pauseTouchEvent();
     }
 
+
     @Override
     protected void onDestroy(){
         super.onDestroy();
     }
+
 
     /**
      * 손가락 1개, 2개에 대한 event를 발생하는 touchevent 함수
@@ -200,6 +205,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     private void connectTouchEvent(){
         customTouchConnectListener.onResume();
     }
+
 
     /**
      * touchevent module 일시중지
@@ -231,6 +237,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         }
     }
 
+
     /**
      * 이미지 새로고침 함수
      * @param menuNode : 현재 화면을 의미하는 treeNode
@@ -240,8 +247,9 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.image_fade);
         MenuImageView.startAnimation(animation);
         MenuImageView.setImageDrawable(imageResizeModule.getDrawableImage(menuNode.getImageId(), MenuImageSize, MenuImageSize)); //현재화면에 이미지 설정
-        layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+        focusSetting();
     }
+
 
     /**
      * 음성 새로고침 함수
@@ -250,7 +258,9 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     private void refreshSound(TreeNode menuNode){
         int id = menuNode.getSoundId();
         mediaSoundManager.start(id);
+        mediaSoundManager.start(R.raw.doubletab_info);
     }
+
 
     private void refreshSound(){
         onStopSound();
@@ -258,11 +268,13 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         refreshSound(menuNode);
     }
 
+
     /**
      * 점자 학습 화면으로 들어가는 함수
      * 자신이 선택한 menu name을 학습화면으로 전달
      */
     private void enterBrailleLearning(){
+        focusThreadStop();
         menuAddressDeque.removeLast();
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
@@ -275,22 +287,90 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
 
     /**
      * 화면에 focus를 잡아주는 함수
-     * 이미지가 변결될때마다 호출됨
      */
     @Override
     public void onFocusRefresh() {
-        requestFocus();
-        refreshSound();
+        if(mediaSoundManager.getMediaPlaying() == false)
+            requestFocus(150, false);
+        else {
+            requestFocus(150, true);
+            mediaSoundManager.stop();
+        }
     }
 
-    private void requestFocus(){
-        layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
-        layout.requestFocus();
+
+    private void requestFocus(int time, boolean mediaPlaying){
+        if(accessibilityManager.isTouchExplorationEnabled() == false)
+            focusThreadMaking(time, mediaPlaying);
+        else {
+            refreshSound();
+            layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+            layout.requestFocus();
+        }
     }
+
+
+    /**
+     * focus 인식 시간 스레드
+     */
+    private synchronized void focusThreadMaking(int time, final boolean mediaPlaying){
+        if(focusTimerTask == null) {
+            focusTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(!mediaPlaying)
+                                refreshSound();
+                            focusSetting();
+                            focusThreadStop();
+                        }
+                    });
+                }
+            };
+            focusTimer = new Timer();
+            focusTimer.schedule(focusTimerTask, time);
+        }
+    }
+
+
+    /**
+     * focus setting 함수
+     */
+    private void focusSetting(){
+        if(accessibilityManager.isTouchExplorationEnabled() == false) {
+            Animation animation = AnimationUtils.loadAnimation(MenuActivity.this, R.anim.focus_fade);
+            menuFocus.startAnimation(animation);
+            menuFocus.setBackgroundResource(R.drawable.focusborder);
+            mediaSoundManager.focusSoundStart();
+        } else {
+            layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
+            layout.requestFocus();
+        }
+    }
+
+
+    /**
+     * focus 인식 스레드를 종료하는 함수
+     */
+    private void focusThreadStop(){
+        if(focusTimerTask != null) {
+            focusTimerTask.cancel();
+            focusTimerTask = null;
+        }
+
+        if(focusTimer != null){
+            focusTimer.cancel();
+            focusTimer = null;
+        }
+    }
+
 
     @Override
     public void onStopSound() {
         mediaSoundManager.stop();
+        focusThreadStop();
     }
 
 
@@ -377,6 +457,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         }
     }
 
+
     /**
      * 이미지 메모리 해제 함수
      */
@@ -392,6 +473,9 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
+    /**
+     * 로고 이미지 메모리 해제 함수
+     */
     private void recycleLogo(){
         if(kakaoImageView != null){
             Drawable image = kakaoImageView.getDrawable();

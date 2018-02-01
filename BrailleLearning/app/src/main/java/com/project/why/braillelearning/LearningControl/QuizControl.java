@@ -6,6 +6,7 @@ import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningModel.QuizBrailleData;
+import com.project.why.braillelearning.R;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     public void onPause() {
+        touchLock = false;
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
@@ -110,8 +112,10 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
-        if(data != null)
-            oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
+        if(touchLock == false) {
+            if (data != null)
+                oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
+        }
     }
 
 
@@ -123,19 +127,20 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case SPEECH:
-                if(progress == false) {
+        if(touchLock == false) {
+            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
+            switch (type) {
+                case SPEECH:
+                    touchLock = true;
                     progress = true;
                     speechRecognitionMoudle.start();
-                }
-                break;
-            case MYNOTE:
-                dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
-                break;
-            default:
-                break;
+                    break;
+                case MYNOTE:
+                    dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -150,8 +155,12 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
             boolean result = checkAnswer(text);
             mediaSoundManager.start(result, pageNumber, quizData.getRawId());
             nodifyObservers();
+        } else {
+            mediaSoundManager.start(R.raw.speechrecognition_fail);
+            mediaSoundManager.start(R.raw.retry);
         }
         progress = false;
+        touchLock = false;
     }
 
 

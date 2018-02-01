@@ -42,6 +42,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onPause() {
+        touchLock = false;
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
@@ -63,8 +64,8 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
-        if(data != null) {
-            if(sendCheck == false) {
+        if(touchLock == false) {
+            if (data != null) {
                 Dot tempDot[][] = oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
                 if (tempDot != null) {
                     data.setBrailleMatrix(tempDot);
@@ -84,19 +85,22 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case SPEECH:
-                if(checkInputBraille())
-                    speechRecognitionMoudle.start();
-                else
-                    mediaSoundManager.start(R.raw.teacher_no_input);
-                break;
-            case MYNOTE:
-                mediaSoundManager.start(R.raw.impossble_function);
-                break;
-            default:
-                break;
+        if(touchLock == false) {
+            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
+            switch (type) {
+                case SPEECH:
+                    if (checkInputBraille()) {
+                        speechRecognitionMoudle.start();
+                        touchLock = true;
+                    } else
+                        mediaSoundManager.start(R.raw.teacher_no_input);
+                    break;
+                case MYNOTE:
+                    mediaSoundManager.start(R.raw.impossble_function);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -130,6 +134,8 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
 
                     if(checkPage())
                         addJsonBrailleData(context, Json.TEACHER);
+
+                    touchLock = false;
                 }
             } catch(Exception e){
                 sendCheck = false;
@@ -137,6 +143,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                 data.refreshData();
                 nodifyViewObserver();
                 mediaSoundManager.start(R.raw.send_cancel);
+                touchLock = false;
             }
         } else {
             ((BrailleLearningActivity)context).runOnUiThread(new Runnable() { // onError가 호출되었을 경우
@@ -145,9 +152,11 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                     data.setLetterName("");
                     data.refreshData();
                     nodifyViewObserver();
+                    mediaSoundManager.start(R.raw.speechrecognition_fail);
                     mediaSoundManager.start(R.raw.retry);
                 }
             });
+            touchLock = false;
         }
     }
 
@@ -248,12 +257,12 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
             try{
                 String lettername = params[0];
                 String brailleText = params[1];
-                //String rawId = params[2];
+                String rawId = params[2];
 
                 String link = Global.teacherServerURL;
                 String inputData  = URLEncoder.encode("letterName", "UTF-8") + "=" + URLEncoder.encode(lettername, "UTF-8");
                 inputData += "&" + URLEncoder.encode("brailleText", "UTF-8") + "=" + URLEncoder.encode(brailleText, "UTF-8");
-                //inputData += "&" + URLEncoder.encode("rawID", "UTF-8") + "=" + URLEncoder.encode(rawId, "UTF-8");
+                inputData += "&" + URLEncoder.encode("rawID", "UTF-8") + "=" + URLEncoder.encode(rawId, "UTF-8");
                 inputData += "&" + URLEncoder.encode("room", "UTF-8") + "=" + URLEncoder.encode(room, "UTF-8");
 
                 URL url = new URL(link);
@@ -284,7 +293,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
+            touchLock = false;
             if(result.equals("error") || result == "error")
                 mediaSoundManager.start(R.raw.sendfail);
             else {
@@ -296,7 +305,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                         JSONObject c = jsonArray.getJSONObject(i);
                         String str = c.getString("id");    // 저장코드들
                         if(0 < str.length()) {
-                            String text = str + "!번! " + str+",send_ok";
+                            String text = str + "번! " + str+",send_ok";
                             mediaSoundManager.start(text);
                             room = str;
                             break;

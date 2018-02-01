@@ -16,6 +16,12 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:id="@+id/menuinfofocus_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000" />
+
+        <ImageView
             android:id="@+id/information_imageview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -45,6 +45,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onPause() {
+        touchLock = false;
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
@@ -60,35 +61,36 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case BACK:
-                exit();
-                break;
-            case RIGHT:
-                if (pageNumber < brailleDataArrayList.size()-1) {
-                    pageNumber++;
-                    nodifyObservers();
+        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate, touchLock);
+        if(type == FingerFunctionType.BACK)
+            exit();
+        else{
+            if(touchLock == false){
+                switch (type) {
+                    case RIGHT:
+                        if (pageNumber < brailleDataArrayList.size() - 1) {
+                            pageNumber++;
+                            nodifyObservers();
+                        } else {
+                            checkNewData = true;
+                            ReceiveServerTask task = new ReceiveServerTask();
+                            task.execute();
+                        }
+                        break;
+                    case LEFT:
+                        if (0 < pageNumber) {
+                            pageNumber--;
+                            nodifyObservers();
+                        } else {
+                            mediaSoundManager.allStop();
+                            mediaSoundManager.start(R.raw.first_page);
+                        }
+                        break;
+                    case REFRESH:
+                        nodifyObservers();
+                        break;
                 }
-                else {
-                    checkNewData = true;
-                    ReceiveServerTask task = new ReceiveServerTask();
-                    task.execute();
-                }
-                break;
-            case LEFT:
-                if (0 < pageNumber) {
-                    pageNumber--;
-                    nodifyObservers();
-                }
-                else {
-                    mediaSoundManager.allStop();
-                    mediaSoundManager.start(R.raw.first_page);
-                }
-                break;
-            case REFRESH:
-                nodifyObservers();
-                break;
+            }
         }
     }
 
@@ -101,19 +103,23 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case SPEECH:
-                speechRecognitionMoudle.start();
-                break;
-            case MYNOTE:
-                if(data != null)
-                    dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
-                else
-                    mediaSoundManager.start(R.raw.impossble_save);
-                break;
-            default:
-                break;
+        if(touchLock == false) {
+            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
+            switch (type) {
+                case SPEECH:
+                    speechRecognitionMoudle.start();
+                    touchLock = true;
+                    break;
+                case MYNOTE:
+                    if (data != null)
+                        dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+                    else
+                        mediaSoundManager.start(R.raw.impossble_save);
+
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -142,7 +148,12 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
             } else {
                 mediaSoundManager.start(R.raw.no_room);
             }
+        } else {
+            mediaSoundManager.start(R.raw.speechrecognition_fail);
+            mediaSoundManager.start(R.raw.retry);
         }
+
+        touchLock = false;
     }
 
 
@@ -217,34 +228,38 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
-            if(result.equals("error") || result == "error") {
+            touchLock = false;
+            if(result.equals("error") || result == "error")
                 mediaSoundManager.start(R.raw.sendfail);
-            } else {
+            else {
                 try {
                     JSONObject jsonObj = new JSONObject(result);
                     JSONArray jsonArray = jsonObj.getJSONArray("result");   //  mysql에서 불러온값을 저장.
 
-                    if(brailleDataArrayList.size() < jsonArray.length()) {
-                        int startIndex = brailleDataArrayList.size();
+                    if(jsonArray.length() == 0)
+                        mediaSoundManager.start(R.raw.no_room);
+                    else {
+                        if (brailleDataArrayList.size() < jsonArray.length()) {
+                            int startIndex = brailleDataArrayList.size();
 
-                        for (int i = startIndex; i < jsonArray.length(); i++) {
-                            JSONObject c = jsonArray.getJSONObject(i);
-                            String letterName = c.getString("LetterName");
-                            String brailleText = c.getString("brailleText");
-                            addBrailleDataArray(letterName, brailleText);
-                        }
+                            for (int i = startIndex; i < jsonArray.length(); i++) {
+                                JSONObject c = jsonArray.getJSONObject(i);
+                                String letterName = c.getString("LetterName");
+                                String brailleText = c.getString("brailleText");
+                                addBrailleDataArray(letterName, brailleText);
+                            }
 
-                        if(checkNewData == true) {
-                            pageNumber++;
+                            if (checkNewData == true) {
+                                pageNumber++;
+                                checkNewData = false;
+                            }
+
+                            nodifyObservers();
+                        } else if (checkNewData == true) {
+                            mediaSoundManager.allStop();
+                            mediaSoundManager.start(R.raw.last_page);
                             checkNewData = false;
                         }
-
-                        nodifyObservers();
-                    } else if(checkNewData == true) {
-                        mediaSoundManager.allStop();
-                        mediaSoundManager.start(R.raw.last_page);
-                        checkNewData = false;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

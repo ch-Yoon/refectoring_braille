@@ -21,14 +21,16 @@ public class MultiFinger{
         mediaSoundManager = new MediaSoundManager(context);
     }
 
-
+    public FingerFunctionType getFingerFunctionType(FingerCoordinate fingerCoordinate) {
+        return getFingerFunctionType(fingerCoordinate, false);
+    }
     /**
      * 손가락 2개와 3개에 대한 event를 분석하는 함수
      * 좌표값이 드래그 허용범위를 충족시켜는지와 x축과 y축 중 어느 축의 드래그 값이 높은지를 판단
      * @param fingerCoordinate : 좌표값
      * @return : 이벤트 type
      */
-    public FingerFunctionType getFingerFunctionType(FingerCoordinate fingerCoordinate) {
+    public FingerFunctionType getFingerFunctionType(FingerCoordinate fingerCoordinate, boolean touchLock) {
         FingerFunctionType type = FingerFunctionType.NONE;
         int fingerCount = fingerCoordinate.getFingerCount();
 
@@ -72,14 +74,18 @@ public class MultiFinger{
                 type = getThreeFingerFunction(DragX, DragY, Drag_countY);
         }
 
-        if(mediaSoundManager.checkTTSPlaying() == true)
-            type = FingerFunctionType.NONE;
+        if(mediaSoundManager.checkTTSPlaying() == true) {
+            if(touchLock == false)
+                type = FingerFunctionType.NONE;
+        }
 
         if(type == FingerFunctionType.BACK)
             mediaSoundManager.start(type);
         else {
-            if(mediaSoundManager.getMenuInfoPlaying() == false)
-                mediaSoundManager.start(type);
+            if(mediaSoundManager.getMenuInfoPlaying() == false) {
+                if(touchLock == false)
+                    mediaSoundManager.start(type);
+            }
         }
 
         return type;

@@ -38,6 +38,7 @@ public class MediaSoundManager {
     public void initialMediaPlayerStopCallbackListener(){
         mediaPlayerSingleton.initialMediaPlayerStopCallbackListener();
     }
+
     /**
      * int형 음성 file id들을 출력하는 함수
      * 전달받은 int형 soundid를 queue에 담아 mediaPlayerSingleton에 전달함
@@ -47,6 +48,10 @@ public class MediaSoundManager {
         Queue<Integer> soundIdQueue = new LinkedList<>();
         soundIdQueue.add(soundId);
         mediaPlayerSingleton.start(soundIdQueue);
+    }
+
+    public void focusSoundStart(){
+        mediaPlayerSingleton.focusSoundStart();
     }
 
     public void start(BrailleLearningType brailleLearningType){

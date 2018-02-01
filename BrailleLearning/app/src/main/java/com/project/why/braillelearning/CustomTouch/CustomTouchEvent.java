@@ -1,6 +1,7 @@
 package com.project.why.braillelearning.CustomTouch;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityManager;
 
@@ -8,6 +9,8 @@ import com.project.why.braillelearning.Accessibility.AccessibilityEventListener;
 import com.project.why.braillelearning.Accessibility.AccessibilityEventSingleton;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
+import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
+import com.project.why.braillelearning.R;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,18 +35,22 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     protected boolean hoverError = false;
     private long actionDownTime = 0;
     private long actionUpTime = 0;
-    private TimerTask touchTimerTask;
-    private Timer touchTimer;
+    private int touchCount = 0;
+    private TimerTask blindTimerTask, basicTimerTask;
+    private Timer blindTimer, basicTimer;
     private AccessibilityManager am;
     protected AccessibilityEventSingleton accessibilityEventSingleton;
     private Context context;
     protected CustomTouchEventListener customTouchEventListener;
+    private MediaSoundManager mediaSoundManager;
+    private boolean maxFingerExceed = false;
 
     public CustomTouchEvent(Context context, CustomTouchEventListener customTouchEventListener){
         this.context = context;
         fingerCoordinate = new FingerCoordinate(THREE_FINGER);
         am = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
         this.customTouchEventListener = customTouchEventListener;
+        mediaSoundManager = new MediaSoundManager(context);
     }
 
 
@@ -128,84 +135,102 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     public void touchEvent(MotionEvent event){
         checkBlind(event);
 
-        int pointer_Count = event.getPointerCount(); // 현재 발생된 터치 event의 수
+        if(maxFingerExceed == true)
+            checkMaxFingerExceedInit(event);
 
-        if(pointer_Count > THREE_FINGER)
-            pointer_Count = THREE_FINGER;
+        if(maxFingerExceed == false) {
+            int pointer_Count = event.getPointerCount(); // 현재 발생된 터치 event의 수
+            if (pointer_Count <= THREE_FINGER) {
+                if (blindMode == false) {
+                    if (pointer_Count == ONE_FINGER)
+                        basicOneFingerTouch(event);
+                    else {
+                        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                            case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
+                                multiFinger = true;
+                                basicThreadStop();
+                                customTouchEventListener.onStopSound();
+                                fingerCoordinate.setDownCoordinate(event, pointer_Count);
+                                break;
+                            case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
+                                if (functionLock == false) {
+                                    fingerCoordinate.setUpCoordinate(event, pointer_Count);
+                                    if (pointer_Count == TWO_FINGER)
+                                        customTouchEventListener.onTwoFingerFunction(fingerCoordinate);
+                                    else if (pointer_Count == THREE_FINGER)
+                                        customTouchEventListener.onThreeFingerFunction(fingerCoordinate);
 
-        if(blindMode == false) {
-            if (pointer_Count == ONE_FINGER)
-                basicOneFingerTouch(event);
-            else if (pointer_Count > ONE_FINGER) {
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                        multiFinger = true;
-
-                        fingerCoordinate.setDownCoordinate(event, pointer_Count);
-                        break;
-                    case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                        if(functionLock == false) {
-                            fingerCoordinate.setUpCoordinate(event, pointer_Count);
-                            if (pointer_Count == TWO_FINGER)
-                                customTouchEventListener.onTwoFingerFunction(fingerCoordinate);
-                            else if (pointer_Count == THREE_FINGER)
-                                customTouchEventListener.onThreeFingerFunction(fingerCoordinate);
-
-                            functionLock = true;
+                                    functionLock = true;
+                                }
+                                break;
                         }
-                        break;
-                }
-            }
-        } else {
-            if (pointer_Count == ONE_FINGER)
-                blindOneFIngerTouch(event);
-            else {
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                        multiFinger = true;
+                    }
+                } else {
+                    if (pointer_Count == ONE_FINGER)
+                        blindOneFIngerTouch(event);
+                    else {
+                        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                            case MotionEvent.ACTION_POINTER_DOWN: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
+                                multiFinger = true;
+                                fingerCoordinate.setDownCoordinate(event, pointer_Count);
+                                break;
+                            case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
+                                if (functionLock == false) {
+                                    fingerCoordinate.setUpCoordinate(event, pointer_Count);
 
-                        fingerCoordinate.setDownCoordinate(event, pointer_Count);
-                        break;
-                    case MotionEvent.ACTION_POINTER_UP: // 다수의 손가락이 화면에 닿았을 때 발생되는 Event
-                        if(functionLock == false) {
-                            fingerCoordinate.setUpCoordinate(event, pointer_Count);
+                                    if (pointer_Count == TWO_FINGER)
+                                        customTouchEventListener.onTwoFingerFunction(fingerCoordinate);
+                                    else if (pointer_Count == THREE_FINGER)
+                                        customTouchEventListener.onThreeFingerFunction(fingerCoordinate);
 
-                            if (pointer_Count == TWO_FINGER)
-                                customTouchEventListener.onTwoFingerFunction(fingerCoordinate);
-                            else if (pointer_Count == THREE_FINGER)
-                                customTouchEventListener.onThreeFingerFunction(fingerCoordinate);
-
-                            functionLock = true;
+                                    functionLock = true;
+                                }
+                                break;
                         }
-                        break;
+                    }
                 }
+            } else {
+                maxFingerExceed = true;
+                mediaSoundManager.start(R.raw.jesture_info);
             }
         }
     }
 
+    private void checkMaxFingerExceedInit(MotionEvent event){
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                maxFingerExceed = false;
+            case MotionEvent.ACTION_DOWN:
+                maxFingerExceed = false;
+                break;
+        }
+    }
 
     /**
-     * 일반버전의 손가락 1개 함수
-     * 학습메뉴마다 손가락 1개의 이벤트가 다르기때문에, 해당 함수는 상속받는 클래스에서 재정의한다.
+     * 일반버전 손가락 1개 함수
+     * down 될때 thread start, up 될때 터치횟수 확인
      * @param event
      */
     protected void basicOneFingerTouch(MotionEvent event){
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN: // 손가락 1개를 화면에 터치하였을 때 발생되는 Event
+            case MotionEvent.ACTION_DOWN:
+                basicThreadMaking();
+                touchCount++;
                 multiFinger = false;
                 functionLock = false;
-                fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
-                customTouchEventListener.onStopSound();
+                customTouchEventListener.onFocusRefresh();
                 break;
-            case MotionEvent.ACTION_UP: // 손가락 1개를 화면에서 떨어트렸을 때 발생되는 Event
-                if (multiFinger == false) {
-                    fingerCoordinate.setUpCoordinate(event, ONE_FINGER);
-                    customTouchEventListener.onOneFingerFunction(fingerCoordinate);
+            case MotionEvent.ACTION_UP:
+                if(multiFinger == false) {
+                    touchCount++;
+                    if (4 <= touchCount) {
+                        basicThreadStop();
+                        customTouchEventListener.onOneFingerFunction(fingerCoordinate);
+                    }
                 }
                 break;
         }
     }
-
 
     /**
      * 시각장애인버전의 손가락 1개 함수
@@ -227,7 +252,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                 functionLock = false;
                 hoverError = false;
 
-                threadStop();
+                blindThreadStop();
                 customTouchEventListener.onStopSound();
                 actionDownTime = event.getEventTime();
                 fingerCoordinate.setHoverDownCoordinate(event, ONE_FINGER + 1);
@@ -244,7 +269,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                     actionUpTime = event.getEventTime();
                     if (actionDownTime == actionUpTime) {
                         multiFinger = false;
-                        threadMaking();
+                        blindThreadMaking();
                     } else {
                         multiFinger = true;
                         if (hoverError == false) {
@@ -268,35 +293,35 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
      * 이때, 손가락 1개와 손가락 3개 모두 ACTOIN_DOWN -> ACTION_UP이라는 touch event가 중복된다.
      * 이에따라, ACTION_DOWN -> ACTION_UP으로 인한 double tab판정이 날 경우, ACTION_UP 이후 일정시간동안 대기를 하고, 추가적인 touch 이벤트가 없다면 double tap으로 간주한다.
      */
-    private synchronized void threadMaking(){
-        if(touchTimerTask == null) {
-            touchTimerTask = new TimerTask() {
+    private synchronized void blindThreadMaking(){
+        if(blindTimerTask == null) {
+            blindTimerTask = new TimerTask() {
                 @Override
                 public void run() {
                     customTouchEventListener.onOneFingerFunction(fingerCoordinate);
-                    threadStop();
+                    blindThreadStop();
                     initActionTime();
                 }
             };
-            touchTimer = new Timer();
-            touchTimer.schedule(touchTimerTask, 200);
+            blindTimer = new Timer();
+            blindTimer.schedule(blindTimerTask, 200);
         }
     }
 
 
     /**
-     * 시각장애인 버전의 touch event를 식별하기 위한 thread를 중지하는 함수
+     * 시각장애인 버전의 blind event를 식별하기 위한 thread를 중지하는 함수
      * thread 중지 후 모두 초기화
      */
-    private void threadStop(){
-        if(touchTimerTask != null) {
-            touchTimerTask.cancel();
-            touchTimerTask = null;
+    private void blindThreadStop(){
+        if(blindTimerTask != null) {
+            blindTimerTask.cancel();
+            blindTimerTask = null;
         }
 
-        if(touchTimer != null){
-            touchTimer.cancel();
-            touchTimer = null;
+        if(blindTimer != null){
+            blindTimer.cancel();
+            blindTimer = null;
         }
 
         initActionTime();
@@ -314,11 +339,47 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
         }
     }
 
+
     /**
      * ACTION_DOWN과 ACTION_UP의 이벤트 발생 시간을 초기화 시키는 함수
      */
     private void initActionTime(){
         actionDownTime = 0;
         actionUpTime = 0;
+    }
+
+
+    /**
+     * 더블탭 확인을 위한 시간 스레드
+     */
+    private synchronized void basicThreadMaking(){
+        if(basicTimerTask == null) {
+            basicTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    basicThreadStop();
+                }
+            };
+            basicTimer = new Timer();
+            basicTimer.schedule(basicTimerTask, 500);
+        }
+    }
+
+
+    /**
+     * 더블 탭 확인을 위한 시간 스레드를 종료하는 함수
+     */
+    private void basicThreadStop(){
+        touchCount = 0;
+
+        if(basicTimerTask != null) {
+            basicTimerTask.cancel();
+            basicTimerTask = null;
+        }
+
+        if(basicTimer != null){
+            basicTimer.cancel();
+            basicTimer = null;
+        }
     }
 }

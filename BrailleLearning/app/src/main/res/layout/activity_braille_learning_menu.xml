@@ -6,37 +6,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/AppBasicColor"
+    android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:focusable="true"
     tools:context="com.project.why.braillelearning.Menu.MenuActivity">
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/braillelearningmenu_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="false"
-        android:layout_centerHorizontal="false"
-        android:layout_centerInParent="true"
-        android:layout_centerVertical="true"
-        app:srcCompat="@color/AppBasicColor" />
+        <ImageView
+            android:id="@+id/menufocus_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"/>
 
-    <ImageView
-        android:id="@+id/imageView_kakao"
-        android:layout_width="102dp"
-        android:layout_height="15dp"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="false"
-        android:layout_centerHorizontal="false"
-        android:layout_centerInParent="false"
-        android:layout_centerVertical="false"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp" />
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/braillelearningmenu_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@color/AppBasicColor" />
+
+        <ImageView
+            android:id="@+id/imageView_kakao"
+            android:layout_width="102dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="false"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="false"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp" />
+    </RelativeLayout>
 
 </LinearLayout>

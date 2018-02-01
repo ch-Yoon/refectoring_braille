@@ -31,10 +31,12 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPl
     }
 
     /**
-     * 화면이 pause가 될때 연결되어 있는 callbacklistener 해제
+     * 화면이 pause가 될때 연결되어 있는 callbacklistener를 해제
+     * 음성인식이 실행중이라면 음성인식 중단
      */
     public void pause(){
         mediaSoundManager.initialMediaPlayerStopCallbackListener();
+        stop();
     }
 
     /**
@@ -50,7 +52,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPl
                 }
             }
         } catch (Exception e){
-            mediaSoundManager.start("speechrecognition_fail");
+            listener.speechRecogntionResult(null);
         }
     }
 
@@ -70,7 +72,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPl
                 }
             }
         } catch (Exception e){
-            mediaSoundManager.start("speechrecognition_fail");
+            listener.speechRecogntionResult(null);
         }
     }
 
@@ -126,10 +128,9 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPl
     @Override
     public void onError(int errorCode, String errorMsg) {
         client = null;
-        if(stop == false) {
-            mediaSoundManager.start("speechrecognition_fail");
+        if(stop == false)
             listener.speechRecogntionResult(null);
-        } else
+        else
             stop = false;
 
     }
@@ -149,7 +150,10 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPl
         client = null;
         if(stop == false) {
             ArrayList<String> sttArray = results.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS);
-            listener.speechRecogntionResult(sttArray);
+            if(sttArray.size() == 0)
+                listener.speechRecogntionResult(null);
+            else
+                listener.speechRecogntionResult(sttArray);
         } else
             stop = false;
     }

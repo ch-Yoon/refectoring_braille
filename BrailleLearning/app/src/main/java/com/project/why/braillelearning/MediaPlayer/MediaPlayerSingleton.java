@@ -23,7 +23,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     private static final MediaPlayerSingleton ourInstance = new MediaPlayerSingleton();
     private TextToSpeechClient ttsClient;
     private Context context;
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer, focusMediaPlayer;
     private Queue<Integer> queue = new LinkedList<>();
     private Queue<Integer> tempQueue = new LinkedList<>();
     private int shieldId; // 특정 음성들이 종료되지 않도록 방어하는 변수
@@ -59,6 +59,35 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     public void start(Queue<Integer> soundIdQueue){
         queue.addAll(soundIdQueue);
         checkMediaPlayer();
+    }
+
+    public void focusSoundStart(){
+        if(focusMediaPlayer == null) {
+            focusMediaPlayer = MediaPlayer.create(context, R.raw.focus_sound);
+            focusMediaPlayer.start();
+            focusMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    initializeFocusMediaPlayer();
+                }
+            });
+        }
+    }
+
+    /**
+     * mediaplayer 메모리 해제 함수
+     */
+    public void initializeFocusMediaPlayer(){
+        if (focusMediaPlayer != null) {
+            if (focusMediaPlayer.isPlaying()) {
+                focusMediaPlayer.stop();
+                focusMediaPlayer.release();
+                focusMediaPlayer = null;
+            } else {
+                focusMediaPlayer.release();
+                focusMediaPlayer = null;
+            }
+        }
     }
 
 
@@ -157,9 +186,8 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
     }
 
     public void initializeAll(){
-        if(!checkMediaShield()) {
+        if(!checkMediaShield())
             initializeMediaPlayer();
-        }
         initializeQueue();
     }
 

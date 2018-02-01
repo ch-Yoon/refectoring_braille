@@ -35,6 +35,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
      */
     @Override
     public void onPause() {
+        touchLock = false;
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
@@ -48,19 +49,22 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
      */
     @Override
     public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case SPEECH:
-                speechRecognitionMoudle.start();
-                break;
-            case MYNOTE:
-                if(data != null)
-                    dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
-                else
-                    mediaSoundManager.start(R.raw.impossble_save);
-                break;
-            default:
-                break;
+        if(touchLock == false) {
+            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
+            switch (type) {
+                case SPEECH:
+                    speechRecognitionMoudle.start();
+                    touchLock = true;
+                    break;
+                case MYNOTE:
+                    if (data != null)
+                        dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+                    else
+                        mediaSoundManager.start(R.raw.impossble_save);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -73,8 +77,11 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
     public void speechRecogntionResult(ArrayList<String> text) {
         if(text != null)
             startBrailleTranslation(text.get(0));
-        else
+        else {
+            mediaSoundManager.start(R.raw.speechrecognition_fail);
             mediaSoundManager.start(R.raw.retry);
+        }
+        touchLock = false;
     }
 
 
