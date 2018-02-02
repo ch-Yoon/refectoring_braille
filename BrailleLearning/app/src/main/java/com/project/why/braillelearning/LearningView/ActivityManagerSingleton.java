@@ -1,4 +1,4 @@
-package com.project.why.braillelearning;
+package com.project.why.braillelearning.LearningView;
 
 import android.app.Activity;
 

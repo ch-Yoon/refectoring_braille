@@ -12,11 +12,10 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.project.why.braillelearning.ActivityManagerSingleton;
+import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.R;
 
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 

@@ -1,7 +1,6 @@
 package com.project.why.braillelearning.CustomTouch;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityManager;
 
@@ -328,6 +327,10 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     }
 
 
+    /**
+     * 화면이 터치
+     * @param event
+     */
     private void checkBlind(MotionEvent event){
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:

@@ -7,7 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.project.why.braillelearning.ActivityManagerSingleton;
+import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;

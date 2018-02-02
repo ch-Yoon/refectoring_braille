@@ -1,12 +1,9 @@
 package com.project.why.braillelearning.Accessibility;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;

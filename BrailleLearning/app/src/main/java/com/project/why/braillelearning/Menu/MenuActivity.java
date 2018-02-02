@@ -15,7 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import com.project.why.braillelearning.ActivityManagerSingleton;
+import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
@@ -73,12 +73,17 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
-            setFullScreen();
+           setFullScreen();
         }
     }
 
 
-    private void setFullScreen(){ // 전체화면 함수
+    /**
+     * 전체화면 적용 함수
+     * 네비게이션바 제거
+     * 풀스크린 모드
+     */
+    private void setFullScreen(){
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -95,8 +100,19 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        recycleImage();
+        recycleLogo();
+        onStopSound();
+        pauseTouchEvent();
+    }
+
+
     /**
      * 앱 설치 후 최초 실행인지 확인하는 함수
+     * FALSE(최초 실행), TRUE(최초 실행 x)
      */
     private void checkFirstRun(){
         SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
@@ -104,14 +120,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         if(state == "FALSE" || state.equals("FALSE")){
             menuAddressDeque.addLast(0);
             enterBrailleLearning();
-        }
-    }
-
-
-    private void setkakaoLogo(){
-        if(kakaoImageView == null) {
-            kakaoImageView = (ImageView) findViewById(R.id.imageView_kakao);
-            kakaoImageView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
         }
     }
 
@@ -147,7 +155,19 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
 
 
     /**
+     * 카카오 로고 이미지 set함수
+     */
+    private void setkakaoLogo(){
+        if(kakaoImageView == null) {
+            kakaoImageView = (ImageView) findViewById(R.id.imageView_kakao);
+            kakaoImageView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
+        }
+    }
+
+
+    /**
      * layout 설정
+     * layout에서 hover event 수신
      */
     private void setLayout(){
         layout = (LinearLayout) findViewById(R.id.menu_layout);
@@ -158,16 +178,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
                 return false;
             }
         });
-    }
-
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        recycleImage();
-        recycleLogo();
-        onStopSound();
-        pauseTouchEvent();
     }
 
 
@@ -217,10 +227,11 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
 
     /**
      * 화면 새로고침 함수
+     * menuAddressDeque에 들어있는 값으로 tree구조로 구성된 메뉴를 탐색
      * 만약 menuAddressDeque가 비어있을 경우, Application을 종료하는 것을 의미
      */
-    private void refreshData() { // 메뉴 이미지 설정 함수
-        if(menuAddressDeque.isEmpty())  // 메뉴 Adress Deque가 비어있으면 종료
+    private void refreshData() {
+        if(menuAddressDeque.isEmpty())
             activityManagerSingleton.allActivityFinish();
         else {
             runOnUiThread(new Runnable() {
@@ -230,7 +241,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
                     if (menuNode != null) {
                         refreshImage(menuNode);
                         refreshSound(menuNode);
-                    } else  // 하위메뉴가 존재하지 않는다면 방금 선택한 경로 삭제 후 점자 학습 화면 이동
+                    } else
                         enterBrailleLearning();
                 }
             });
@@ -287,6 +298,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
 
     /**
      * 화면에 focus를 잡아주는 함수
+     * 손가락 1개 터치와 손가락 2개 터치를 구분하기 위해 딜레이를 발생시키는스레드 생성
      */
     @Override
     public void onFocusRefresh() {
@@ -299,6 +311,11 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
+    /**
+     *  focus set 함수
+     * @param time : 딜레이 시간
+     * @param mediaPlaying : 음성재생 여부 확인
+     */
     private void requestFocus(int time, boolean mediaPlaying){
         if(accessibilityManager.isTouchExplorationEnabled() == false)
             focusThreadMaking(time, mediaPlaying);
@@ -312,6 +329,8 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
 
     /**
      * focus 인식 시간 스레드
+     * media가 재생중이라면 소리를 출력하지 않고 focus set
+     * 재생중이지 않다면 소리를 출력 후 화면에 focus set
      */
     private synchronized void focusThreadMaking(int time, final boolean mediaPlaying){
         if(focusTimerTask == null) {
@@ -374,6 +393,9 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
+    /**
+     * 터치 판별 불가 시 다시 시도 멘트 출력 함수
+     */
     @Override
     public void onError() {
         FingerFunctionType type = FingerFunctionType.NONE;
@@ -407,10 +429,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
         switch (type) {
             case BACK: // 상위 메뉴
-                menuAddressDeque.removeLast();
-                if (!menuAddressDeque.isEmpty())
-                    NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
-                refreshData();
+                beforeMenu();
                 break;
             case RIGHT: // 오른쪽 메뉴
                 if(menuAddressDeque.peekLast()+1 == NowMenuListSize) {
@@ -486,5 +505,24 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
             kakaoImageView.setImageDrawable(null);
             kakaoImageView = null;
         }
+    }
+
+    /**
+     * 상위 메뉴 이동 함수
+     */
+    private void beforeMenu(){
+        menuAddressDeque.removeLast();
+        if (!menuAddressDeque.isEmpty())
+            NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
+        refreshData();
+    }
+
+
+    /**
+     * 뒤로가기 버튼 재정의
+     */
+    @Override
+    public void onBackPressed() {
+        beforeMenu();
     }
 }

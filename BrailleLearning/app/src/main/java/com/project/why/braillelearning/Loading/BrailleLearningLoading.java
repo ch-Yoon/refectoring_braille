@@ -11,7 +11,7 @@ import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.project.why.braillelearning.ActivityManagerSingleton;
+import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.Menu.MenuActivity;
 import com.project.why.braillelearning.Module.ImageResizeModule;

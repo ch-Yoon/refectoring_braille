@@ -41,12 +41,18 @@ public class BasicView extends View implements ViewObservers {
         imageResizeModule = new ImageResizeModule(getResources());
     }
 
+
     @Override
     protected void onDraw(Canvas canvas){
         Log.d("ondraw","ondraw");
         drawBraille(canvas);
     }
 
+
+    /**
+     * 화면에 점자와 글자 그리는 함수
+     * @param canvas
+     */
     private void drawBraille(Canvas canvas){
         if(brailleMatrix != null){
             setTextName();
@@ -55,6 +61,10 @@ public class BasicView extends View implements ViewObservers {
         setKakaoLogo();
     }
 
+
+    /**
+     * 점자를 뜻하는 글자를 담는 textview set 함수
+     */
     private void setTextName(){
         if(textName == null) {
             textName = new TextView(context);
@@ -75,6 +85,10 @@ public class BasicView extends View implements ViewObservers {
         textName.setText(letterName);
     }
 
+
+    /**
+     * 카카오 로고 set하는 함수
+     */
     private void setKakaoLogo(){
         if(imageView == null) {
             imageView = new ImageView(context);
@@ -98,6 +112,7 @@ public class BasicView extends View implements ViewObservers {
         }
     }
 
+
     /**
      * 점자를 화면에 그리는 함수
      * @param canvas
@@ -106,10 +121,8 @@ public class BasicView extends View implements ViewObservers {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
 
-
         int col = brailleMatrix.length; // 점자는 4행으로 이루어짐
         int row = brailleMatrix[0].length;
-
         for (int i=0; i<col; i++) {
             for (int j=0; j<row; j++) {
                 float coordinate_X = brailleMatrix[i][j].getX();
@@ -123,6 +136,7 @@ public class BasicView extends View implements ViewObservers {
         }
     }
 
+
     /**
      * 점자 번호에 따라 점의 색을 구분
      * @param dotType : 점자 번호
@@ -135,11 +149,16 @@ public class BasicView extends View implements ViewObservers {
             return Color.WHITE;
     }
 
+
     @Override
     public View getView() {
         return this;
     }
 
+
+    /**
+     * 화면 초기화
+     */
     @Override
     public void onPause() {
         if(textName != null)
@@ -149,6 +168,7 @@ public class BasicView extends View implements ViewObservers {
         textName = null;
         recycleLogo();
     }
+
 
     /**
      * brailleData를 callback받는 함수
@@ -163,6 +183,9 @@ public class BasicView extends View implements ViewObservers {
     }
 
 
+    /**
+     * 카카오 로고 이미지 메모리 해제 함수
+     */
     private void recycleLogo(){
         if(imageView != null){
             Drawable image = imageView.getDrawable();

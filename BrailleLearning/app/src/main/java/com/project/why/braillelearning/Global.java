@@ -5,8 +5,8 @@ package com.project.why.braillelearning;
  */
 
 public class Global {
-    public static int DisplayX;
-    public static int DisplayY;
+    public static int DisplayX; // 화면의 가로
+    public static int DisplayY; // 화면의 세로
     public static final String teacherServerURL = "http://13.125.23.151/teacher.php";
     public static final String studentServerURL = "http://13.125.23.151/student.php";
 }

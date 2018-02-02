@@ -90,6 +90,12 @@ public class BrailleTranslationModule {
             return null;
     }
 
+
+    /**
+     * 점자 번역 함수
+     * @param targetText : 번역을 희망하는 문장
+     * @return : 성공시 true 실패시 false 반환
+     */
     private boolean startTextToBraille(String targetText){
         boolean result = false;
 
@@ -123,6 +129,7 @@ public class BrailleTranslationModule {
 
         return result;
     }
+
 
     /**
      * 초성 탐색 함수

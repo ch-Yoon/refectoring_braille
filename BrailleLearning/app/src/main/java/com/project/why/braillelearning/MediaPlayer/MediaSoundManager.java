@@ -3,7 +3,6 @@ package com.project.why.braillelearning.MediaPlayer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.accessibility.AccessibilityManager;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;

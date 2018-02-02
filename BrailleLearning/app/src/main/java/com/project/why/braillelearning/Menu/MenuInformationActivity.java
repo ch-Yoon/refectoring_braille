@@ -17,7 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.project.why.braillelearning.ActivityManagerSingleton;
+import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
@@ -92,6 +92,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         super.onRestart();
     }
 
+
     @Override
     protected void onResume(){
         super.onResume();
@@ -101,6 +102,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         connectTouchEvent();
         setkakaoLogo();
     }
+
 
     @Override
     protected void onPause(){
@@ -113,15 +115,25 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         pauseTouchEvent();
     }
 
+    /**
+     * 화면 켜짐 유지 함수
+     */
     private void screenAlwaysOnSetting(){
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
+
+    /**
+     * 화면 켜짐 유지 해제 함수
+     */
     private void screenAlwaysOnDisable(){
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
 
+    /**
+     * 카카오 로고 set함수
+     */
     private void setkakaoLogo(){
         if(logoImgaeview == null) {
             logoImgaeview = (ImageView) findViewById(R.id.imageView_kakao);
@@ -130,6 +142,10 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
+    /**
+     * layout set 함수
+     * layout으로부터 hoverevent 수신
+     */
     private void setLayout(){
         layout = (LinearLayout) findViewById(R.id.information_layout);
         layout.setOnHoverListener(new View.OnHoverListener() {
@@ -160,7 +176,13 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         super.onDestroy();
     }
 
-    public void setFullScreen(){ // 전체화면 함수
+
+    /**
+     * 전체화면 함수
+     * 네비게이션 바 제거
+     * 풀스크린 모드 적용
+     */
+    public void setFullScreen(){
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -182,6 +204,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         menuinfofocus_ImageView = (ImageView) findViewById(R.id.menuinfofocus_imageview);
         accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
+
 
     /**
      * 손가락 1개, 2개, 3개에 대한 event를 처리하는 touchEvent
@@ -209,10 +232,15 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         customTouchConnectListener.onPause();
     }
 
+
+    /**
+     * 화면 focus 새로고침 함수
+     */
     @Override
     public void onFocusRefresh() {
         focusSetting();
     }
+
 
     /**
      * focus setting 함수
@@ -229,22 +257,27 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         }
     }
 
+
     @Override
     public void onStopSound() {
     }
 
+
     @Override
     public void onError() {
     }
+
 
     @Override
     public void onOneFingerFunction(FingerCoordinate fingerCoordinate) {
         exit(0);
     }
 
+
     public void stopSound(){
         mediaSoundManager.stop();
     }
+
 
     /**
      * 손가락 2개에 대한 event 함수
@@ -268,7 +301,10 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    private void aniTimerStart(){ //1초의 딜레이 시간을 갖는 함수
+    /**
+     * 1초마다 화면 사진을 변경하는 애니메이션 thread 함수
+     */
+    private void aniTimerStart(){
         aniTimerTask = new TimerTask() {
             @Override
             public void run() {
@@ -284,11 +320,14 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         };
 
         aniTimer = new Timer();
-        aniTimer.schedule(aniTimerTask,0,TimerTaskTime); // 0.05초의 딜레이시간
+        aniTimer.schedule(aniTimerTask,0,TimerTaskTime);
     }
 
 
-    private void aniTimerStop(){ // 스레드 중지
+    /**
+     * 애니메이션 thread 종료 함수
+     */
+    private void aniTimerStop(){
         if(aniTimerTask != null){
             aniTimerTask.cancel();
             aniTimerTask = null;
@@ -316,7 +355,10 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
-    private void recycleImage(){     //이미지 메모리 해제 함수
+    /**
+     * 이미지 메모리 해제 함수
+     */
+    private void recycleImage(){
         if(information_ImageView != null) {
             Drawable image = information_ImageView.getDrawable();
             if(image instanceof BitmapDrawable){
@@ -327,6 +369,10 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         }
     }
 
+
+    /**
+     * 카카오 로고 메모리 해제 함수
+     */
     private void recylceRogo(){
         if(logoImgaeview != null){
             Drawable image = logoImgaeview.getDrawable();
@@ -339,6 +385,11 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         }
     }
 
+
+    /**
+     * 메뉴 안내 activity 종료 함수
+     * @param result 0 (더블탭으로 인한 종료), 1(뒤로가기 버튼에 의한 종료)
+     */
     private synchronized void exit(int result){
         if(finish == false) {
             finish = true;
@@ -384,5 +435,14 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     private void checkSoundPlaying(){
         if(mediaSoundManager.getMenuInfoPlaying() == false && mediaSoundManager.getMediaPlaying() == false )
             exit(0);
+    }
+
+
+    /**
+     * 뒤로가기 버튼 재정의
+     */
+    @Override
+    public void onBackPressed() {
+        exit(1);
     }
 }
