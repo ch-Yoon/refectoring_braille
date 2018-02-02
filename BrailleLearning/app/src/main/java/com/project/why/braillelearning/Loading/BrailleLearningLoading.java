@@ -25,7 +25,7 @@ public class BrailleLearningLoading extends Activity {
     private TimerTask LoadingTimer;
     private Timer timer; // 애니메이션을 위한 시간 timer
     private int MenuImageSize; // menuimagesize
-    private final int TimerTaskTime = 2000; // 0.05초
+    private final int TimerTaskTime = 2000;
     private ImageResizeModule imageResizeModule;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
 
@@ -34,7 +34,6 @@ public class BrailleLearningLoading extends Activity {
         super.onCreate(savedInstanceState);
         imageResizeModule = new ImageResizeModule(getResources());
         activityManagerSingleton.addArrayList(this);
-        InitFullScreen();
         setContentView(R.layout.activity_braille_learning_loading);
         Loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
         setLoadingImage();
@@ -65,12 +64,16 @@ public class BrailleLearningLoading extends Activity {
             InitDisplaySize(); // 화면 해상도 구하기
             setMenuImageSize();
             setLoadingImage();
+            InitFullScreen();
         }
 
     }
 
 
-    private void InitDisplaySize(){  // Display 해상도를 구하기 위한 메소드
+    /**
+     * Display 해상도를 구하기 위한 함수
+     */
+    private void InitDisplaySize(){
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -79,7 +82,10 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    private void setMenuImageSize(){ // 이미지 size setting
+    /**
+     * 이미지 size setting 함수
+     */
+    private void setMenuImageSize(){
         MenuImageSize = (int)(Global.DisplayY*0.2); // imageview의 width와 height는 2:1 비율
         Loading_Animation_imageview.getLayoutParams().height = MenuImageSize;
         Loading_Animation_imageview.getLayoutParams().width = MenuImageSize*2;
@@ -87,7 +93,10 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    private void InitFullScreen(){ // 전체화면 함수
+    /**
+     * 전체화면 함수
+     */
+    private void InitFullScreen(){
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -95,7 +104,10 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    private void Timer_Start(){ //1초의 딜레이 시간을 갖는 함수
+    /**
+     * 로딩화면 시간 체크 스레드 함수
+     */
+    private void Timer_Start(){
         LoadingTimer = new TimerTask() {
             @Override
             public void run() {
@@ -110,10 +122,13 @@ public class BrailleLearningLoading extends Activity {
             }
         };
         timer = new Timer();
-        timer.schedule(LoadingTimer,TimerTaskTime); // 0.05초의 딜레이시간
+        timer.schedule(LoadingTimer,TimerTaskTime);
     }
 
 
+    /**
+     * 로딩화면 시간 체크 스레드 종료 함수
+     */
     private void Timer_Stop(){ // 스레드 중지
         if(timer != null){
             timer.cancel();
@@ -127,13 +142,19 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    private void setLoadingImage(){ // 애니메이션 이미지 셋팅 함수
+    /**
+     * 애니메이션 이미지 셋팅 함수
+     */
+    private void setLoadingImage(){
         if(Loading_Animation_imageview == null)
             Loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
         Loading_Animation_imageview.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.loadingimage, MenuImageSize*2, MenuImageSize));
     }
 
 
+    /**
+     * 로딩화면 종료 후 application 접속 함수
+     */
     private void loadingfinish(){
         Intent i = new Intent(BrailleLearningLoading.this, MenuActivity.class);
         startActivity(i);
@@ -142,7 +163,10 @@ public class BrailleLearningLoading extends Activity {
     }
 
 
-    private void recycleImage(){     //이미지 메모리 해제 함수
+    /**
+     * 이미지 메모리 해제 함수
+     */
+    private void recycleImage(){
         if(Loading_Animation_imageview != null) {
             Drawable image = Loading_Animation_imageview.getDrawable();
             if(image instanceof BitmapDrawable){

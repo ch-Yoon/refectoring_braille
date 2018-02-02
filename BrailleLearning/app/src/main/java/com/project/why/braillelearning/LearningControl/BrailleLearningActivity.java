@@ -55,8 +55,8 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     private void startMenuInfo(){
         Intent i = new Intent(this, MenuInformationActivity.class);
         i.putExtra("BRAILLELEARNINGTYPE",brailleLearningType);
-        startActivityForResult(i, MENU_INFO);
         overridePendingTransition(R.anim.fade, R.anim.hold);
+        startActivityForResult(i, MENU_INFO);
     }
 
 
@@ -154,6 +154,8 @@ public class BrailleLearningActivity extends Activity implements ControlListener
                 return false;
             }
         });
+
+        overridePendingTransition(R.anim.fade, R.anim.hold);
         setContentView(view);
     }
 
