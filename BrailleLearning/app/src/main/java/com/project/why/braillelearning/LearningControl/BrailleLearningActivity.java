@@ -189,4 +189,13 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     public void exit() {
         activityManagerSingleton.nowActivityFinish();
     }
+
+
+    /**
+     * 뒤로가기 버튼 재정의
+     */
+    @Override
+    public void onBackPressed() {
+        exit();
+    }
 }
