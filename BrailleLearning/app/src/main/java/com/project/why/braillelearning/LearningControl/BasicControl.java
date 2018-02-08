@@ -2,6 +2,8 @@ package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.GridLayout;
 
 import com.project.why.braillelearning.CustomTouch.CustomLearningTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomLearningTouchListener;
@@ -13,6 +15,8 @@ import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.BrailleDataManager;
 import com.project.why.braillelearning.LearningModel.GettingBraille;
+import com.project.why.braillelearning.LearningModel.SpecialFunctionData;
+import com.project.why.braillelearning.LearningModel.SpecialFunctionManager;
 import com.project.why.braillelearning.LearningView.ViewObservers;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.MynoteDB.DBManager;
@@ -33,7 +37,8 @@ import java.util.ArrayList;
  * 손가락 3개 : 나만의 단어장 삭제
  */
 
-public class BasicControl implements Control, CustomLearningTouchListener {
+public class BasicControl implements Control, CustomLearningTouchListener, SpecialFunctionListener {
+    private int TWO_FINGER = FingerFunctionType.TWO_FINGER.getNumber(); // 손가락 2개
     protected ControlListener controlListener;
     protected ViewObservers viewObservers;
     protected MediaSoundManager mediaSoundManager;
@@ -45,8 +50,9 @@ public class BasicControl implements Control, CustomLearningTouchListener {
     protected DBManager dbManager;
     protected int pageNumber = 0 ;
     protected Context context;
-    protected boolean touchLock = false;
-    private CustomTouchConnectListener customTouchConnectListener;
+    protected CustomTouchConnectListener customTouchConnectListener;
+    protected int specialFunctionIndex = 0;
+    private SpecialFunctionManager specialFunctionManager;
 
     BasicControl(Context context,Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         this.context = context;
@@ -55,8 +61,9 @@ public class BasicControl implements Control, CustomLearningTouchListener {
         mediaSoundManager = new MediaSoundManager(context);
         oneFingerFunction = getSingleFingerFunction(context, brailleLearningType);
         multiFingerFunction = new MultiFinger(context);
-        fingerCoordinate = new FingerCoordinate(FingerFunctionType.THREE_FINGER.getNumber());
+        fingerCoordinate = new FingerCoordinate(TWO_FINGER);
         this.controlListener = controlListener;
+        specialFunctionManager = new SpecialFunctionManager(brailleLearningType, this);
         initTouchEvent();
     }
 
@@ -150,7 +157,7 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      */
     @Override
     public void onPause() {
-        touchLock = false;
+        customTouchConnectListener.setTouchLock(false);
         mediaSoundManager.stop();
         pauseTouchEvent();
     }
@@ -187,12 +194,10 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      */
     @Override
     public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
-        if(touchLock == false) {
-            if (data != null)
-                oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
-            else
-                oneFingerFunction.oneFingerFunction(null, fingerCoordinate);
-        }
+        if (data != null)
+            oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
+        else
+            oneFingerFunction.oneFingerFunction(null, fingerCoordinate);
     }
 
 
@@ -201,65 +206,31 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      * BACK : 뒤로가기
      * RIGHT : 오른쪽 페이지 이동
      * LEFT : 왼쪽 페이지 이동
-     * REFRESH : 다시듣기
-     * @param fingerCoordinate : 좌표값
+     * @param fingerFunctionType : 제스처 타입
      */
     @Override
-    public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate, touchLock);
-        if(type == FingerFunctionType.BACK)
+    public void onTwoFingerFunction(FingerFunctionType fingerFunctionType) {
+        if(fingerFunctionType == FingerFunctionType.BACK)
             exit();
         else {
-            if(touchLock == false){
-                switch (type) {
-                    case RIGHT:
-                        if(touchLock == false) {
-                            if (pageNumber < brailleDataArrayList.size() - 1) {
-                                pageNumber++;
-                                nodifyObservers();
-                            } else {
-                                mediaSoundManager.allStop();
-                                mediaSoundManager.start(R.raw.last_page);
-                            }
-                        }
-                        break;
-                    case LEFT:
-                        if(touchLock == false) {
-                            if (0 < pageNumber) {
-                                pageNumber--;
-                                nodifyObservers();
-                            } else {
-                                mediaSoundManager.allStop();
-                                mediaSoundManager.start(R.raw.first_page);
-                            }
-                        }
-                        break;
-                    case REFRESH:
-                        if(touchLock == false)
-                            nodifyObservers();
-                        break;
-                }
-            }
-        }
-    }
-
-
-    /**
-     * 손가락 3개를 화면에서 드래그할 경우
-     * SPEECH : 음성인식
-     * MYNOTE : 나만의 단어장 저장
-     * @param fingerCoordinate : 좌표값
-     */
-    @Override
-    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        if(touchLock == false) {
-            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-            switch (type) {
-                case SPEECH:
-                    mediaSoundManager.start(R.raw.impossble_function);
+            switch (fingerFunctionType) {
+                case RIGHT:
+                    if (pageNumber < brailleDataArrayList.size() - 1) {
+                        pageNumber++;
+                        nodifyObservers();
+                    } else {
+                        mediaSoundManager.allStop();
+                        mediaSoundManager.start(R.raw.last_page);
+                    }
                     break;
-                case MYNOTE:
-                    dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+                case LEFT:
+                    if (0 < pageNumber) {
+                        pageNumber--;
+                        nodifyObservers();
+                    } else {
+                        mediaSoundManager.allStop();
+                        mediaSoundManager.start(R.raw.first_page);
+                    }
                     break;
             }
         }
@@ -281,5 +252,82 @@ public class BasicControl implements Control, CustomLearningTouchListener {
      */
     protected void exit(){
         controlListener.exit();
+    }
+
+
+    /**
+     * 특수기능 안내 멘트 및 화면 이미지 set 함수
+     */
+    @Override
+    public void onSpecialFunctionGuide() {
+        int size = specialFunctionManager.getSize()-1;
+        if(size < specialFunctionIndex)
+            specialFunctionIndex = 0;
+
+        int drawableId = specialFunctionManager.getDrawableId(specialFunctionIndex);
+        int soundId = specialFunctionManager.getSoundId(specialFunctionIndex++);
+        viewObservers.onSpecialFunctionEnable(drawableId);
+        mediaSoundManager.start(soundId);
+    }
+
+
+    /**
+     * 특수기능 취소시 발생되는 함수
+     * 현재 재생중인 음성 중지 -> 특수기능 취소 멘트 출력 -> 화면정보 새로고침
+     */
+    @Override
+    public void onSpecialFunctionDisable() {
+        onSpecialFunctionViewOff();
+        mediaSoundManager.allStop();
+        mediaSoundManager.start(R.raw.specialfunction_cancel);
+        nodifyObservers();
+    }
+
+
+    /**
+     * 특수기능 이미지 숨기는 함수
+     * viewObserver를 통해 이미지 INVISIBLE 후 메모리 해제
+     */
+    private void onSpecialFunctionViewOff(){
+        viewObservers.onSpecialFunctionDisable();
+    }
+
+
+    /**
+     * 특수기능 실행 함수
+     * 특수기능 이미지 숨긴 뒤 특수기능 실행
+     */
+    @Override
+    public void onStartSpecialFunction() {
+        onSpecialFunctionViewOff();
+        int specialType = --specialFunctionIndex;
+        specialFunctionManager.checkFunction(specialType);
+    }
+
+
+    /**
+     * 화면 새로고침 함수
+     */
+    @Override
+    public void onRefresh() {
+        nodifyObservers();
+    }
+
+    @Override
+    public void onSpeechRecognition() {
+    }
+
+
+    /**
+     * 나만의 단어장 저장 함수
+     * 현재 화면의 점자 정보를 dbManager로 전달
+     */
+    @Override
+    public void onSaveMynote() {
+        dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+    }
+
+    @Override
+    public void onDeleteMynote() {
     }
 }

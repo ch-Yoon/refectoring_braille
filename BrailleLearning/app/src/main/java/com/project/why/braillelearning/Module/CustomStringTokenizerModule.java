@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * 점자 번역에 이용될 문자 구분 class
  * 약자 및 약어인 것과 아닌것으로 구분
  */
-public class CustomStringTokenizer {
+public class CustomStringTokenizerModule {
     private ArrayList<String> separatorArray = new ArrayList<>();
 
     /**

@@ -102,6 +102,7 @@ public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPl
 
     @Override
     public void mediaPlayerStop() {
+        stop = false;
         startSpeechRecognition();
     }
 

@@ -25,7 +25,6 @@ import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
-import com.project.why.braillelearning.LearningControl.MultiFinger;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
@@ -49,9 +48,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     private int heightSize = 0;
     private BrailleLearningType brailleLearningType;
     private MediaSoundManager mediaSoundManager;
-    private MultiFinger multiFingerFunction;
     private CustomTouchConnectListener customTouchConnectListener;
-    private boolean finish = false;
     private ImageView logoImgaeview;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
     private ImageView menuinfofocus_ImageView;
@@ -65,7 +62,6 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         Intent i = getIntent();
         brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
         mediaSoundManager = new MediaSoundManager(this);
-        multiFingerFunction = new MultiFinger(this);
         setLayout();
         initImageView();
         initAniDrawableId();
@@ -97,7 +93,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     protected void onResume(){
         super.onResume();
         screenAlwaysOnSetting();
-        mediaStart();
+        mediaSoundManager.start(brailleLearningType);
         aniTimerStart(); // 애니메이션 시작
         connectTouchEvent();
         setkakaoLogo();
@@ -159,25 +155,6 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
 
 
     /**
-     * 메뉴 음성 가이드 출력 함수
-     */
-    private void mediaStart(){
-        stopSound();
-        mediaSoundManager.start(brailleLearningType);
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-    }
-
-
-    /**
      * 전체화면 함수
      * 네비게이션 바 제거
      * 풀스크린 모드 적용
@@ -219,8 +196,12 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
+    /**
+     * touch event listener 초기화 함수
+     */
     private void initTouchEvent(){
         customTouchConnectListener = new CustomTouchEvent(this, this);
+        customTouchConnectListener.setTouchLock(true);
         connectTouchEvent();
     }
 
@@ -284,20 +265,9 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
      * BACK(상위메뉴), RIGHT(오른쪽 화면), LEFT(왼쪽 화면), REFRESH(다시듣기)
      */
     @Override
-    public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case BACK:
-                exit(1);
-                break;
-            case REFRESH:
-                mediaStart();
-                break;
-        }
-    }
-
-    @Override
-    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
+    public void onTwoFingerFunction(FingerFunctionType fingerFunctionType) {
+        if(fingerFunctionType == FingerFunctionType.BACK)
+            exit(1);
     }
 
 
@@ -391,38 +361,36 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
      * @param result 0 (더블탭으로 인한 종료), 1(뒤로가기 버튼에 의한 종료)
      */
     private synchronized void exit(int result){
-        if(finish == false) {
-            finish = true;
-            aniTimerStop();
-            stopSound();
+        aniTimerStop();
+        stopSound();
 
-            if (result == 0) {
-                if (brailleLearningType == BrailleLearningType.TUTORIAL) {
-                    setResult(RESULT_CANCELED);
-                    activityManagerSingleton.nowActivityFinish();
-                    savePreferences();
-                }
-                else {
-                    mediaSoundManager.start(FingerFunctionType.ENTER);
-                    setResult(RESULT_OK);
-                    activityManagerSingleton.nowActivityFinish();
-                }
-            } else if (result == 1) {
-                if(brailleLearningType == BrailleLearningType.TUTORIAL){
-                    SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
-                    String state = pref.getString("FIRST_RUN","FALSE");
+        if (result == 0) {
+            if (brailleLearningType == BrailleLearningType.TUTORIAL) {
+                setResult(RESULT_CANCELED);
+                activityManagerSingleton.nowActivityFinish();
+                savePreferences();
+            }
+            else {
+                mediaSoundManager.start(FingerFunctionType.ENTER);
+                setResult(RESULT_OK);
+                activityManagerSingleton.nowActivityFinish();
+            }
+        } else if (result == 1) {
+            if (brailleLearningType == BrailleLearningType.TUTORIAL) {
+                SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
+                String state = pref.getString("FIRST_RUN", "FALSE");
 
-                    if(state == "FALSE" || state.equals("FALSE"))
-                        activityManagerSingleton.allActivityFinish();
-                    else
-                        activityManagerSingleton.nowActivityFinish();
-
-                } else {
-                    setResult(RESULT_CANCELED);
+                if (state == "FALSE" || state.equals("FALSE"))
+                    activityManagerSingleton.allActivityFinish();
+                else
                     activityManagerSingleton.nowActivityFinish();
-                }
+
+            } else {
+                setResult(RESULT_CANCELED);
+                activityManagerSingleton.nowActivityFinish();
             }
         }
+        overridePendingTransition(0, 0);
     }
 
     private void savePreferences(){
@@ -444,5 +412,18 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     @Override
     public void onBackPressed() {
         exit(1);
+    }
+
+    @Override
+    public void onSpecialFunctionGuide() {
+    }
+
+    @Override
+    public void onSpecialFunctionDisable() {
+    }
+
+    @Override
+    public void onStartSpecialFunction() {
+
     }
 }

@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -64,6 +65,7 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
     @Override
     public void pushEvent(AccessibilityEvent event) {
         if(accessibilityEventListener != null) {
+            Log.d("accessibilityEvent","event type : "+event.getEventType());
             if (screenFocusState == false) {
                 int eventType = event.getEventType();
                 if (eventType == TYPE_TOUCH_INTERACTION_START)

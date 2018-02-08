@@ -10,6 +10,7 @@ import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.Dot;
 import com.project.why.braillelearning.LearningModel.JsonBrailleData;
+import com.project.why.braillelearning.MediaPlayer.MediaPlayerStopCallbackListener;
 import com.project.why.braillelearning.R;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
  * Created by hyuck on 2017-11-22.
  */
 
-public class TeacherControl extends BasicControl implements SpeechRecognitionListener {
+public class TeacherControl extends BasicControl implements SpeechRecognitionListener, MediaPlayerStopCallbackListener {
     private SpeechRecognitionMoudle speechRecognitionMoudle;
     private boolean sendCheck = false;
     private String room = "0";
@@ -42,11 +43,12 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onPause() {
-        touchLock = false;
+        customTouchConnectListener.setTouchLock(false);
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
     }
+
 
     /**
      * 음성은 재생하지 않고, draw만 새로고침하는 함수
@@ -64,44 +66,28 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
-        if(touchLock == false) {
-            if (data != null) {
-                Dot tempDot[][] = oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
-                if (tempDot != null) {
-                    data.setBrailleMatrix(tempDot);
-                    data.refreshData();
-                    nodifyViewObserver();
-                }
+        if (data != null) {
+            Dot tempDot[][] = oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
+            if (tempDot != null) {
+                data.setBrailleMatrix(tempDot);
+                data.refreshData();
+                nodifyViewObserver();
             }
         }
     }
 
 
     /**
-     * 손가락 3개 함수 재정의
-     * SPEECH : 음성인식
-     * MYNOTE : 나만의 단어장 저장
-     * @param fingerCoordinate : 좌표값
+     * 음성인식 특수기능 함수
+     * 현재화면에 점자가 입력되어 있지 않다면, 점자 입력 후 다시시도하라는 멘트 출력
      */
     @Override
-    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        if(touchLock == false) {
-            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-            switch (type) {
-                case SPEECH:
-                    if (checkInputBraille()) {
-                        speechRecognitionMoudle.start();
-                        touchLock = true;
-                    } else
-                        mediaSoundManager.start(R.raw.teacher_no_input);
-                    break;
-                case MYNOTE:
-                    mediaSoundManager.start(R.raw.impossble_function);
-                    break;
-                default:
-                    break;
-            }
-        }
+    public void onSpeechRecognition() {
+        if (checkInputBraille()) {
+            customTouchConnectListener.setTouchLock(true);
+            speechRecognitionMoudle.start();
+        } else
+            mediaSoundManager.start(R.raw.teacher_no_input);
     }
 
 
@@ -130,12 +116,11 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                         data.refreshData();
                         nodifyViewObserver();
                         mediaSoundManager.start(R.raw.send_cancel);
+                        customTouchConnectListener.setTouchLock(false);
                     }
 
                     if(checkPage())
                         addJsonBrailleData(context, Json.TEACHER);
-
-                    touchLock = false;
                 }
             } catch(Exception e){
                 sendCheck = false;
@@ -143,7 +128,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                 data.refreshData();
                 nodifyViewObserver();
                 mediaSoundManager.start(R.raw.send_cancel);
-                touchLock = false;
+                customTouchConnectListener.setTouchLock(false);
             }
         } else {
             ((BrailleLearningActivity)context).runOnUiThread(new Runnable() { // onError가 호출되었을 경우
@@ -156,15 +141,16 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                     mediaSoundManager.start(R.raw.retry);
                 }
             });
-            touchLock = false;
+            customTouchConnectListener.setTouchLock(false);
         }
     }
+
 
     /**
      * 새로운 페이지를 만들기 위한 함수
      * 현재 화면이 아무런 점자가 입력되지 않았다면 새로운 페이지를 생성하지 않음.
      * 현재 화면에 점자가 입력되었다면 새로운 페이지를 생성
-     * @return
+     * @return true(새로운 페이지 생성), false(새로운 페이지 생성 x)
      */
     private boolean checkPage(){
         if(pageNumber != brailleDataArrayList.size()-1)
@@ -174,6 +160,10 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
     }
 
 
+    /**
+     * 현재 화면에 점자가 입력되어있는지 확인하는 함수
+     * @return true(입력되어 있음), false(입력되어 있지 않음)
+     */
     private boolean checkInputBraille(){
         Dot[][] brailleMatrix = data.getBrailleMatrix();
         int col = brailleMatrix.length;
@@ -293,7 +283,6 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            touchLock = false;
             if(result.equals("error") || result == "error")
                 mediaSoundManager.start(R.raw.sendfail);
             else {
@@ -304,19 +293,35 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                     for(int i=0; i<jsonArray.length(); i++){
                         JSONObject c = jsonArray.getJSONObject(i);
                         String str = c.getString("id");    // 저장코드들
+                        String text = "";
                         if(0 < str.length()) {
-                            String text = str + "번! " + str+",send_ok";
+                            if(room == "0" || room.equals("0"))
+                                text = str + "번! " + str + ",send_ok";
+                            else
+                                text = "resend_info," + str + ". 입니다.";
                             mediaSoundManager.start(text);
                             room = str;
                             break;
                         }
                     }
+
+                    mediaSoundManager.setMediaPlayerStopCallbackListener(TeacherControl.this);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
+
+
+    /**
+     * mediaSoundPlayer stop callback listener
+     */
+    @Override
+    public void mediaPlayerStop() {
+        customTouchConnectListener.setTouchLock(false);
+    }
+
 
     /**
      * 학습화면 종료 함수

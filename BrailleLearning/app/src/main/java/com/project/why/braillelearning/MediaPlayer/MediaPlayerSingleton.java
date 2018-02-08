@@ -169,7 +169,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
      * @param id : 현재 출력중인 음성 파일 id
      */
     private void checkMenuInfoMedia(int id){
-        int menuInfo_Id[] = new int[]{R.raw.tutorial_info_basic, R.raw.tutorial_info_blind, R.raw.basic_info, R.raw.master_info, R.raw.translation_info,
+        int menuInfo_Id[] = new int[]{R.raw.tutorial_info, R.raw.basic_info, R.raw.master_info, R.raw.translation_info,
                 R.raw.quiz_info, R.raw.mynote_info, R.raw.teacher_mode, R.raw.student_mode};
         for(int i=0; i<menuInfo_Id.length ; i++){
             if(id == menuInfo_Id[i])

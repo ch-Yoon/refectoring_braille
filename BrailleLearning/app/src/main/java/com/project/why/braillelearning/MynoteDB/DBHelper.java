@@ -56,11 +56,21 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
         try {
             SQLiteDatabase db = getWritableDatabase();
             addHashMap(getResult()); // 해쉬맵 세팅
-
-            if (mapDB.containsKey(brailleMatrix) == false) {
-                String tableName = databaseName.getName();
-                db.execSQL("INSERT INTO " + tableName + " VALUES(null, '" + letterName + "' , '" + brailleMatrix + "' , '" + assistanceName + "', '" + rawId + "');");// DB에 입력한 값으로 행 추가
-
+            String tableName = databaseName.getName();
+            if (mapDB.containsKey(brailleMatrix) == true) {
+                db.execSQL("DELETE FROM  " + tableName + "  WHERE BrailleMatrix ='" + brailleMatrix + "';");
+                switch (tableName){
+                    case "BASIC":
+                        mediaSoundManager.start(R.raw.basic_resave);
+                        break;
+                    case "MASTER":
+                        mediaSoundManager.start(R.raw.master_resave);
+                        break;
+                    case "COMMUNICATION":
+                        mediaSoundManager.start(R.raw.communication_resave);
+                        break;
+                }
+            } else {
                 switch (tableName){
                     case "BASIC":
                         mediaSoundManager.start(R.raw.basicsave);
@@ -74,6 +84,7 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
                 }
             }
 
+            db.execSQL("INSERT INTO " + tableName + " VALUES(null, '" + letterName + "' , '" + brailleMatrix + "' , '" + assistanceName + "', '" + rawId + "');");// DB에 입력한 값으로 행 추가
             db.close();
         } catch(Exception e){
         }
@@ -119,7 +130,14 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
             brailleDataArrayList.add(data);
         }
 
-        return brailleDataArrayList;
+        //db 가장 아래에 있는 점자를 가장 앞쪽으로
+        ArrayList<BrailleData> realDataArrayList = new ArrayList<>();
+        for(int i=brailleDataArrayList.size()-1 ; 0<=i ; i--){
+            realDataArrayList.add(brailleDataArrayList.get(i));
+        }
+
+
+        return realDataArrayList;
     }
 
 

@@ -26,25 +26,29 @@ public class CustomLearningTouchEvent extends CustomTouchEvent {
      */
     @Override
     protected void basicOneFingerTouch(MotionEvent event){
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                multiFinger = false;
-                fingerCoordinate.initialize();
-                customLearningTouchListener.onOneFingerFunction(fingerCoordinate);
-                break;
-            case MotionEvent.ACTION_DOWN:
-                multiFinger = false;
-                functionLock = false;
-                fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
-                customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if(multiFinger == false) {
-                    fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
-                    customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
+        if(specialFunctionState == false) {
+            if(touchLock == false) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_UP:
+                        multiFinger = false;
+                        fingerCoordinate.initialize();
+                        customLearningTouchListener.onOneFingerFunction(fingerCoordinate);
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        multiFinger = false;
+                        fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
+                        customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (multiFinger == false) {
+                            fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
+                            customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
+                        }
+                        break;
                 }
-                break;
-        }
+            }
+        } else
+            super.basicOneFingerTouch(event);
     }
 
 
@@ -54,53 +58,55 @@ public class CustomLearningTouchEvent extends CustomTouchEvent {
      * @param event
      */
     @Override
-    protected  void blindOneFIngerTouch(MotionEvent event){
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_HOVER_ENTER:
-                multiFinger = false;
-                functionLock = false;
-                hoverError = false;
-                fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
-                customLearningTouchListener.onStopSound();
-                customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
-                break;
-            case MotionEvent.ACTION_HOVER_MOVE:
-                fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
-                customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
-                break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                fingerCoordinate.initialize();
-                customLearningTouchListener.onOneFingerFunction(fingerCoordinate);
-                break;
-            case MotionEvent.ACTION_DOWN:
-                multiFinger = false;
-                functionLock = false;
-                hoverError = false;
+    protected  void blindOneFIngerTouch(MotionEvent event) {
+        if (specialFunctionState == false) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_HOVER_ENTER:
+                    multiFinger = false;
+                    hoverError = false;
 
-                customLearningTouchListener.onStopSound();
-                fingerCoordinate.setHoverDownCoordinate(event, ONE_FINGER + 1);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if(hoverError == false) {
-                    hoverError = fingerCoordinate.checkHoverError(event);
-                    if(hoverError == false)
-                        fingerCoordinate.setHoverUpCoordinate(event, ONE_FINGER + 1);
-                } else
-                    break;
-
-                break;
-            case MotionEvent.ACTION_UP:
-                if(multiFinger == false) {
-                    multiFinger = true;
-                    if (hoverError == false) {
-                        fingerCoordinate.setHoverUpCoordinate(event, ONE_FINGER + 1);
-                        customLearningTouchListener.onTwoFingerFunction(fingerCoordinate);
-                    } else {
-                        customLearningTouchListener.onError();
-                        hoverError = false;
+                    if(touchLock == false) {
+                        fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
+                        customLearningTouchListener.onStopSound();
+                        customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
                     }
-                }
-                break;
-        }
+                    break;
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
+                    customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    fingerCoordinate.initialize();
+                    customLearningTouchListener.onOneFingerFunction(fingerCoordinate);
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    multiFinger = false;
+                    hoverError = false;
+
+                    customLearningTouchListener.onStopSound();
+                    fingerCoordinate.setHoverDownCoordinate(event, ONE_FINGER + 1);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (hoverError == false) {
+                        hoverError = fingerCoordinate.checkHoverError(event);
+                        if (hoverError == false)
+                            fingerCoordinate.setHoverUpCoordinate(event, ONE_FINGER + 1);
+                    } else
+                        break;
+
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (multiFinger == false) {
+                        if (hoverError == false)
+                            twoFingerUp(event, ONE_FINGER + 1);
+                        else {
+                            customLearningTouchListener.onError();
+                            hoverError = false;
+                        }
+                    }
+                    break;
+            }
+        } else
+            super.blindOneFIngerTouch(event);
     }
 }

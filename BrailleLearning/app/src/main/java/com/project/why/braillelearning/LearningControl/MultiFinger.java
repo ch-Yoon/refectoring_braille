@@ -21,9 +21,6 @@ public class MultiFinger{
         mediaSoundManager = new MediaSoundManager(context);
     }
 
-    public FingerFunctionType getFingerFunctionType(FingerCoordinate fingerCoordinate) {
-        return getFingerFunctionType(fingerCoordinate, false);
-    }
     /**
      * 손가락 2개와 3개에 대한 event를 분석하는 함수
      * 좌표값이 드래그 허용범위를 충족시켜는지와 x축과 y축 중 어느 축의 드래그 값이 높은지를 판단
@@ -34,7 +31,7 @@ public class MultiFinger{
         FingerFunctionType type = FingerFunctionType.NONE;
         int fingerCount = fingerCoordinate.getFingerCount();
 
-        if(FingerFunctionType.TWO_FINGER.getNumber() <= fingerCount && fingerCount <= FingerFunctionType.THREE_FINGER.getNumber()) {
+        if(fingerCount == FingerFunctionType.TWO_FINGER.getNumber()) {
             double Finger_gapX[] = new double[fingerCount]; // 첫번째와 두번째 손가락의 downX 좌표와 upX좌표의 격차
             double Finger_gapY[] = new double[fingerCount]; // 첫번째와 두번째 손가락의 downY 좌표와 upY좌표의 격차
             int Drag_countX = 0; // 좌측 이동인지 우측 이동인지를 확인하기 위한 변수
@@ -70,9 +67,8 @@ public class MultiFinger{
 
             if (fingerCount == FingerFunctionType.TWO_FINGER.getNumber())
                 type = getTwoFingerFunction(DragX, DragY, Drag_countX, Drag_countY, Finger_gapX, Finger_gapY);
-            else if (fingerCount == FingerFunctionType.THREE_FINGER.getNumber())
-                type = getThreeFingerFunction(DragX, DragY, Drag_countY);
         }
+
 
         if(mediaSoundManager.checkTTSPlaying() == true) {
             if(touchLock == false)
@@ -116,7 +112,7 @@ public class MultiFinger{
             if (Drag_countY > 0) // 특수기능
                 type = FingerFunctionType.BACK;
             else // 뒤로가기
-                type = FingerFunctionType.REFRESH;
+                type = FingerFunctionType.SPECIAL;
         } else if (DragX == true && DragY == true) { // x축 화면전환 조건과 y축 화면전환 조건 모두 충족하였을 경우 이동거리로 구분
             double gapX = 0;
             double gapY = 0;
@@ -135,31 +131,8 @@ public class MultiFinger{
                 if (Drag_countY > 0) // 특수기능
                     type = FingerFunctionType.BACK;
                 else // 뒤로가기
-                    type = FingerFunctionType.REFRESH;
+                    type = FingerFunctionType.SPECIAL;
             }
-        }
-
-        return type;
-    }
-
-
-    /**
-     * 손가락 3개 이벤트를 분석하는 함수
-     * @param DragX : true이면 좌우 드래그 인식 거리 충족, false이면 미충족
-     * @param DragY  : true이면 상하 드래그 인식 거리 충족, false이면 미충족
-     * @param Drag_countY : 상하 드래그 이동거리
-     * @return : 이벤트 type
-     */
-    private FingerFunctionType getThreeFingerFunction(boolean DragX, boolean DragY, int Drag_countY){
-        FingerFunctionType type = FingerFunctionType.NONE;
-
-        if (DragX == false && DragY == false) { // x과 y축 모두 화면전환 조건을 충족하지 못했을 경우
-            type = FingerFunctionType.NONE;
-        } else if (DragX == false && DragY == true) { // y축만 화면전환 조건을 충족하였을 경우
-            if (Drag_countY > 0) // 특수기능
-                type = FingerFunctionType.SPEECH;
-            else // 뒤로가기
-                type = FingerFunctionType.MYNOTE;
         }
 
         return type;

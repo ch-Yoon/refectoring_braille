@@ -41,4 +41,8 @@ public class ActivityManagerSingleton {
             removeLast();
         }
     }
+
+    public Activity getNowActivity(){
+        return activityArrayList.get(activityArrayList.size()-1);
+    }
 }

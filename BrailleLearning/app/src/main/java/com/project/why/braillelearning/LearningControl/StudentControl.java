@@ -35,92 +35,95 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
 
     StudentControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
-        mediaSoundManager.start(R.raw.studentmode_guide);
         speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
     }
 
+    /**
+     * data를 새로고침하는 함수.
+     * pageNumber에 따라 점자 data를 선택함
+     */
+    protected void refreshData(){
+        if(0 <= pageNumber && pageNumber < brailleDataArrayList.size()){
+            data = brailleDataArrayList.get(pageNumber);
+            if(data != null)
+                mediaSoundManager.start(data.getRawId());
+        } else
+            mediaSoundManager.start(R.raw.studentmode_guide);
+    }
 
     /**
      * 일시정지 되었을 때 함수
      */
     @Override
     public void onPause() {
-        touchLock = false;
+        customTouchConnectListener.setTouchLock(false);
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
     }
+
 
     /**
      * 손가락 2개 함수 재정의
      * BACK : 뒤로가기
      * RIGHT : 오른쪽 페이지 이동
      * LEFT : 왼쪽 페이지 이동
-     * REFRESH : 화면 새로고침
-     * @param fingerCoordinate : 좌표값
+     * @param fingerFunctionType : 제스처 타입
      */
     @Override
-    public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate, touchLock);
-        if(type == FingerFunctionType.BACK)
+    public void onTwoFingerFunction(FingerFunctionType fingerFunctionType) {
+        if(fingerFunctionType == FingerFunctionType.BACK)
             exit();
         else{
-            if(touchLock == false){
-                switch (type) {
-                    case RIGHT:
-                        if (pageNumber < brailleDataArrayList.size() - 1) {
-                            pageNumber++;
-                            nodifyObservers();
-                        } else {
-                            checkNewData = true;
-                            ReceiveServerTask task = new ReceiveServerTask();
-                            task.execute();
-                        }
-                        break;
-                    case LEFT:
-                        if (0 < pageNumber) {
-                            pageNumber--;
-                            nodifyObservers();
-                        } else {
-                            mediaSoundManager.allStop();
-                            mediaSoundManager.start(R.raw.first_page);
-                        }
-                        break;
-                    case REFRESH:
+            switch (fingerFunctionType) {
+                case RIGHT:
+                    if (pageNumber < brailleDataArrayList.size() - 1) {
+                        pageNumber++;
                         nodifyObservers();
-                        break;
-                }
+                    } else if(brailleDataArrayList.size() == 0){
+                        mediaSoundManager.allStop();
+                        mediaSoundManager.start(R.raw.last_page);
+                    } else {
+                        checkNewData = true;
+                        ReceiveServerTask task = new ReceiveServerTask();
+                        task.execute();
+                    }
+                    break;
+                case LEFT:
+                    if (0 < pageNumber) {
+                        pageNumber--;
+                        nodifyObservers();
+                    } else {
+                        mediaSoundManager.allStop();
+                        mediaSoundManager.start(R.raw.first_page);
+                    }
+                    break;
             }
         }
     }
 
 
     /**
-     * 손가락 3개 함수 재정의
-     * SPEECH : 음성인식
-     * MYNOTE : 나만의 단어장 저장
-     * @param fingerCoordinate : 좌표값
+     * 음성인식 특수기능 함수
+     * 제스처 기능을 무시하기 위해 lock을 건 뒤, 음성인식 실행
      */
     @Override
-    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        if(touchLock == false) {
-            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-            switch (type) {
-                case SPEECH:
-                    speechRecognitionMoudle.start();
-                    touchLock = true;
-                    break;
-                case MYNOTE:
-                    if (data != null)
-                        dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
-                    else
-                        mediaSoundManager.start(R.raw.impossble_save);
+    public void onSpeechRecognition() {
+        customTouchConnectListener.setTouchLock(true);
+        speechRecognitionMoudle.start();
+    }
 
-                    break;
-                default:
-                    break;
-            }
-        }
+
+    /**
+     * 나만의 단어장 저장 함수
+     * 현재 화면의 점자 정보를 dbManager로 전달
+     */
+    @Override
+    public void onSaveMynote() {
+        if (data != null)
+            dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+        else
+            mediaSoundManager.start(R.raw.impossble_save);
     }
 
 
@@ -153,7 +156,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
             mediaSoundManager.start(R.raw.retry);
         }
 
-        touchLock = false;
+        customTouchConnectListener.setTouchLock(false);
     }
 
 
@@ -228,7 +231,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            touchLock = false;
+            customTouchConnectListener.setTouchLock(false);
             if(result.equals("error") || result == "error")
                 mediaSoundManager.start(R.raw.sendfail);
             else {

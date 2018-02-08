@@ -1,5 +1,6 @@
 package com.project.why.braillelearning.CustomTouch;
 
+import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 
 /**
@@ -13,6 +14,8 @@ public interface CustomTouchEventListener {
     void onStopSound();
     void onError();
     void onOneFingerFunction(FingerCoordinate fingerCoordinate);
-    void onTwoFingerFunction(FingerCoordinate fingerCoordinate);
-    void onThreeFingerFunction(FingerCoordinate fingerCoordinate);
+    void onTwoFingerFunction(FingerFunctionType fingerFunctionType);
+    void onSpecialFunctionGuide();
+    void onSpecialFunctionDisable();
+    void onStartSpecialFunction();
 }

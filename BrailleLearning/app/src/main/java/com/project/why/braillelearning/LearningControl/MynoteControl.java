@@ -12,18 +12,18 @@ import com.project.why.braillelearning.R;
  */
 
 public class MynoteControl extends BasicControl implements Control {
+
     MynoteControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
     }
 
 
     /**
-     * data를 새로고침하는 함수.
-     * 나만의 단어장의 경우, 데이터가 없으면 접속되지 않고 바로 학습이 종료됨
-     * pageNumber에 따라 점자 data를 선택함
+     * 화면 새로고침 함수
+     * db에 저장되어 있는 점자가 없다면 종료
      */
     @Override
-    public void refreshData(){
+    public void refreshData() {
         if(brailleDataArrayList.isEmpty()){
             exit();
         } else {
@@ -36,26 +36,15 @@ public class MynoteControl extends BasicControl implements Control {
 
 
     /**
-     * 손가락 3개 함수 재정의
-     * SPEECH : 음성인식
-     * MYNOTE : 나만의 단어장 삭제
-     * @param fingerCoordinate : 좌표값
+     * 현재화면의 점자를 삭제하는 함수
+     * 삭제하고자 하는 점자 정보를 dbManager로 전달
+     * 삭제 후 화면 새로고침
      */
     @Override
-    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case SPEECH:
-                mediaSoundManager.start(R.raw.impossble_function);
-                break;
-            case MYNOTE:
-                brailleDataArrayList = dbManager.deleteMyNote(data.getStrBrailleMatrix());
-                while(brailleDataArrayList.size() <= pageNumber)
-                    pageNumber = brailleDataArrayList.size() - 1;
-                nodifyObservers();
-                break;
-            default:
-                break;
-        }
+    public void onDeleteMynote() {
+        brailleDataArrayList = dbManager.deleteMyNote(data.getStrBrailleMatrix());
+        while(brailleDataArrayList.size() <= pageNumber)
+            pageNumber = brailleDataArrayList.size() - 1;
+        nodifyObservers();
     }
 }

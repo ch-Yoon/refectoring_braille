@@ -56,12 +56,7 @@ public class MediaSoundManager {
     public void start(BrailleLearningType brailleLearningType){
         switch (brailleLearningType){
             case TUTORIAL:
-                AccessibilityManager am = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
-                boolean blindMode = am.isTouchExplorationEnabled();
-                if(blindMode == true)
-                    start(R.raw.tutorial_info_blind);
-                else
-                    start(R.raw.tutorial_info_basic);
+                start(R.raw.tutorial_info);
                 break;
             case BASIC:
                 start(R.raw.basic_info);
@@ -82,7 +77,7 @@ public class MediaSoundManager {
                 start(R.raw.teachermode_info);
                 break;
             case STUDENT:
-                start(R.raw.studentmode_info);
+                start(R.raw.student_mode_info);
                 break;
         }
     }
@@ -321,6 +316,7 @@ public class MediaSoundManager {
     }
 
     public void allStop(){
+        stop();
         mediaPlayerSingleton.initializeMediaPlayer();
     }
 

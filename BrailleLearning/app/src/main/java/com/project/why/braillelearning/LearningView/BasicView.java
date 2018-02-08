@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningModel.Dot;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
@@ -32,7 +33,8 @@ public class BasicView extends View implements ViewObservers {
     private TextView textName;
     private String letterName;
     private Dot[][] brailleMatrix;
-    private ImageView imageView;
+    private ImageView logoView;
+    private ImageView background, specialview;
     private ImageResizeModule imageResizeModule;
 
     public BasicView(Context context){
@@ -55,10 +57,65 @@ public class BasicView extends View implements ViewObservers {
      */
     private void drawBraille(Canvas canvas){
         if(brailleMatrix != null){
-            setTextName();
             setBraille(canvas);
         }
+        setTextName();
         setKakaoLogo();
+        setSpecialview();
+    }
+
+
+    @Override
+    public void onSpecialFunctionEnable(int drawable) {
+        background.setVisibility(VISIBLE);
+        specialview.setVisibility(VISIBLE);
+
+        recycleSpecialImage();
+        specialview.setImageDrawable(imageResizeModule.getDrawableImage(drawable, Global.DisplayX / 3, Global.DisplayX / 3));
+        invalidate();
+    }
+
+
+    @Override
+    public void onSpecialFunctionDisable(){
+        background.setVisibility(INVISIBLE);
+        specialview.setVisibility(INVISIBLE);
+        recycleSpecialImage();
+    }
+
+
+    private void setSpecialview(){
+        if(background == null) {
+            background = new ImageView(context);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    Gravity.CENTER
+            );
+
+            background.setLayoutParams(lp);
+            background.setBackgroundColor(Color.parseColor("#ee171a2d"));
+            ((FrameLayout) this.getParent()).addView(background);
+            background.setVisibility(INVISIBLE);
+        }
+
+        if(specialview == null) {
+            specialview = new ImageView(context);
+
+            FrameLayout.LayoutParams lp2 = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    Gravity.CENTER
+            );
+
+            lp2.width = Global.DisplayX / 3;
+            lp2.height = Global.DisplayX / 3;
+
+            specialview.setLayoutParams(lp2);
+            specialview.requestLayout();
+            ((FrameLayout) this.getParent()).addView(specialview);
+            specialview.setVisibility(INVISIBLE);
+        }
     }
 
 
@@ -74,7 +131,6 @@ public class BasicView extends View implements ViewObservers {
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     Gravity.CENTER_HORIZONTAL
             );
-
             textName.setTextColor(Color.WHITE);
             textName.setPadding(0, 50, 0, 0);
             textName.setGravity(Gravity.CENTER);
@@ -90,8 +146,8 @@ public class BasicView extends View implements ViewObservers {
      * 카카오 로고 set하는 함수
      */
     private void setKakaoLogo(){
-        if(imageView == null) {
-            imageView = new ImageView(context);
+        if(logoView == null) {
+            logoView = new ImageView(context);
 
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -99,16 +155,16 @@ public class BasicView extends View implements ViewObservers {
                     Gravity.RIGHT
             );
 
-            imageView.setLayoutParams(lp);
+            logoView.setLayoutParams(lp);
             lp.topMargin = 80;
             lp.rightMargin = 80;
 
-            ((FrameLayout) this.getParent()).addView(imageView);
+            ((FrameLayout) this.getParent()).addView(logoView);
 
-            imageView.getLayoutParams().width = 408;
-            imageView.getLayoutParams().height = 60;
-            imageView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
-            imageView.requestLayout();
+            logoView.getLayoutParams().width = 408;
+            logoView.getLayoutParams().height = 60;
+            logoView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.kakao_image, 408, 60)); //현재화면에 이미지 설정
+            logoView.requestLayout();
         }
     }
 
@@ -167,6 +223,7 @@ public class BasicView extends View implements ViewObservers {
         brailleMatrix = null;
         textName = null;
         recycleLogo();
+        recycleSpecialView();
     }
 
 
@@ -187,13 +244,37 @@ public class BasicView extends View implements ViewObservers {
      * 카카오 로고 이미지 메모리 해제 함수
      */
     private void recycleLogo(){
-        if(imageView != null){
-            Drawable image = imageView.getDrawable();
+        if(logoView != null){
+            Drawable image = logoView.getDrawable();
             if(image instanceof BitmapDrawable){
                 ((BitmapDrawable)image).getBitmap().recycle();
                 image.setCallback(null);
             }
-            imageView.setImageDrawable(null);
+            logoView.setImageDrawable(null);
+            ((FrameLayout) this.getParent()).removeView(logoView);
+            logoView = null;
+        }
+    }
+
+    private void recycleSpecialView(){
+        if(background != null) {
+            ((FrameLayout) this.getParent()).removeView(background);
+            background = null;
+        }
+
+        recycleSpecialImage();
+        ((FrameLayout) this.getParent()).removeView(specialview);
+        specialview = null;
+    }
+
+    private void recycleSpecialImage(){
+        if(specialview != null){
+            Drawable image = specialview.getDrawable();
+            if(image instanceof BitmapDrawable){
+                ((BitmapDrawable)image).getBitmap().recycle();
+                image.setCallback(null);
+            }
+            specialview.setImageDrawable(null);
         }
     }
 }

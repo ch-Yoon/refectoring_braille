@@ -14,6 +14,8 @@ import com.project.why.braillelearning.LearningModel.Dot;
  */
 public interface ViewObservers {
     void nodifyBraille(String letterName, Dot[][] brailleMatrix);
+    void onSpecialFunctionEnable(int drawableId);
+    void onSpecialFunctionDisable();
     View getView();
     void onPause();
 }

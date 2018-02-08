@@ -15,6 +15,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
+import com.project.why.braillelearning.LearningControl.SpecialFunctionListener;
+import com.project.why.braillelearning.LearningModel.SpecialFunctionManager;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
@@ -22,7 +26,6 @@ import com.project.why.braillelearning.CustomTouch.CustomTouchEventListener;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Menu;
 import com.project.why.braillelearning.Global;
-import com.project.why.braillelearning.LearningControl.MultiFinger;
 import com.project.why.braillelearning.LearningControl.BrailleLearningActivity;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
@@ -38,24 +41,25 @@ import java.util.TimerTask;
  * Menu를 화면에 출력하는 Activity
  * MenuTreeManager에서 메뉴 image와 음성 file들을 관리하고 있음
  */
-public class MenuActivity extends Activity implements CustomTouchEventListener{
+public class MenuActivity extends Activity implements CustomTouchEventListener, SpecialFunctionListener{
     private LinearLayout layout;
     private int PageNumber=0; // 메뉴 위치를 알기위한 변수
-    private int MenuImageSize;
-    private ImageView MenuImageView; // 메뉴 이미지뷰
-    private ImageView kakaoImageView;
+    private int MenuImageSize, specialViewSize;
+    private ImageView MenuImageView, kakaoImageView, specialBackgroundView, specialImageView;
     private MenuTreeManager menuTreeManager; // 메뉴 트리 manager
     private ImageResizeModule imageResizeModule;
     private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
     private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
     private MediaSoundManager mediaSoundManager;
-    private MultiFinger multiFingerFunction;
     private CustomTouchConnectListener customTouchConnectListener;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
     private ImageView menuFocus;
     private AccessibilityManager accessibilityManager;
     private TimerTask focusTimerTask;
     private Timer focusTimer;
+    private SpecialFunctionManager specialFunctionManager;
+    private int specialFunctionIndex = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,8 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         setLayout();
         initTouchEvent();
         checkFirstRun();
+        initSpecialImageView();
+        initSpecialFunctionManager(BrailleLearningType.MENU);
     }
 
 
@@ -75,6 +81,15 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         if (hasFocus) { // 화면에 포커스가 잡혔을 경우
            setFullScreen();
         }
+    }
+
+
+    /**
+     * 특수기능 이미지, 음성 id를 유지할 arraylist set 함수
+     * @param brailleLearningType
+     */
+    private void initSpecialFunctionManager(BrailleLearningType brailleLearningType){
+        specialFunctionManager = new SpecialFunctionManager(brailleLearningType, this);
     }
 
 
@@ -91,6 +106,12 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
+    /**
+     * 재시작 함수
+     * 메뉴 화면 데이터 새로고침
+     * 카카오 로고 set
+     * touch event interface 연결
+     */
     @Override
     protected void onResume(){
         super.onResume();
@@ -100,6 +121,13 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
+    /**
+     * 일시정지 함수
+     * 이미지 메모리 해제
+     * 미디어 중지
+     * touch event interface 일시중지
+     * 특수기능 화면 해제
+     */
     @Override
     protected void onPause(){
         super.onPause();
@@ -107,6 +135,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         recycleLogo();
         onStopSound();
         pauseTouchEvent();
+        onSpecialFunctionViewOff();
     }
 
 
@@ -135,7 +164,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         menuAddressDeque = new LinkedList<>();
         menuAddressDeque.addLast(PageNumber);
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-        multiFingerFunction = new MultiFinger(this);
         menuFocus = (ImageView) findViewById(R.id.menufocus_imageview);
         accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
         setFullScreen();
@@ -143,7 +171,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
 
 
     /**
-     * 메뉴 imageview setting 함수
+     * 메뉴 imageview 초기화 함수
      */
     private void initImageView(){
         MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
@@ -151,6 +179,22 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         MenuImageView.getLayoutParams().height = MenuImageSize;
         MenuImageView.getLayoutParams().width = MenuImageSize;
         MenuImageView.requestLayout();
+    }
+
+
+    /**
+     * 특수기능 imageView 초기화 함수
+     */
+    private void initSpecialImageView(){
+        specialBackgroundView = (ImageView) findViewById(R.id.specialbackground);
+        specialBackgroundView.setVisibility(View.INVISIBLE);
+
+        specialImageView = (ImageView) findViewById(R.id.specialimageview);
+        specialViewSize = (int)(Global.DisplayX*0.3);
+        specialImageView.getLayoutParams().height = specialViewSize;
+        specialImageView.getLayoutParams().width = specialViewSize;
+        specialImageView.requestFocus();
+        specialImageView.setVisibility(View.INVISIBLE);
     }
 
 
@@ -273,8 +317,10 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
+    /**
+     * 음성 새로고침 함수
+     */
     private void refreshSound(){
-        onStopSound();
         TreeNode menuNode = menuTreeManager.getMenuTreeNode(menuAddressDeque);
         refreshSound(menuNode);
     }
@@ -320,6 +366,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
         if(accessibilityManager.isTouchExplorationEnabled() == false)
             focusThreadMaking(time, mediaPlaying);
         else {
+            onStopSound();
             refreshSound();
             layout.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_HOVER_ENTER);
             layout.requestFocus();
@@ -386,6 +433,9 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     }
 
 
+    /**
+     * 음성파일 중지 함수
+     */
     @Override
     public void onStopSound() {
         mediaSoundManager.stop();
@@ -411,6 +461,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
      */
     @Override
     public void onOneFingerFunction(FingerCoordinate fingerCoordinate) {
+        focusThreadStop();
         FingerFunctionType type = FingerFunctionType.ENTER;
         mediaSoundManager.start(type);
         menuAddressDeque.addLast(0);
@@ -422,12 +473,11 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     /**
      * 손가락 2개 함수 정의
      * 이벤트에 따라 Deque에 tree를 탐색하기 위한 주소값 변경
-     * @param fingerCoordinate : 좌표값
+     * @param fingerFunctionType : 제스처 타입
      */
     @Override
-    public void onTwoFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
+    public void onTwoFingerFunction(FingerFunctionType fingerFunctionType) {
+        switch (fingerFunctionType) {
             case BACK: // 상위 메뉴
                 beforeMenu();
                 break;
@@ -448,30 +498,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
                     menuAddressDeque.addLast(menuAddressDeque.removeLast() - 1);
                     refreshData();
                 }
-                break;
-            case REFRESH: // 특수기능
-                refreshData();
-                break;
-        }
-    }
-
-
-    /**
-     * 손가락 3개 함수 정의
-     * 손가락 3개 함수가 발생됬을 시, 메뉴 activity에서는 사용 불가 음성 출력
-     * @param fingerCoordinate
-     */
-    @Override
-    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-        switch (type) {
-            case SPEECH:
-                mediaSoundManager.start(R.raw.impossble_function);
-                break;
-            case MYNOTE:
-                mediaSoundManager.start(R.raw.impossble_function);
-                break;
-            default:
                 break;
         }
     }
@@ -524,5 +550,105 @@ public class MenuActivity extends Activity implements CustomTouchEventListener{
     @Override
     public void onBackPressed() {
         beforeMenu();
+    }
+
+
+    /**
+     * 특수기능 이미지 메모리 해제 함수
+     */
+    private void recycleSpecialFunction(){
+        if(specialImageView != null){
+            Drawable image = specialImageView.getDrawable();
+            if(image instanceof BitmapDrawable){
+                ((BitmapDrawable)image).getBitmap().recycle();
+                image.setCallback(null);
+            }
+            specialImageView.setImageDrawable(null);
+        }
+    }
+
+
+    /**
+     * 특수기능 안내 멘트 및 화면 이미지 set 함수
+     */
+    @Override
+    public void onSpecialFunctionGuide() {
+        int size = specialFunctionManager.getSize()-1;
+        if(size < specialFunctionIndex)
+            specialFunctionIndex = 0;
+
+        int drawableId = specialFunctionManager.getDrawableId(specialFunctionIndex);
+        int soundId = specialFunctionManager.getSoundId(specialFunctionIndex++);
+        setSpecialImageView(drawableId);
+        mediaSoundManager.start(soundId);
+    }
+
+
+    /**
+     * 화면에 특수기능 이미지를 띄우는 함수
+     * @param drawableId
+     */
+    private void setSpecialImageView(int drawableId){
+        recycleSpecialFunction();
+        specialBackgroundView.setVisibility(View.VISIBLE);
+        specialImageView.setVisibility(View.VISIBLE);
+        specialImageView.setImageDrawable(imageResizeModule.getDrawableImage(drawableId, specialViewSize, specialViewSize)); //현재화면에 이미지 설정
+    }
+
+
+    /**
+     * 특수기능 취소시 발생되는 함수
+     * 현재 재생중인 음성 중지 -> 특수기능 취소 멘트 출력 -> 화면정보 새로고침
+     */
+    @Override
+    public void onSpecialFunctionDisable() {
+        onSpecialFunctionViewOff();
+        mediaSoundManager.allStop();
+        mediaSoundManager.start(R.raw.specialfunction_cancel);
+        refreshSound();
+    }
+
+
+    /**
+     * 특수기능 이미지 숨기는 함수
+     * INVISIBLE 후 메모리 해제
+     */
+    private void onSpecialFunctionViewOff(){
+        specialBackgroundView.setVisibility(View.INVISIBLE);
+        specialImageView.setVisibility(View.INVISIBLE);
+        recycleSpecialFunction();
+    }
+
+
+    /**
+     * 특수기능 실행 함수
+     * 특수기능 이미지 숨긴 뒤 특수기능 실행
+     */
+    @Override
+    public void onStartSpecialFunction() {
+        onSpecialFunctionViewOff();
+        int specialType = --specialFunctionIndex;
+        specialFunctionManager.checkFunction(specialType);
+    }
+
+
+    /**
+     * 화면 새로고침 함수
+     */
+    @Override
+    public void onRefresh() {
+        refreshData();
+    }
+
+    @Override
+    public void onSpeechRecognition() {
+    }
+
+    @Override
+    public void onSaveMynote() {
+    }
+
+    @Override
+    public void onDeleteMynote() {
     }
 }

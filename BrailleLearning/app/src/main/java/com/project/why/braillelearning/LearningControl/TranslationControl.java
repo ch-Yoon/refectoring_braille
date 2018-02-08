@@ -24,9 +24,23 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
 
     TranslationControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
-        mediaSoundManager.start(R.raw.translation_guide);
         brailleTranslationModule = new BrailleTranslationModule(context);
         speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
+    }
+
+
+    /**
+     * data를 새로고침하는 함수.
+     * pageNumber에 따라 점자 data를 선택함
+     */
+    @Override
+    protected void refreshData(){
+        if(0 <= pageNumber && pageNumber < brailleDataArrayList.size()){
+            data = brailleDataArrayList.get(pageNumber);
+            if(data != null)
+                mediaSoundManager.start(data.getRawId());
+        } else
+            mediaSoundManager.start(R.raw.translation_guide);
     }
 
 
@@ -35,37 +49,35 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
      */
     @Override
     public void onPause() {
-        touchLock = false;
+        customTouchConnectListener.setTouchLock(false);
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
     }
 
+
     /**
-     * 손가락 3개 함수 재정의
-     * SPEECH : 음성인식
-     * MYNOE : 나만의 단어장 저장
-     * @param fingerCoordinate : 좌표값
+     * 음성인식 특수기능 함수
+     * 제스처 기능을 막기위해 lock을 건 뒤, 음성인식 실행
      */
     @Override
-    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        if(touchLock == false) {
-            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-            switch (type) {
-                case SPEECH:
-                    speechRecognitionMoudle.start();
-                    touchLock = true;
-                    break;
-                case MYNOTE:
-                    if (data != null)
-                        dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
-                    else
-                        mediaSoundManager.start(R.raw.impossble_save);
-                    break;
-                default:
-                    break;
-            }
-        }
+    public void onSpeechRecognition() {
+        customTouchConnectListener.setTouchLock(true);
+        speechRecognitionMoudle.start();
+    }
+
+
+    /**
+     * 나만의 단어장 특수기능 함수
+     * 현재 화면의 점자정보를 dbManger로 전달하여 db에 저장
+     * 화면에 점자가 존재하지 않는다면 안내멘트 출력
+     */
+    @Override
+    public void onSaveMynote() {
+        if (data != null)
+            dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
+        else
+            mediaSoundManager.start(R.raw.impossble_save);
     }
 
 
@@ -81,7 +93,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
             mediaSoundManager.start(R.raw.speechrecognition_fail);
             mediaSoundManager.start(R.raw.retry);
         }
-        touchLock = false;
+        customTouchConnectListener.setTouchLock(false);
     }
 
 

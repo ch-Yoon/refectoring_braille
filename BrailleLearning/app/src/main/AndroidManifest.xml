@@ -28,6 +28,7 @@
         </activity>
         <activity
             android:name=".Menu.MenuActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label=""
             android:screenOrientation="sensorLandscape" />
         <activity
@@ -42,6 +43,7 @@
 
         <activity
             android:name=".Menu.MenuInformationActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label=""
             android:screenOrientation="sensorLandscape" />
 
@@ -60,6 +62,7 @@
         </service>
 
         <activity android:name=".Accessibility.AccessibilityInfoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/guide_activity"
             android:screenOrientation="sensorLandscape" />
 

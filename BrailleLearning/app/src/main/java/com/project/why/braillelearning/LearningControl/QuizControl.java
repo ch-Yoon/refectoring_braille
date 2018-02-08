@@ -22,6 +22,8 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
     private ArrayList<QuizBrailleData> quizBrailleDataArrayList = new ArrayList<>();
     private QuizBrailleData quizData;
     private boolean progress = false;
+    private int previousPageNumber = 0;
+    boolean result = false;
 
     QuizControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
@@ -34,7 +36,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     public void onPause() {
-        touchLock = false;
+        customTouchConnectListener.setTouchLock(false);
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
@@ -55,6 +57,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
             int random = (int) (Math.random() * brailleDataArrayList.size());
 
             boolean result = true;
+
             for(int i=0 ; i<randomArray.length ; i++){
                 if(randomArray[i] == random)
                     result = false;
@@ -77,15 +80,21 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     protected void refreshData(){
+        if(previousPageNumber != pageNumber){
+            previousPageNumber = pageNumber;
+            progress = false;
+        }
+
         if(0 <= pageNumber && pageNumber < quizBrailleDataArrayList.size()){
             quizData = quizBrailleDataArrayList.get(pageNumber);
             data = quizData;
             if(quizData != null) {
                 if(progress == false)
                     mediaSoundManager.start(quizData.getQuizRawId());
+                else
+                    mediaSoundManager.start(result, pageNumber, quizData.getRawId());
             }
-        } else
-            exit();
+        }
     }
 
 
@@ -112,55 +121,27 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
-        if(touchLock == false) {
-            if (data != null)
-                oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
-        }
-    }
-
-
-    /**
-     * 손가락 3개 함수 재정의
-     * SPEECH : 음성인식
-     * MYNOTE : 나만의 단어장 저장
-     * @param fingerCoordinate : 좌표값
-     */
-    @Override
-    public void onThreeFingerFunction(FingerCoordinate fingerCoordinate) {
-        if(touchLock == false) {
-            FingerFunctionType type = multiFingerFunction.getFingerFunctionType(fingerCoordinate);
-            switch (type) {
-                case SPEECH:
-                    touchLock = true;
-                    progress = true;
-                    speechRecognitionMoudle.start();
-                    break;
-                case MYNOTE:
-                    dbManager.saveMyNote(data.getLetterName(), data.getStrBrailleMatrix(), data.getAssistanceLetterName(), data.getRawId());
-                    break;
-                default:
-                    break;
-            }
-        }
+        if (data != null)
+            oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
     }
 
 
     /**
      * 음성인식에 대한 callback method
      * 음성인식에 대한 ArrayList가 전달됨
+     * 음성인식 결과 수신 완료 후 제스처 기능 lock 해제
      */
     @Override
     public void speechRecogntionResult(ArrayList<String> text) {
+        progress = true;
         if(text != null) {
-            boolean result = checkAnswer(text);
-            mediaSoundManager.start(result, pageNumber, quizData.getRawId());
+            result = checkAnswer(text);
             nodifyObservers();
         } else {
             mediaSoundManager.start(R.raw.speechrecognition_fail);
             mediaSoundManager.start(R.raw.retry);
         }
-        progress = false;
-        touchLock = false;
+        customTouchConnectListener.setTouchLock(false);
     }
 
 
@@ -172,11 +153,22 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
     private boolean checkAnswer(ArrayList<String> text){
         boolean result = false;
         for(int i=0 ; i<text.size() ; i++){
-            String quizAnster = quizData.getAssistanceLetterName();
-            if(text.get(i) == quizAnster || text.get(i).equals(quizAnster))
+            String quizAnswer = quizData.getAssistanceLetterName();
+            if(text.get(i) == quizAnswer || text.get(i).equals(quizAnswer))
                 result = true;
         }
 
         return result;
+    }
+
+
+    /**
+     * 음성인식 특수기능 함수
+     * 제스처 기능을 무시하도록 lock을 건 뒤 음성인식 실행
+     */
+    @Override
+    public void onSpeechRecognition() {
+        customTouchConnectListener.setTouchLock(true);
+        speechRecognitionMoudle.start();
     }
 }

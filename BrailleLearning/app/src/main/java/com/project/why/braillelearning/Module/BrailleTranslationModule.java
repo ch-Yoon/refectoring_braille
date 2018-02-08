@@ -35,7 +35,7 @@ public class BrailleTranslationModule {
     private ArrayList<BrailleData> abbreviationBrailleDataArray = new ArrayList<>(); // 약자 및 약어 점자 정보 arraylist
     private ArrayList<String> separateArray = new ArrayList<>(); // 문자열 분해 시, 구분자로 사용될 String 정보들을 저장하고 있는 arraylist
     private ArrayList<Dot[][]> tempMatrixArray = new ArrayList<>(); // 점자 번역 시 이용되는 임시 arraylist
-    private CustomStringTokenizer customStringTokenizer = new CustomStringTokenizer(); // 문자열 분해를 위한 customTokenizer
+    private CustomStringTokenizerModule customStringTokenizer = new CustomStringTokenizerModule(); // 문자열 분해를 위한 customTokenizer
 
     public BrailleTranslationModule(Context context) {
         initialBrailleDataArray = getJsonBrailleData(context, Json.INITIAL);
