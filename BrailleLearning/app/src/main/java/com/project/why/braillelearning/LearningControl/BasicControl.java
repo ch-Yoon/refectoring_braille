@@ -78,7 +78,8 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
      */
     private ArrayList<BrailleData> getBrailleDataArray(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType) {
         BrailleDataManager brailleDataManager = new BrailleDataManager(context, jsonFileName, databaseFileName, brailleLearningType);
-        GettingBraille gettingBraille = brailleDataManager.getBrailleArrayList();
+        GettingBraille gettingBraille = brailleDataManager.
+                getBrailleArrayList();
 
         if(gettingBraille != null)
             return gettingBraille.getBrailleDataArray();
@@ -151,6 +152,7 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
         if(data != null)
             viewObservers.nodifyBraille(data.getLetterName(), data.getBrailleMatrix());
     }
+
 
     /**
      * 일시정지 되었을 때 함수
