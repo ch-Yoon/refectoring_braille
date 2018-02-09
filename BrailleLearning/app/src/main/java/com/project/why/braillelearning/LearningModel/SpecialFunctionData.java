@@ -6,6 +6,11 @@ import com.project.why.braillelearning.EnumConstant.SpecialFunctionType;
  * Created by hyuck on 2018-02-06.
  */
 
+
+/**
+ * 특수기능 정보 class
+ * 화면에 보여질 이미지 id와 음성파일 id, 특수기능 타입 정보를 갖고있음
+ */
 public class SpecialFunctionData {
     private int drawableId;
     private int soundId;

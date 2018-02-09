@@ -49,10 +49,19 @@ public class MediaSoundManager {
         mediaPlayerSingleton.start(soundIdQueue);
     }
 
+
+    /**
+     * 화면에 포커스가 잡혔을 때 포커스 사운드를 출력하기 위한 함수
+     */
     public void focusSoundStart(){
         mediaPlayerSingleton.focusSoundStart();
     }
 
+
+    /**
+     * 각 메뉴에 맞는 메뉴 가이드 음성정보를 출력하기 위한 함수
+     * @param brailleLearningType
+     */
     public void start(BrailleLearningType brailleLearningType){
         switch (brailleLearningType){
             case TUTORIAL:
@@ -81,6 +90,7 @@ public class MediaSoundManager {
                 break;
         }
     }
+
 
     /**
      * 손가락 1개를 이용하여 점자를 읽을 때, 점자 번호와 구분선, 경고음을 출력하는 함수
@@ -115,6 +125,7 @@ public class MediaSoundManager {
         mediaPlayerSingleton.start(queue);
     }
 
+
     /**
      * 음성정보가 String인 file들을 출력하는 함수
      * 점자 학습 data들의 경우, 글자 정보는 raw에서 가져오며, 점자 번호 정보들은 점자 행렬을 가공하여 음성 file을 구성함
@@ -145,6 +156,7 @@ public class MediaSoundManager {
         }
     }
 
+
     /**
      * 제스처 음성출력을 위한 함수
      * @param fingerFunctionType
@@ -154,6 +166,7 @@ public class MediaSoundManager {
         stop();
         mediaPlayerSingleton.start(soundIdQueue);
     }
+
 
     /**
      * 퀴즈 음성 출력을 위한 함수
@@ -188,6 +201,7 @@ public class MediaSoundManager {
         start(text);
     }
 
+
     /**
      * String 음성 file이 raw에 존재하는지 check하는 함수.
      * @param soundId : String 음성 file id
@@ -198,6 +212,7 @@ public class MediaSoundManager {
         Resources resources = context.getResources();
         return resources.getIdentifier(soundId, "raw", packName);
     }
+
 
     /**
      * 제스처 해당하는 음성 file들을 return하는 함수
@@ -226,6 +241,7 @@ public class MediaSoundManager {
 
         return soundIdQueue;
     }
+
 
     /**
      * 점자 행렬에 해당하는 내용들을 음성 file과 매칭하여 queue에 저장한 뒤 리턴하는 함수
@@ -311,10 +327,18 @@ public class MediaSoundManager {
         return soundIdQueue;
     }
 
+
+    /**
+     * 방어 음성파일을 제외하고, queue초기화 및 mediaPlayer초기화 함수
+     */
     public void stop(){
         mediaPlayerSingleton.initializeAll();
     }
 
+
+    /**
+     * 모든음성 중지 함수
+     */
     public void allStop(){
         stop();
         mediaPlayerSingleton.initializeMediaPlayer();

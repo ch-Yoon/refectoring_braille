@@ -9,7 +9,7 @@ package com.project.why.braillelearning.EnumConstant;
  * WEAKLY : 약한진동
  */
 public enum Vibrate {
-    STRONG(250), MIDDLE(100), WEAKLY(50);
+    STRONG(250), WEAKLY(50);
     int strength;
 
     Vibrate(int strength){

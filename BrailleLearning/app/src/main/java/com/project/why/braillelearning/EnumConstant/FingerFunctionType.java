@@ -14,7 +14,6 @@ package com.project.why.braillelearning.EnumConstant;
  * MYNOTE : 나만의 단어장 저장 및 삭제
  * ONE_FINGER : 손가락 1개
  * TWO_FINGER : 손가락 2개
- * THREE_FINGER : 손가락 3개
  */
 public enum FingerFunctionType {
     NONE(-1), RIGHT(0), LEFT(1), ENTER(2), BACK(3), SPECIAL(4),

@@ -42,6 +42,7 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
         mediaSoundManager = new MediaSoundManager(context);
     }
 
+
     public void setDatabaseName(Database databaseName){
         this.databaseName = databaseName;
     }
@@ -51,6 +52,14 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
+
+    /**
+     * db에 data를 저장하는 함수
+     * @param letterName : 점자를 의미하는 글자
+     * @param brailleMatrix : 점자정보 행렬
+     * @param assistanceName :  퀴즈를 위한 글자
+     * @param rawId : 음성파일 정보
+     */
     public void insert(String letterName, String brailleMatrix, String assistanceName, String rawId) {
         // 읽고 쓰기가 가능하게 DB 열기
         try {
@@ -90,6 +99,13 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
         }
     }
 
+
+    /**
+     * db에 저장되어 있는 점자 삭제 함수
+     * 점자 행렬을 key 값으로 찾아 삭제함
+     * @param brailleMatrix : 점자 정보 행렬
+     * @return : 삭제 완료 후 새로고침 된 점자 arrayList
+     */
     public ArrayList<BrailleData> delete(String brailleMatrix) {
         try {
             SQLiteDatabase db = getWritableDatabase();
@@ -110,6 +126,12 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
         return brailleDataArrayList;
     }
 
+
+    /**
+     * db안에 저장되어 있는 점자들을 hashmap에 저장.
+     * hashMap을 통해 이미 저장되어있는 점자인지 판별
+     * @param allData
+     */
     private void addHashMap(ArrayList<BrailleData> allData){ // 해쉬맵에 모든 점자정보를 저장
         mapDB.clear();
 
@@ -117,6 +139,12 @@ public class DBHelper extends SQLiteOpenHelper implements GettingBraille {
             mapDB.put(allData.get(i).getStrBrailleMatrix(), allData.get(i));
     }
 
+
+    /**
+     * db에 저장되어 있는 점자 데이터들을 불러오는 함수
+     * 나중에 저장된 점자들을 가장 앞쪽부터 출력될 수 있도록 거꾸로 가져옴
+     * @return : 거꾸로 가져온 점자 데이터 arrayList
+     */
     public ArrayList<BrailleData> getResult(){
         // 읽기가 가능하게 DB 열기
         ArrayList<BrailleData> brailleDataArrayList = new ArrayList<>();

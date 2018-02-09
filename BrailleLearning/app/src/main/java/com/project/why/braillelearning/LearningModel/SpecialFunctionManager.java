@@ -11,6 +11,12 @@ import java.util.ArrayList;
  * Created by hyuck on 2018-02-06.
  */
 
+
+/**
+ * 특수기능 정보를 관리하는 manager class
+ * 학습 타입에 맞는 특수기능 정보들을 arraylist에 보관한다.
+ * specialFunctionListener로 연결된 class로부터 수신한 값을 기반으로 특수기능 실행명령을 전달
+ */
 public class SpecialFunctionManager {
     private ArrayList<SpecialFunctionData> specialFunctionDataArrayList = new ArrayList<>();
     private SpecialFunctionListener specialFunctionListener;
@@ -67,10 +73,6 @@ public class SpecialFunctionManager {
         specialFunctionDataArrayList.add(data);
     }
 
-    public ArrayList<SpecialFunctionData> getSpecialFunctionDataArrayList(){
-        return specialFunctionDataArrayList;
-    }
-
     public int getSize(){
         return specialFunctionDataArrayList.size();
     }
@@ -83,6 +85,11 @@ public class SpecialFunctionManager {
         return specialFunctionDataArrayList.get(index).getSoundId();
     }
 
+
+    /**
+     * specialFunctionListener로 연결된 class로부터 수신한 값을 기반으로 특수기능 실행명령을 전달
+     * @param index
+     */
     public void checkFunction(int index){
         SpecialFunctionType type = specialFunctionDataArrayList.get(index).getSpecialFunctionType();
         switch (type){

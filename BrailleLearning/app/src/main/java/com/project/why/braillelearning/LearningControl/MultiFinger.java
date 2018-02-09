@@ -24,6 +24,7 @@ public class MultiFinger{
     /**
      * 손가락 2개와 3개에 대한 event를 분석하는 함수
      * 좌표값이 드래그 허용범위를 충족시켜는지와 x축과 y축 중 어느 축의 드래그 값이 높은지를 판단
+     * 만약 x축과 y축의 이동거리가 동일하다면 다시시도 처리
      * @param fingerCoordinate : 좌표값
      * @return : 이벤트 type
      */
@@ -65,8 +66,42 @@ public class MultiFinger{
             else if (Drag_countY == fingerCount || Drag_countY == fingerCount*(-1))
                 DragY = true;
 
-            if (fingerCount == FingerFunctionType.TWO_FINGER.getNumber())
-                type = getTwoFingerFunction(DragX, DragY, Drag_countX, Drag_countY, Finger_gapX, Finger_gapY);
+            if (fingerCount == FingerFunctionType.TWO_FINGER.getNumber()) {
+                if (DragX == false && DragY == false) { // x과 y축 모두 화면전환 조건을 충족하지 못했을 경우
+                    type = FingerFunctionType.NONE;
+                } else if (DragX == true && DragY == false) { // x축만 화면전환 조건을 충족하였을 경우
+                    if (Drag_countX > 0) // 우측 페이지 전환
+                        type = FingerFunctionType.RIGHT;
+                    else // 좌측 페이지 전환
+                        type = FingerFunctionType.LEFT;
+                } else if (DragX == false && DragY == true) { // y축만 화면전환 조건을 충족하였을 경우
+                    if (Drag_countY > 0) // 특수기능
+                        type = FingerFunctionType.BACK;
+                    else // 뒤로가기
+                        type = FingerFunctionType.SPECIAL;
+                } else if (DragX == true && DragY == true) { // x축 화면전환 조건과 y축 화면전환 조건 모두 충족하였을 경우 이동거리로 구분
+                    double gapX = 0;
+                    double gapY = 0;
+
+                    for (int i = 0; i < Finger_gapX.length; i++) {
+                        gapX = gapX + Finger_gapX[i];
+                        gapY = gapY + Finger_gapY[i];
+                    }
+
+                    if (gapX > gapY) { // x축의 이동거리가 클 경우
+                        if (Drag_countX > 0) // 우측 페이지 전환
+                            type = FingerFunctionType.RIGHT;
+                        else // 좌측 페이지 전환
+                            type = FingerFunctionType.LEFT;
+                    } else if (gapY > gapX) { // y축의 이동거리가 클 경우
+                        if (Drag_countY > 0) // 특수기능
+                            type = FingerFunctionType.BACK;
+                        else // 뒤로가기
+                            type = FingerFunctionType.SPECIAL;
+                    } else
+                        type = FingerFunctionType.NONE;
+                }
+            }
         }
 
 
@@ -81,57 +116,6 @@ public class MultiFinger{
             if(mediaSoundManager.getMenuInfoPlaying() == false) {
                 if(touchLock == false)
                     mediaSoundManager.start(type);
-            }
-        }
-
-        return type;
-    }
-
-
-    /**
-     * 손가락 2개에 대한 event를 분석하는 함수
-     * @param DragX : 좌우 드래그 범위 충족(true : 충족, false : 비충족)
-     * @param DragY : 상하 드래그 범위 충족(true : 충족, false : 비충족)
-     * @param Drag_countX : 양수이면 오른쪽, 음수이면 왼쪽 드래그 의미
-     * @param Drag_countY : 양수이면 위에서 아래로 드래그, 음수이면 아래서 위로 드래그 의미
-     * @param Finger_gapX : 좌우 드래그의 이동거리
-     * @param Finger_gapY : 상하 드래그의 이동거리
-     * @return : 이벤트 type
-     */
-    private FingerFunctionType getTwoFingerFunction(boolean DragX, boolean DragY, int Drag_countX, int Drag_countY, double Finger_gapX[], double Finger_gapY[]){
-        FingerFunctionType type = FingerFunctionType.NONE;
-
-        if (DragX == false && DragY == false) { // x과 y축 모두 화면전환 조건을 충족하지 못했을 경우
-            type = FingerFunctionType.NONE;
-        } else if (DragX == true && DragY == false) { // x축만 화면전환 조건을 충족하였을 경우
-            if (Drag_countX > 0) // 우측 페이지 전환
-                type = FingerFunctionType.RIGHT;
-            else // 좌측 페이지 전환
-                type = FingerFunctionType.LEFT;
-        } else if (DragX == false && DragY == true) { // y축만 화면전환 조건을 충족하였을 경우
-            if (Drag_countY > 0) // 특수기능
-                type = FingerFunctionType.BACK;
-            else // 뒤로가기
-                type = FingerFunctionType.SPECIAL;
-        } else if (DragX == true && DragY == true) { // x축 화면전환 조건과 y축 화면전환 조건 모두 충족하였을 경우 이동거리로 구분
-            double gapX = 0;
-            double gapY = 0;
-
-            for (int i = 0; i < Finger_gapX.length; i++) {
-                gapX = gapX + Finger_gapX[i];
-                gapY = gapY + Finger_gapY[i];
-            }
-
-            if (gapX >= gapY) { // x축의 이동거리가 클 경우
-                if (Drag_countX > 0) // 우측 페이지 전환
-                    type = FingerFunctionType.RIGHT;
-                else // 좌측 페이지 전환
-                    type = FingerFunctionType.LEFT;
-            } else if (gapY > gapX) { // y축의 이동거리가 클 경우
-                if (Drag_countY > 0) // 특수기능
-                    type = FingerFunctionType.BACK;
-                else // 뒤로가기
-                    type = FingerFunctionType.SPECIAL;
             }
         }
 

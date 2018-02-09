@@ -6,20 +6,21 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
-
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.Menu.MenuActivity;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+/**
+ * application 로딩화면 activity
+ */
 public class BrailleLearningLoading extends Activity {
     private ImageView Loading_Animation_imageview; // 애니메이션 imageview
     private TimerTask LoadingTimer;
@@ -44,7 +45,6 @@ public class BrailleLearningLoading extends Activity {
     protected void onResume(){
         super.onResume();
         Timer_Start(); // 애니메이션 시작
-        Log.d("onResume","onResume");
     }
 
 
@@ -53,7 +53,6 @@ public class BrailleLearningLoading extends Activity {
         super.onPause();
         Timer_Stop();
         recycleImage();
-        Log.d("onPause","onPause");
     }
 
 

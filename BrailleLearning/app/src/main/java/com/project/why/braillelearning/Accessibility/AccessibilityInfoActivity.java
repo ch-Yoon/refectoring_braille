@@ -196,6 +196,9 @@ public class AccessibilityInfoActivity extends Activity {
         }
     }
 
+    /**
+     * 뒤로가기 버튼 재정의
+     */
     @Override
     public void onBackPressed() {
         if(backPressTime == 0) {

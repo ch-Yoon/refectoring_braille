@@ -159,6 +159,12 @@ public class DataConversionModule {
         return rawId;
     }
 
+
+    /**
+     * 점자 칸 수를 반환하는 함수
+     * @param brailleMatrix : 점자 정보
+     * @return : 점자 칸 수
+     */
     public int getDotCount(Dot[][] brailleMatrix){
         int COL = brailleMatrix.length; //4행
         int ROW = brailleMatrix[0].length;
@@ -183,7 +189,11 @@ public class DataConversionModule {
     }
 
 
-
+    /**
+     * 점자 정보를 수신하면, 해당 점자 정보를 string으로 변환하는 함수
+     * @param brailleMatrix : 점자정보 행렬
+     * @return : string으로 구성된 점자정보
+     */
     public String getConversionBrailleText(Dot[][] brailleMatrix){
         int COL = brailleMatrix.length;
         String brailleText = "";
@@ -279,6 +289,7 @@ public class DataConversionModule {
         return brailleMatrix;
     }
 
+
     /**
      * y좌표를 얻어오는 함수
      * @param nowCol : 현재 세로 축
@@ -288,6 +299,7 @@ public class DataConversionModule {
         return Global.DisplayY * (1 - ((2 * BigCircleRadiusRatio * ((COL-1) - nowCol)) + BigCircleRadiusRatio));
     }
 
+
     /**
      * x좌표를 얻어오는 함수
      * @param row : 현재 가로 축
@@ -296,6 +308,7 @@ public class DataConversionModule {
     public float getCoordinate_X(int row){
         return Global.DisplayY * ((2 * BigCircleRadiusRatio * row) + BigCircleRadiusRatio);
     }
+
 
     /**
      * 점자를 화면에 그리기 위한 좌표를 얻어오는 함수

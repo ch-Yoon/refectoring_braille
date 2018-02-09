@@ -6,6 +6,10 @@ import com.project.why.braillelearning.EnumConstant.Database;
  * Created by Yeo on 2017-11-03.
  */
 
+
+/**
+ * db singleton
+ */
 public class SingletonDB {
     private static volatile DBHelper _Instance;
      public static DBHelper getInstance(Context context, Database databaseFileName){

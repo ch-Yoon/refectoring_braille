@@ -22,7 +22,8 @@ public class CustomLearningTouchEvent extends CustomTouchEvent {
     /**
      * 일반버전 손가락 1개 함수 재정의
      * MOVE와 DOWN의 경우 점자를 읽는 동작으로 처리
-     * @param event
+     * 현재화면이 특수기능 활성화 상태라면, 부모클래스의 손가락 1개 이벤트로 처리
+     * @param event : touch event
      */
     @Override
     protected void basicOneFingerTouch(MotionEvent event){
@@ -55,7 +56,9 @@ public class CustomLearningTouchEvent extends CustomTouchEvent {
     /**
      * 시각장애인버전의 손가락 1개 함수 재정의
      * MOVE와 DOWN의 경우 점자를 읽는 동작으로 처리
-     * @param event
+     * ACTION_UP이 발생되었을 때, ACTION DOWN과 event time이 동일하다면 더블탭, 아니라면 손가락 2개로 인식
+     * 현재화면이 특수기능 활성화 상태라면, 부모클래스의 손가락 1개 이벤트로 처리
+     * @param event : touch event
      */
     @Override
     protected  void blindOneFIngerTouch(MotionEvent event) {

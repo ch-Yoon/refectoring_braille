@@ -11,6 +11,7 @@ import com.project.why.braillelearning.EnumConstant.Json;
 
 /**
  * 초성 연습 점자 정보 class
+ * json 파일명, 학습 타입, DB 타입
  */
 public class Initial implements GettingInformation {
     @Override

@@ -100,6 +100,13 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
+    /**
+     * 화면 유지 해제
+     * 애니메이션 중지
+     * 이미지 해제
+     * 음성 중지
+     * 터치 이벤트 연결 해제
+     */
     @Override
     protected void onPause(){
         super.onPause();
@@ -110,6 +117,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         stopSound();
         pauseTouchEvent();
     }
+
 
     /**
      * 화면 켜짐 유지 함수
@@ -249,12 +257,20 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     }
 
 
+    /**
+     * 손가락 1개로 더블탭하였을 때 불리는 함수
+     * activity 종료 명령을 내리는 함수
+     * @param fingerCoordinate
+     */
     @Override
     public void onOneFingerFunction(FingerCoordinate fingerCoordinate) {
         exit(0);
     }
 
 
+    /**
+     * 음성파일 중지 함수
+     */
     public void stopSound(){
         mediaSoundManager.stop();
     }
@@ -393,6 +409,10 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         overridePendingTransition(0, 0);
     }
 
+
+    /**
+     * app최초 접속하여 사용설명서를 듣고나면 FRIST_RUN 파일에 TRUE값 저장
+     */
     private void savePreferences(){
         SharedPreferences pref = getSharedPreferences("tutorial", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();

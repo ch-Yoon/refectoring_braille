@@ -44,35 +44,35 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         this.context = context;
     }
 
+
+    /**
+     * mediaplay 종료를 알리기 위한 stopCallbackListenr를 등록하는 함수
+     * @param listener
+     */
     public void setMediaPlayerStopCallbackListener(MediaPlayerStopCallbackListener listener){
         this.mediaPlayerStopCallbackListener = listener;
     }
 
+
+    /**
+     * mediaplay 종료를 알리기 위한 stopCallbackListenr를 해제하는 함수
+     * mediaplay stop을 알린 뒤, 혹은 개발자에 의해 직접 호출될 수 있음
+     */
     public void initialMediaPlayerStopCallbackListener(){
         this.mediaPlayerStopCallbackListener = null;
     }
 
+
     /**
-     * 일반적인 음성 file 출력 함수
-     * @param soundIdQueue : MediaSoundManager로 부터 Queue를 받음.
+     * 방어 media가 재생중이 아니라면 음성 파일을 중지하고, queue를 초기화
+     * 재생중이라면 queue만 초기화
      */
-    public void start(Queue<Integer> soundIdQueue){
-        queue.addAll(soundIdQueue);
-        checkMediaPlayer();
+    public void initializeAll(){
+        if(!checkMediaShield())
+            initializeMediaPlayer();
+        initializeQueue();
     }
 
-    public void focusSoundStart(){
-        if(focusMediaPlayer == null) {
-            focusMediaPlayer = MediaPlayer.create(context, R.raw.focus_sound);
-            focusMediaPlayer.start();
-            focusMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    initializeFocusMediaPlayer();
-                }
-            });
-        }
-    }
 
     /**
      * mediaplayer 메모리 해제 함수
@@ -88,6 +88,70 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
                 focusMediaPlayer = null;
             }
         }
+    }
+
+    /**
+     * 방어 음성파일 변수 초기화 함수
+     */
+    public void initializeShield(){
+        shieldId = 0;
+    }
+
+
+    /**
+     * 음성파일 queue초기화 함수
+     */
+    public void initializeQueue(){
+        tempQueue.clear();
+        queue.clear();
+        mediaPlaying = false;
+    }
+
+
+    /**
+     * mediaplayer 메모리 해제 함수
+     */
+    public void initializeMediaPlayer(){
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+            } else {
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+        }
+
+        menuInfoPlaying = false;
+        mediaPlaying = false;
+    }
+
+
+    /**
+     * focus가 잡힌 소리를 출력하는 함수
+     */
+    public void focusSoundStart(){
+        if(focusMediaPlayer == null) {
+            focusMediaPlayer = MediaPlayer.create(context, R.raw.focus_sound);
+            focusMediaPlayer.start();
+            focusMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    initializeFocusMediaPlayer();
+                }
+            });
+        }
+    }
+
+
+    /**
+     * 일반적인 음성 file 출력 함수
+     * @param soundIdQueue : MediaSoundManager로 부터 Queue를 받음.
+     */
+    public void start(Queue<Integer> soundIdQueue){
+        queue.addAll(soundIdQueue);
+        checkMediaPlayer();
     }
 
 
@@ -116,20 +180,6 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
                 .build();
 
         ttsClient.play(ttsText);
-    }
-
-
-    /**
-     * 다수의 곳에서 접근할 때, race contidion을 방지하기 위한 동기화 함수
-     */
-    private synchronized void checkMediaPlayer(){
-        if(mediaPlayer != null){
-            if(!mediaPlayer.isPlaying()){
-                initializeMediaPlayer();
-                startMediaPlayer();
-            }
-        } else
-            startMediaPlayer();
     }
 
 
@@ -165,6 +215,20 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
 
 
     /**
+     * 다수의 곳에서 접근할 때, race contidion을 방지하기 위한 동기화 함수
+     */
+    private synchronized void checkMediaPlayer(){
+        if(mediaPlayer != null){
+            if(!mediaPlayer.isPlaying()){
+                initializeMediaPlayer();
+                startMediaPlayer();
+            }
+        } else
+            startMediaPlayer();
+    }
+
+
+    /**
      * 메뉴 가이드 음성이 출력중인지 확인하는 함수
      * @param id : 현재 출력중인 음성 파일 id
      */
@@ -177,48 +241,6 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         }
     }
 
-    public MediaPlayer getMediaPlayer(){
-        return mediaPlayer;
-    }
-
-    public int getShieldId(){
-        return shieldId;
-    }
-
-    public void initializeAll(){
-        if(!checkMediaShield())
-            initializeMediaPlayer();
-        initializeQueue();
-    }
-
-    public void initializeShield(){
-        shieldId = 0;
-    }
-
-    public void initializeQueue(){
-        tempQueue.clear();
-        queue.clear();
-        mediaPlaying = false;
-    }
-
-    /**
-     * mediaplayer 메모리 해제 함수
-     */
-    public void initializeMediaPlayer(){
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = null;
-            } else {
-                mediaPlayer.release();
-                mediaPlayer = null;
-            }
-        }
-
-        menuInfoPlaying = false;
-        mediaPlaying = false;
-    }
 
     /**
      * 특정 음성이 멈추지 않게 하기 위한 방어 함수
@@ -237,21 +259,27 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
         return false;
     }
 
-    @Override
-    public void onFinished() {
-        queue.clear();
-        queue.addAll(tempQueue);
-        checkMediaPlayer();
-        ttsClient = null;
+
+    public boolean checkTTSPlay(){
+        if(ttsClient != null)
+            return true;
+        else
+            return false;
     }
+
+
+    public MediaPlayer getMediaPlayer(){
+        return mediaPlayer;
+    }
+
+
+    public int getShieldId(){
+        return shieldId;
+    }
+
 
     public boolean getMenuInfoPlaying(){
         return menuInfoPlaying;
-    }
-
-    @Override
-    public void onError(int code, String message) {
-        ttsClient = null;
     }
 
 
@@ -262,10 +290,24 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
             return true;
     }
 
-    public boolean checkTTSPlay(){
-        if(ttsClient != null)
-            return true;
-        else
-            return false;
+
+    @Override
+    public void onError(int code, String message) {
+        ttsClient = null;
     }
+
+
+    /**
+     * tts출력이 끝난 후 불리는 함수.
+     * tts출력이 끝나고 나면, queue에 임시 quque에 저장되어있던 음성파일들을 저장함
+     */
+    @Override
+    public void onFinished() {
+        queue.clear();
+        queue.addAll(tempQueue);
+        checkMediaPlayer();
+        ttsClient = null;
+    }
+
+
 }

@@ -200,7 +200,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     /**
      * 화면이 터치될 때, 현재 화면이 시각장애인 버전인지, 일반 버전인지 확인하는 함수
      * 화면에 터치가 시작될 때 확인한다.
-     * @param event
+     * @param event : touch event
      */
     private void checkBlind(MotionEvent event){
         switch (event.getAction()) {
@@ -235,7 +235,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
      * down 될때 doubleTabCheckThread 생성, up 될때 터치횟수 확인.
      * 더블탭으로 판정되었을 때, 특수기능 선택 화면이라면 특수기능 실행
      * 더블탭으로 판정되었을 때, 특수기능 선택 화면이 아니라면 화면 접속 기능 실행
-     * @param event
+     * @param event : touch event
      */
     protected void basicOneFingerTouch(MotionEvent event){
         switch (event.getAction() & MotionEvent.ACTION_MASK) {

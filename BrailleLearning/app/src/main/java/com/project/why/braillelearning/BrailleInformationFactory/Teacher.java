@@ -12,6 +12,7 @@ import com.project.why.braillelearning.EnumConstant.Json;
 
 /**
  * 선생님모드 정보 class
+ * json 파일명, 학습 타입, DB 타입
  */
 public class Teacher implements GettingInformation {
     @Override

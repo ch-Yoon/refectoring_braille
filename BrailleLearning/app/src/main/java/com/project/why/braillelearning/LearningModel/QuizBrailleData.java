@@ -8,6 +8,7 @@ import com.project.why.braillelearning.Module.DataConversionModule;
 
 /**
  * 퀴즈를 위한 퀴즈 점자 데이터 저장 class
+ * BarilleData를 상속받고, 퀴즈에 사용될 문자정보와 음성파일 정보를 갖고있음
  */
 public class QuizBrailleData extends BrailleData{
     private String quizLettername = "";

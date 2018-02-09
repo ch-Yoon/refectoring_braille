@@ -166,11 +166,19 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
     public void onFocusRefresh() {
     }
 
+
+    /**
+     * mediaSound stop 함수
+     */
     @Override
     public void onStopSound() {
         mediaSoundManager.stop();
     }
 
+
+    /**
+     * 제스처 분석 실패시 다시 시도 멘트 출력 함수
+     */
     @Override
     public void onError() {
         FingerFunctionType type = FingerFunctionType.NONE;

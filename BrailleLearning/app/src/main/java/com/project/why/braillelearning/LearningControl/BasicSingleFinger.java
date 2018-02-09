@@ -28,6 +28,7 @@ public class BasicSingleFinger implements SingleFingerFunction {
         init();
     }
 
+
     /**
      * 손가락의 직전 좌표를 초기화하는 함수
      */
@@ -36,6 +37,7 @@ public class BasicSingleFinger implements SingleFingerFunction {
         previous_i = 0;
         previous_j = 0;
     }
+
 
     /**
      * 1개의 손가락으로 점자를 읽기위한 event함수
@@ -114,6 +116,7 @@ public class BasicSingleFinger implements SingleFingerFunction {
             return false;
 
     }
+
 
     /**
      * 손가락 1개의 음성 정지 함수
