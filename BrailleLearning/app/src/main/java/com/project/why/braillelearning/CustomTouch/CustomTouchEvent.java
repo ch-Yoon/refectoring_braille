@@ -23,7 +23,6 @@ import static android.content.Context.ACCESSIBILITY_SERVICE;
  * 해당 클래스에서 손가락 1개, 2개, 3개 이상을 구분하고, touch 좌표값을 이용하여 제스처를 분석한다.
  * 분석된 제스처와 AccessibilityEventSingleton으로부터 수신된 double tab은 CustomTouchEventListener를 통해 연결된 class로 송신한다.
  */
-
 public class CustomTouchEvent implements CustomTouchConnectListener, AccessibilityEventListener, MediaPlayerStopCallbackListener {
     protected int ONE_FINGER = FingerFunctionType.ONE_FINGER.getNumber(); // 손가락 1개
     protected int TWO_FINGER = FingerFunctionType.TWO_FINGER.getNumber(); // 손가락 2개
@@ -103,7 +102,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
      */
     private void initializeBlindPerson(){
         if(accessibilityEventSingleton != null) {
-            accessibilityEventSingleton.initialize();
+            accessibilityEventSingleton.onPause();
             accessibilityEventSingleton = null;
         }
     }

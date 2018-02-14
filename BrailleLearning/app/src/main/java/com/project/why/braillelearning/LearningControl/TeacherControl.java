@@ -30,6 +30,7 @@ import java.util.ArrayList;
 public class TeacherControl extends BasicControl implements SpeechRecognitionListener, MediaPlayerStopCallbackListener {
     private SpeechRecognitionMoudle speechRecognitionMoudle;
     private boolean sendCheck = false;
+    private String teacherServerURL = "http://13.125.23.151/teacher.php";
     private String room = "0";
 
     TeacherControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
@@ -249,7 +250,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                 String brailleText = params[1];
                 String rawId = params[2];
 
-                String link = Global.teacherServerURL;
+                String link = teacherServerURL;
                 String inputData  = URLEncoder.encode("letterName", "UTF-8") + "=" + URLEncoder.encode(lettername, "UTF-8");
                 inputData += "&" + URLEncoder.encode("brailleText", "UTF-8") + "=" + URLEncoder.encode(brailleText, "UTF-8");
                 inputData += "&" + URLEncoder.encode("rawID", "UTF-8") + "=" + URLEncoder.encode(rawId, "UTF-8");

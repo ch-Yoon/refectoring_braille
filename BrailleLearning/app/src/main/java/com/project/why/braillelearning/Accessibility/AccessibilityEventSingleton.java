@@ -30,6 +30,16 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
         return ourInstance;
     }
 
+
+    /**
+     * singleton 연결해제 함수
+     */
+    public void onPause(){
+        setFocusState(false);
+        accessibilityEventListener = null;
+    }
+
+
     public void setContext(Context context){
         ourInstance.context = context;
     }
@@ -49,6 +59,17 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
      */
     public void setFocusState(boolean state){
         screenFocusState = state;
+    }
+
+
+    /**
+     * 접근성 권한이 설정되어 있는지 확인하는 함수.
+     * 현재 앱이 접근성 권한이 설정되어 있지 않다면 접근성 권한 설정 화면을 띄운다.
+     */
+    public void checkPermissions(){
+        if (!checkAccessibilityPermissions()) {
+            context.startActivity(new Intent(context, AccessibilityInfoActivity.class));
+        }
     }
 
 
@@ -88,7 +109,6 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
      */
     private void pushEnterEvent() {
         if(accessibilityEventListener != null) {
-
             int metaState = 0;
             long downTime = SystemClock.currentThreadTimeMillis();
             long eventTime = SystemClock.currentThreadTimeMillis();
@@ -115,26 +135,6 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
 
             accessibilityEventListener.pushDoubleTab(downEvent);
             accessibilityEventListener.pushDoubleTab(upEvent);
-        }
-
-    }
-
-    /**
-     * singleton 초기화 함수
-     */
-    public void initialize(){
-        setFocusState(false);
-        accessibilityEventListener = null;
-    }
-
-
-    /**
-     * 접근성 권한이 설정되어 있는지 확인하는 함수.
-     * 현재 앱이 접근성 권한이 설정되어 있지 않다면 접근성 권한 설정 화면을 띄운다.
-     */
-    public void checkPermissions(){
-        if (!checkAccessibilityPermissions()) {
-            context.startActivity(new Intent(context, AccessibilityInfoActivity.class));
         }
     }
 

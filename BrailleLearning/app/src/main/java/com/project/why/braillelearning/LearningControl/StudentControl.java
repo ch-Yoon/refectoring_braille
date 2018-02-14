@@ -29,6 +29,7 @@ import java.util.ArrayList;
  */
 public class StudentControl extends BasicControl implements SpeechRecognitionListener{
     private SpeechRecognitionMoudle speechRecognitionMoudle;
+    private String studentServerURL = "http://13.125.23.151/student.php";
     private String roomNumber = "";
     private boolean checkTask = false;
     private boolean checkNewData = false;
@@ -200,7 +201,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         @Override
         protected String doInBackground(String... params) {
             try{
-                String link = Global.studentServerURL;
+                String link = studentServerURL;
                 String inputData  = URLEncoder.encode("room", "UTF-8") + "=" + URLEncoder.encode(roomNumber, "UTF-8");
 
                 URL url = new URL(link);

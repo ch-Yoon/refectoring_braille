@@ -65,6 +65,27 @@ public class AccessibilityInfoActivity extends Activity {
 
 
     /**
+     * 뒤로가기 버튼 재정의
+     */
+    @Override
+    public void onBackPressed() {
+        if(backPressTime == 0) {
+            Toast.makeText(this, "뒤로가기 버튼을 10초 내에 한 번 더 누르면 어플리케이션이 종료됩니다.", Toast.LENGTH_SHORT).show();
+            backPressTime = System.currentTimeMillis();
+        } else {
+            long time = System.currentTimeMillis();
+            time = time - backPressTime;
+            if(time < 10000) {
+                activityManagerSingleton.allActivityFinish();
+            } else {
+                Toast.makeText(this, "뒤로가기 버튼을 10초 내에 한 번 더 누르면 어플리케이션이 종료됩니다.", Toast.LENGTH_SHORT).show();
+                backPressTime = System.currentTimeMillis();
+            }
+        }
+    }
+
+
+    /**
      * 해상도에 반응하여 text view 안에 들어가는 글자 크기를 조절하는 함수
      * 글자 크기를 textview의 크기에 꽉차게 조절 한 뒤, 2사이즈 작은 글자 크기로 설정
      */
@@ -155,12 +176,6 @@ public class AccessibilityInfoActivity extends Activity {
     }
 
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-    }
-
-
     /**
      * 화면을 3초간 누르고 있는지 확인하는 함수
      * 3초 뒤에 접근성 설정 화면으로 넘어감
@@ -196,23 +211,5 @@ public class AccessibilityInfoActivity extends Activity {
         }
     }
 
-    /**
-     * 뒤로가기 버튼 재정의
-     */
-    @Override
-    public void onBackPressed() {
-        if(backPressTime == 0) {
-            Toast.makeText(this, "뒤로가기 버튼을 10초 내에 한 번 더 누르면 어플리케이션이 종료됩니다.", Toast.LENGTH_SHORT).show();
-            backPressTime = System.currentTimeMillis();
-        } else {
-            long time = System.currentTimeMillis();
-            time = time - backPressTime;
-            if(time < 10000) {
-                activityManagerSingleton.allActivityFinish();
-            } else {
-                Toast.makeText(this, "뒤로가기 버튼을 10초 내에 한 번 더 누르면 어플리케이션이 종료됩니다.", Toast.LENGTH_SHORT).show();
-                backPressTime = System.currentTimeMillis();
-            }
-        }
-    }
+
 }
