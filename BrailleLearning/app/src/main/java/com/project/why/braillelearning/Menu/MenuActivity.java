@@ -31,10 +31,14 @@ import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
+
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.view.View.GONE;
 
 
 /**
@@ -42,10 +46,11 @@ import java.util.TimerTask;
  * MenuTreeManager에서 메뉴 image와 음성 file들을 관리하고 있음
  */
 public class MenuActivity extends Activity implements CustomTouchEventListener, SpecialFunctionListener{
-    private LinearLayout layout;
+    private LinearLayout layout, bottomGuideLayout;
     private int PageNumber=0; // 메뉴 위치를 알기위한 변수
     private int MenuImageSize, specialViewSize;
     private ImageView MenuImageView, kakaoImageView, specialBackgroundView, specialImageView;
+    private ArrayList<BottomCircle> bottomGuideCircleArray = new ArrayList<>();
     private MenuTreeManager menuTreeManager; // 메뉴 트리 manager
     private ImageResizeModule imageResizeModule;
     private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
@@ -157,7 +162,13 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
      * 메뉴 초기화 함수
      */
     private void InitMenu(){
-        initImageView(); // 메뉴 imageview 사이즈 조절
+        MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
+        //MenuImageSize = (int)(Global.DisplayY*0.8); // imageview의 width와 height는 세로 높이의 80%
+        MenuImageView.getLayoutParams().width = (int)(Global.DisplayY*0.8);
+        MenuImageView.getLayoutParams().height = (int)(Global.DisplayY*0.45);
+
+        MenuImageView.requestLayout();
+        bottomGuideLayout = (LinearLayout)findViewById(R.id.buttomcircleguide_layout);
         imageResizeModule = new ImageResizeModule(getResources());
         mediaSoundManager = new MediaSoundManager(this);
         menuTreeManager = new MenuTreeManager();
@@ -168,19 +179,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
         setFullScreen();
     }
-
-
-    /**
-     * 메뉴 imageview 초기화 함수
-     */
-    private void initImageView(){
-        MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
-        MenuImageSize = (int)(Global.DisplayY*0.8); // imageview의 width와 height는 세로 높이의 80%
-        MenuImageView.getLayoutParams().height = MenuImageSize;
-        MenuImageView.getLayoutParams().width = MenuImageSize;
-        MenuImageView.requestLayout();
-    }
-
 
     /**
      * 특수기능 imageView 초기화 함수
@@ -301,8 +299,62 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         recycleImage();
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.image_fade);
         MenuImageView.startAnimation(animation);
-        MenuImageView.setImageDrawable(imageResizeModule.getDrawableImage(menuNode.getImageId(), MenuImageSize, MenuImageSize)); //현재화면에 이미지 설정
+        MenuImageView.setImageDrawable(imageResizeModule.getDrawableImage(menuNode.getImageId(), MenuImageView.getLayoutParams().width, MenuImageView.getLayoutParams().height)); //현재화면에 이미지 설정
+        refreshBottomGuideCircleImage();
+
         focusSetting();
+    }
+
+    private void refreshBottomGuideCircleImage(){
+        int bottomCircleArraySize = bottomGuideCircleArray.size();
+        if (bottomCircleArraySize < NowMenuListSize)
+            addBottomGuideCircleImage();
+        else if (NowMenuListSize < bottomCircleArraySize)
+            recycleRemainderCircleImage(bottomCircleArraySize);
+
+        setBottomGuideCircleImage();
+    }
+
+
+    /**
+     * 페이지를 안내해 줄 하단 동그라미 imageView 추가 함수
+     */
+    private void addBottomGuideCircleImage(){
+        while(true) {
+            BottomCircle bottomCircle = new BottomCircle(this);
+            bottomGuideCircleArray.add(bottomCircle);
+            bottomGuideLayout.addView(bottomCircle.getCircleImageView());
+
+            if(NowMenuListSize == bottomGuideCircleArray.size())
+                break;
+        }
+    }
+
+
+    /**
+     * 현재 트리노드 위치의 가로 사이즈(메뉴 길이)보다 초과하는 동그라미들을 메모리 해제하는 함수
+     * @param bottomCircleArraySize 현재 동그라미 이미지 array size
+     */
+    private void recycleRemainderCircleImage(int bottomCircleArraySize){
+        for(int i = NowMenuListSize ; i<bottomCircleArraySize ; i++){
+            BottomCircle bottomCircle = bottomGuideCircleArray.get(i);
+            bottomCircle.recycleCircleImage();
+        }
+    }
+
+
+    /**
+     * 메뉴 하단의 동그라미 이미지를 set하는 함수
+     */
+    private void setBottomGuideCircleImage(){
+        int nowPage = menuAddressDeque.getLast();
+        for(int i=0 ; i<NowMenuListSize ; i++){
+            BottomCircle circle = bottomGuideCircleArray.get(i);
+            if(i == nowPage)
+                circle.setNowPage(true);
+            else
+                circle.setNowPage(false);
+        }
     }
 
 
@@ -514,6 +566,11 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
                 image.setCallback(null);
             }
             MenuImageView.setImageDrawable(null);
+        }
+
+        for(int i=0 ; i<bottomGuideCircleArray.size() ; i++){
+            BottomCircle bottomCircle = bottomGuideCircleArray.get(i);
+            bottomCircle.recycleCircleImage();
         }
     }
 
