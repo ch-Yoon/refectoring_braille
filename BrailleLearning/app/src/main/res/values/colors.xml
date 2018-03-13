@@ -4,6 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ff4081</color>
     <color name="AppBasicColor">#171a2d</color>
-    <color name="focusColor">#008800</color>
+    <color name="focusColor">#303F9F</color>
     <color name="LoadingBackground">#F1F1F2</color>
 </resources>
