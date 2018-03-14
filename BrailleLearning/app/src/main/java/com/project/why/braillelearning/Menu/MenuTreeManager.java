@@ -32,7 +32,7 @@ public class MenuTreeManager {
         TreeNode BrailleTranslation = RootNode.addChildTreeNode(Menu.TRANSLATION, R.drawable.brailletranslation, R.raw.braille_translation);
         TreeNode Quiz = RootNode.addChildTreeNode(Menu.QUIZ, R.drawable.quiz, R.raw.quiz);
         TreeNode Mynote = RootNode.addChildTreeNode(Menu.MYNOTE, R.drawable.mynote, R.raw.mynote);
-        TreeNode Communication = RootNode.addChildTreeNode(Menu.COMMUNICATION, R.drawable.comunication, R.raw.comunication);
+//        TreeNode Communication = RootNode.addChildTreeNode(Menu.COMMUNICATION, R.drawable.comunication, R.raw.comunication);
 
         // 기초과정 하위메뉴 트리 등록 (중 메뉴) : 초성연습, 모음연습, 종성연습, 숫자연습, 알파벳연습, 문장부호연습, 약자 및 약어연습
         TreeNode InitialPractice = BasicPractice.addChildTreeNode(Menu.INITIAL_BASIC, R.drawable.initial_practice, R.raw.initial_practice);
@@ -61,11 +61,11 @@ public class MenuTreeManager {
         // 나만의 단어장 하위메뉴 트리 등록(중 메뉴) : 기초단어장, 숙련단어장, 선생님의단어장
         TreeNode MynoteBasic = Mynote.addChildTreeNode(Menu.BASIC_MYNOTE, R.drawable.mynote_basic, R.raw.mynote_basic);
         TreeNode MynoteMaster = Mynote.addChildTreeNode(Menu.MASTER_MYNOTE, R.drawable.mynote_master, R.raw.mynote_master);
-        TreeNode MynoteCommunication = Mynote.addChildTreeNode(Menu.COMMUNICATION_MYNOTE, R.drawable.mynote_communication, R.raw.mynote_communication);
+ //       TreeNode MynoteCommunication = Mynote.addChildTreeNode(Menu.COMMUNICATION_MYNOTE, R.drawable.mynote_communication, R.raw.mynote_communication);
 
         // 선생님과의 대화 하위메뉴 트리 등록(중 메뉴) : 선생님 모드, 학생 모드
-        TreeNode CommunicationTeacher = Communication.addChildTreeNode(Menu.TEACHER_COMMUNICATION, R.drawable.teacher_mode, R.raw.teacher_mode);
-        TreeNode CommunicationStudent = Communication.addChildTreeNode(Menu.STUDENT_COMMUNICATION, R.drawable.student_mode, R.raw.student_mode);
+ //       TreeNode CommunicationTeacher = Communication.addChildTreeNode(Menu.TEACHER_COMMUNICATION, R.drawable.teacher_mode, R.raw.teacher_mode);
+ //       TreeNode CommunicationStudent = Communication.addChildTreeNode(Menu.STUDENT_COMMUNICATION, R.drawable.student_mode, R.raw.student_mode);
     }
 
     /**

@@ -18,13 +18,13 @@ import java.util.ArrayList;
 /**
  * 음성인식 모듈 class
  */
-public class SpeechRecognitionMoudle implements SpeechRecognizeListener, MediaPlayerStopCallbackListener {
+public class SpeechRecognitionModule implements SpeechRecognizeListener, MediaPlayerStopCallbackListener {
     private SpeechRecognitionListener listener;
     private SpeechRecognizerClient client;
     private MediaSoundManager mediaSoundManager;
     private boolean stop = false;
 
-    public SpeechRecognitionMoudle(Context context, SpeechRecognitionListener listener){
+    public SpeechRecognitionModule(Context context, SpeechRecognitionListener listener){
         SpeechRecognizerManager.getInstance().initializeLibrary(context); // SDK 초기화
         this.listener = listener;
         mediaSoundManager = new MediaSoundManager(context);

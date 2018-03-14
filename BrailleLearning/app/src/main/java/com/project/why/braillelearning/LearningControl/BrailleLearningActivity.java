@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
-
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
@@ -40,11 +39,14 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         super.onCreate(savedInstanceState);
         activityManagerSingleton.addArrayList(this);
         Intent i = getIntent();
-        Menu menuName = (Menu) i.getSerializableExtra("MENUNAME");
-        object = getBrailleInformationObject(menuName);
-        jsonFileName = object.getJsonFileName();
-        brailleLearningType =  object.getBrailleLearningType();
-        databaseTableName =  object.getDatabaseTableName();
+//        Menu menuName = (Menu) i.getSerializableExtra("MENUNAME");
+//        object = getBrailleInformationObject(menuName);
+//        jsonFileName = object.getJsonFileName();
+//        brailleLearningType =  object.getBrailleLearningType();
+//        databaseTableName =  object.getDatabaseTableName();
+        jsonFileName = (Json) i.getSerializableExtra("JSONFILENAME");
+        brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
+        databaseTableName = (Database) i.getSerializableExtra("DATABASENAME");
         startMenuInfo();
     }
 

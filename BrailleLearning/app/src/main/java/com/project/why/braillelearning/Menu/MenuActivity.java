@@ -1,12 +1,16 @@
 package com.project.why.braillelearning.Menu;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -15,8 +19,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
+import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
+import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
+import com.project.why.braillelearning.EnumConstant.Database;
+import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningControl.SpecialFunctionListener;
 import com.project.why.braillelearning.LearningModel.SpecialFunctionManager;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
@@ -163,7 +173,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
      */
     private void InitMenu(){
         MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
-        //MenuImageSize = (int)(Global.DisplayY*0.8); // imageview의 width와 height는 세로 높이의 80%
         MenuImageView.getLayoutParams().width = (int)(Global.DisplayY*0.8);
         MenuImageView.getLayoutParams().height = (int)(Global.DisplayY*0.45);
 
@@ -365,7 +374,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     private void refreshSound(TreeNode menuNode){
         int id = menuNode.getSoundId();
         mediaSoundManager.start(id);
-        mediaSoundManager.start(R.raw.doubletab_info);
+        mediaSoundManager.start(R.raw.fingerfunction_guide);
     }
 
 
@@ -387,10 +396,48 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         menuAddressDeque.removeLast();
         NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
-        Intent i = new Intent(this, BrailleLearningActivity.class);
-        i.putExtra("MENUNAME",menuName);
-        overridePendingTransition(R.anim.fade, R.anim.hold);
-        startActivity(i);
+        GettingInformation object = getBrailleInformationObject(menuName);
+        Json jsonFileName = object.getJsonFileName();
+        BrailleLearningType brailleLearningType = object.getBrailleLearningType();
+        Database databaseTableName = object.getDatabaseTableName();
+
+        if(brailleLearningType == BrailleLearningType.TRANSLATION || brailleLearningType == BrailleLearningType.QUIZ){
+            Log.d("test", ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)+"");
+
+            Log.d("test", ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)+"");
+            Log.d("test", ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)+"");
+            Log.d("test", ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)+"");
+            Log.d("test", ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)+"");
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "접근 권한 설정 이동 ", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "마이크와 파일 접근 권한 허용 메시지", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Intent i = new Intent(this, BrailleLearningActivity.class);
+            i.putExtra("JSONFILENAME",jsonFileName);
+            i.putExtra("BRAILLELEARNINGTYPE",brailleLearningType);
+            i.putExtra("DATABASENAME",databaseTableName);
+
+     //       i.putExtra("MENUNAME",menuName);
+            overridePendingTransition(R.anim.fade, R.anim.hold);
+            startActivity(i);
+        }
+
+
+    }
+
+
+    /**
+     * menu에 따라 결정되는 점자 정보 class를 얻는 함수
+     * @param menuName : 선택된 메뉴 이름
+     * @return : 점자 학습 정보 class 리턴
+     */
+    private GettingInformation getBrailleInformationObject(Menu menuName){
+        BrailleInformationFactory brailleInformationFactory = new BrailleFactory();
+        GettingInformation object = brailleInformationFactory.getInformationObject(menuName);
+        return object;
     }
 
 

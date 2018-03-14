@@ -3,7 +3,6 @@ package com.project.why.braillelearning.LearningControl;
 import android.content.Context;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
-import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningModel.QuizBrailleData;
 import com.project.why.braillelearning.R;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
  * 퀴즈 메뉴를 위한 class
  */
 public class QuizControl extends BasicControl implements SpeechRecognitionListener{
-    private SpeechRecognitionMoudle speechRecognitionMoudle;
+    private SpeechRecognitionModule speechRecognitionMoudle;
     private ArrayList<QuizBrailleData> quizBrailleDataArrayList = new ArrayList<>();
     private QuizBrailleData quizData;
     private boolean progress = false;
@@ -27,7 +26,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
 
     QuizControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
-        speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
+        speechRecognitionMoudle = new SpeechRecognitionModule(context, this);
         setRandomQuizBrailleData();
     }
 

@@ -3,7 +3,6 @@ package com.project.why.braillelearning.LearningControl;
 import android.content.Context;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
-import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.Module.BrailleTranslationModule;
@@ -20,12 +19,12 @@ import java.util.ArrayList;
  */
 public class TranslationControl extends BasicControl implements SpeechRecognitionListener {
     private BrailleTranslationModule brailleTranslationModule;
-    private SpeechRecognitionMoudle speechRecognitionMoudle;
+    private SpeechRecognitionModule speechRecognitionMoudle;
 
     TranslationControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
         brailleTranslationModule = new BrailleTranslationModule(context);
-        speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
+        speechRecognitionMoudle = new SpeechRecognitionModule(context, this);
     }
 
 

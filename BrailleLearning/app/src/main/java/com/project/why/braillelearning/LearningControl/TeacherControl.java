@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
-import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.Dot;
 import com.project.why.braillelearning.LearningModel.JsonBrailleData;
@@ -28,14 +26,14 @@ import java.util.ArrayList;
  */
 
 public class TeacherControl extends BasicControl implements SpeechRecognitionListener, MediaPlayerStopCallbackListener {
-    private SpeechRecognitionMoudle speechRecognitionMoudle;
+    private SpeechRecognitionModule speechRecognitionMoudle;
     private boolean sendCheck = false;
     private String teacherServerURL = "http://13.125.23.151/teacher.php";
     private String room = "0";
 
     TeacherControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
-        speechRecognitionMoudle = new SpeechRecognitionMoudle(context, this);
+        speechRecognitionMoudle = new SpeechRecognitionModule(context, this);
     }
 
 
