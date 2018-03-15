@@ -38,39 +38,50 @@ package com.project.why.braillelearning.EnumConstant;
  * STUDENT_COMMUNICATION : 학생모드
  */
 public enum Menu {
-    TUTORIAL,
-    BASIC,
-    MASTER,
-    TRANSLATION,
-    QUIZ,
-    MYNOTE,
-    COMMUNICATION,
+    TUTORIAL(false),
+    BASIC(false),
+    MASTER(false),
+    TRANSLATION(true),
+    QUIZ(true),
+    MYNOTE(false),
+    COMMUNICATION(true),
 
-    INITIAL_BASIC,
-    VOWEL_BASIC,
-    FINAL_BASIC,
-    NUMBER_BASIC,
-    ALPHABET_BASIC,
-    SENTENCE_BASIC,
-    ABBREVIATION_BASIC,
+    INITIAL_BASIC(false),
+    VOWEL_BASIC(false),
+    FINAL_BASIC(false),
+    NUMBER_BASIC(false),
+    ALPHABET_BASIC(false),
+    SENTENCE_BASIC(false),
+    ABBREVIATION_BASIC(false),
 
-    LETTER_MASTER,
-    WORD_MASTER,
+    LETTER_MASTER(false),
+    WORD_MASTER(false),
 
-    INITIAL_QUIZ,
-    VOWEL_QUIZ,
-    FINAL_QUIZ,
-    NUMBER_QUIZ,
-    ALPHABET_QUIZ,
-    SENTENCE_QUIZ,
-    ABBREVIATION_QUIZ,
-    LETTER_QUIZ,
-    WORD_QUIZ,
+    INITIAL_QUIZ(true),
+    VOWEL_QUIZ(true),
+    FINAL_QUIZ(true),
+    NUMBER_QUIZ(true),
+    ALPHABET_QUIZ(true),
+    SENTENCE_QUIZ(true),
+    ABBREVIATION_QUIZ(true),
+    LETTER_QUIZ(true),
+    WORD_QUIZ(true),
 
-    BASIC_MYNOTE,
-    MASTER_MYNOTE,
-    COMMUNICATION_MYNOTE,
+    BASIC_MYNOTE(false),
+    MASTER_MYNOTE(false),
+    COMMUNICATION_MYNOTE(false),
 
-    TEACHER_COMMUNICATION,
-    STUDENT_COMMUNICATION,
+    TEACHER_COMMUNICATION(true),
+    STUDENT_COMMUNICATION(true);
+
+    private boolean usePermission;
+
+
+    Menu(boolean usePermission){
+        this.usePermission = usePermission;
+    }
+
+    public boolean getUsePermission(){
+        return usePermission;
+    }
 }

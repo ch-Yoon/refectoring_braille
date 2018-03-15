@@ -31,7 +31,7 @@
             <ImageView
                 android:id="@+id/braillelearningmenu_imageview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentTop="false"
                 android:layout_centerHorizontal="false"
                 android:layout_centerInParent="true"
@@ -69,11 +69,27 @@
                 android:id="@+id/specialbackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"
-                app:srcCompat="@color/AppBasicColor" />
+                android:background="@color/AppBasicColor"
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/specialimageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:background="#ee171a2d"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/permissionGuideBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/AppBasicColor"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/permissionGuideImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
