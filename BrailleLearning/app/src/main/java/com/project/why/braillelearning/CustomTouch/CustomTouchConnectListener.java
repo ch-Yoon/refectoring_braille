@@ -13,4 +13,5 @@ public interface CustomTouchConnectListener {
     void onPause();
     void touchEvent(MotionEvent event);
     void setTouchLock(boolean touchLock);
+
 }

@@ -47,6 +47,7 @@ import com.project.why.braillelearning.LearningControl.BrailleLearningActivity;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.Module.ImageResizeModule;
+import com.project.why.braillelearning.Module.PermissionCheckModule;
 import com.project.why.braillelearning.R;
 
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     private TimerTask focusTimerTask;
     private Timer focusTimer;
     private SpecialFunctionManager specialFunctionManager;
+    private PermissionCheckModule permissionCheckModule;
     private int specialFunctionIndex = 0;
 
     @Override
@@ -93,6 +95,8 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         checkFirstRun();
         initSpecialImageView();
         initSpecialFunctionManager(BrailleLearningType.MENU);
+
+        permissionCheckModule = new PermissionCheckModule(this, layout);
     }
 
 
@@ -488,21 +492,29 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         Menu menuName = menuTreeManager.getMenuName(tempMenuAddressDeque);
         boolean usePermission = menuName.getUsePermission();
         if(usePermission == true){
-            SharedPreferences pref = getSharedPreferences("settingCheck", MODE_PRIVATE);
-            String state = pref.getString("TRUE", "FALSE");
-            if(state == "TRUE" || state.equals("TRUE")){
-                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    menuAddressDeque.removeLast();
-                    NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getPackageName()));
-                    startActivity(intent);
-                } else
-                    enterBrailleLearning();
+            if(permissionCheckModule.checkPermission() == PermissionCheckModule.PERMISSION_ALLOWED){
+                enterBrailleLearning();
             } else {
                 menuAddressDeque.removeLast();
                 NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-                setPermissionGuide();
             }
+//
+//            SharedPreferences pref = getSharedPreferences("settingCheck", MODE_PRIVATE);
+//            String state = pref.getString("TRUE", "FALSE");
+//            if(state == "TRUE" || state.equals("TRUE")){
+//                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                    menuAddressDeque.removeLast();
+//                    NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
+//                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getPackageName()));
+//                    startActivity(intent);
+//                } else
+//                    enterBrailleLearning();
+//            } else {
+//                menuAddressDeque.removeLast();
+//                NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
+//                permissionCheckModule.startPermissionGuide();
+//                //setPermissionGuide();
+//            }
         } else
           enterBrailleLearning();
     }

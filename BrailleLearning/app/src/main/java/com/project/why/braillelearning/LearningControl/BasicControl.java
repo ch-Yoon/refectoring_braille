@@ -31,10 +31,9 @@ import java.util.ArrayList;
 /**
  * 점자 학습을 위한 Control class
  * 점자 학습을 위한 모든 action event들을 현재 클래스에서 담당함
- * 각 손가락 기능들은 학습 방법에 따라 재정의하여 구현 수정 가능
+ * 각 손가락 기능들은 학습 방법에 따라 하위 클래스에서 재정의하여 구현 수정
  * 손가락 1개 : 점자 읽기 기능
- * 손가락 2개 : 화면 이동 및 다시 듣기
- * 손가락 3개 : 나만의 단어장 삭제
+ * 손가락 2개 : 화면 이동 및 특수기능
  */
 
 public class BasicControl implements Control, CustomLearningTouchListener, SpecialFunctionListener {
