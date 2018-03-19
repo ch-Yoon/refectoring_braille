@@ -6,8 +6,14 @@ import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Json;
+import com.project.why.braillelearning.EnumConstant.TouchLock;
 import com.project.why.braillelearning.LearningModel.BrailleData;
+import com.project.why.braillelearning.Permission.PermissionCheckCallbackListener;
+import com.project.why.braillelearning.Permission.PermissionCheckModule;
 import com.project.why.braillelearning.R;
+import com.project.why.braillelearning.SpeechRecognition.SpeechRecognitionListener;
+import com.project.why.braillelearning.SpeechRecognition.SpeechRecognitionModule;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +32,7 @@ import java.util.ArrayList;
 /**
  * 선생님과의 대화 중 학생 모드 class
  */
-public class StudentControl extends BasicControl implements SpeechRecognitionListener{
+public class StudentControl extends BasicControl implements SpeechRecognitionListener {
     private SpeechRecognitionModule speechRecognitionMoudle;
     private String studentServerURL = "http://13.125.23.151/student.php";
     private String roomNumber = "";
@@ -37,6 +43,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
         speechRecognitionMoudle = new SpeechRecognitionModule(context, this);
     }
+
 
     /**
      * data를 새로고침하는 함수.
@@ -51,12 +58,13 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
             mediaSoundManager.start(R.raw.studentmode_guide);
     }
 
+
     /**
      * 일시정지 되었을 때 함수
      */
     @Override
     public void onPause() {
-        customTouchConnectListener.setTouchLock(false);
+        customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
@@ -109,8 +117,22 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onSpeechRecognition() {
-        customTouchConnectListener.setTouchLock(true);
-        speechRecognitionMoudle.start();
+        int checkPermissionResult = permissionCheckModule.checkPermission();
+        if(checkPermissionResult == PermissionCheckModule.PERMISSION_NOT_ALLOWED){
+            customTouchConnectListener.setTouchLock(TouchLock.PERMISSION_CHECK_LOCK);
+            permissionCheckModule.startPermissionGuide(checkPermissionResult);
+            permissionCheckModule.setPermissionCheckCallbackListener(new PermissionCheckCallbackListener() {
+                @Override
+                public void permissionCancel() {
+                    customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
+                    permissionCheckModule.cancelPermissionGuide();
+                    refreshData();
+                }
+            });
+        } else {
+            customTouchConnectListener.setTouchLock(TouchLock.SPEECH_RECOGNITION_LOCK);
+            speechRecognitionMoudle.start();
+        }
     }
 
 
@@ -156,7 +178,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
             mediaSoundManager.start(R.raw.retry);
         }
 
-        customTouchConnectListener.setTouchLock(false);
+        customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
     }
 
 
@@ -231,7 +253,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            customTouchConnectListener.setTouchLock(false);
+            customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
             if(result.equals("error") || result == "error")
                 mediaSoundManager.start(R.raw.sendfail);
             else {
@@ -292,5 +314,22 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
     public void exit(){
         speechRecognitionMoudle.stop();
         controlListener.exit();
+    }
+
+    /**
+     * 권한 설정에 동의하였을 경우
+     */
+    @Override
+    public void onPermissionUseAgree() {
+        permissionCheckModule.permissionSettingMove();
+    }
+
+    /**
+     * 권한 설정에 동의하지 않았을 경우
+     */
+    @Override
+    public void onPermissionUseDisagree() {
+        permissionCheckModule.cancelPermissionGuide();
+        refreshData();
     }
 }

@@ -26,7 +26,6 @@ public class AccessibilityInfoActivity extends Activity {
     private int baseHeight = 0;
     private int textSize = 5;
     private boolean resizeStart = false;
-    private long backPressTime = 0;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
 
     @Override
@@ -69,19 +68,7 @@ public class AccessibilityInfoActivity extends Activity {
      */
     @Override
     public void onBackPressed() {
-        if(backPressTime == 0) {
-            Toast.makeText(this, "뒤로가기 버튼을 10초 내에 한 번 더 누르면 어플리케이션이 종료됩니다.", Toast.LENGTH_SHORT).show();
-            backPressTime = System.currentTimeMillis();
-        } else {
-            long time = System.currentTimeMillis();
-            time = time - backPressTime;
-            if(time < 10000) {
-                activityManagerSingleton.allActivityFinish();
-            } else {
-                Toast.makeText(this, "뒤로가기 버튼을 10초 내에 한 번 더 누르면 어플리케이션이 종료됩니다.", Toast.LENGTH_SHORT).show();
-                backPressTime = System.currentTimeMillis();
-            }
-        }
+        activityManagerSingleton.nowActivityFinish();
     }
 
 

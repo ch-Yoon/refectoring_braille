@@ -2,8 +2,6 @@ package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.GridLayout;
 
 import com.project.why.braillelearning.CustomTouch.CustomLearningTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomLearningTouchListener;
@@ -12,11 +10,13 @@ import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.EnumConstant.Json;
+import com.project.why.braillelearning.EnumConstant.TouchLock;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.BrailleDataManager;
 import com.project.why.braillelearning.LearningModel.GettingBraille;
-import com.project.why.braillelearning.LearningModel.SpecialFunctionData;
-import com.project.why.braillelearning.LearningModel.SpecialFunctionManager;
+import com.project.why.braillelearning.Permission.PermissionCheckModule;
+import com.project.why.braillelearning.SpecialFunction.SpecialFunctionListener;
+import com.project.why.braillelearning.SpecialFunction.SpecialFunctionManager;
 import com.project.why.braillelearning.LearningView.ViewObservers;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.MynoteDB.DBManager;
@@ -52,6 +52,7 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
     protected CustomTouchConnectListener customTouchConnectListener;
     protected int specialFunctionIndex = 0;
     private SpecialFunctionManager specialFunctionManager;
+    protected PermissionCheckModule permissionCheckModule;
 
     BasicControl(Context context,Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         this.context = context;
@@ -101,6 +102,7 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
     @Override
     public void addObservers(ViewObservers observers) {
         this.viewObservers = observers;
+        permissionCheckModule = new PermissionCheckModule(context, viewObservers.getView());
     }
 
     /**
@@ -158,7 +160,8 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
      */
     @Override
     public void onPause() {
-        customTouchConnectListener.setTouchLock(false);
+        //customTouchConnectListener.setTouchLock(false);
+        customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         mediaSoundManager.stop();
         pauseTouchEvent();
     }
@@ -338,5 +341,13 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
 
     @Override
     public void onDeleteMynote() {
+    }
+
+    @Override
+    public void onPermissionUseAgree() {
+    }
+
+    @Override
+    public void onPermissionUseDisagree() {
     }
 }

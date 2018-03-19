@@ -5,11 +5,17 @@ import android.os.AsyncTask;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
+import com.project.why.braillelearning.EnumConstant.TouchLock;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.Dot;
 import com.project.why.braillelearning.LearningModel.JsonBrailleData;
 import com.project.why.braillelearning.MediaPlayer.MediaPlayerStopCallbackListener;
+import com.project.why.braillelearning.Permission.PermissionCheckCallbackListener;
+import com.project.why.braillelearning.Permission.PermissionCheckModule;
 import com.project.why.braillelearning.R;
+import com.project.why.braillelearning.SpeechRecognition.SpeechRecognitionListener;
+import com.project.why.braillelearning.SpeechRecognition.SpeechRecognitionModule;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +48,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onPause() {
-        customTouchConnectListener.setTouchLock(false);
+        customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         mediaSoundManager.stop();
         speechRecognitionMoudle.pause();
         pauseTouchEvent();
@@ -82,11 +88,25 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void onSpeechRecognition() {
-        if (checkInputBraille()) {
-            customTouchConnectListener.setTouchLock(true);
-            speechRecognitionMoudle.start();
-        } else
-            mediaSoundManager.start(R.raw.teacher_no_input);
+        int checkPermissionResult = permissionCheckModule.checkPermission();
+        if(checkPermissionResult == PermissionCheckModule.PERMISSION_NOT_ALLOWED){
+            customTouchConnectListener.setTouchLock(TouchLock.PERMISSION_CHECK_LOCK);
+            permissionCheckModule.startPermissionGuide(checkPermissionResult);
+            permissionCheckModule.setPermissionCheckCallbackListener(new PermissionCheckCallbackListener() {
+                @Override
+                public void permissionCancel() {
+                    customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
+                    permissionCheckModule.cancelPermissionGuide();
+                    refreshData();
+                }
+            });
+        } else {
+            if (checkInputBraille()) {
+                customTouchConnectListener.setTouchLock(TouchLock.SPEECH_RECOGNITION_LOCK);
+                speechRecognitionMoudle.start();
+            } else
+                mediaSoundManager.start(R.raw.teacher_no_input);
+        }
     }
 
 
@@ -115,7 +135,8 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                         data.refreshData();
                         nodifyViewObserver();
                         mediaSoundManager.start(R.raw.send_cancel);
-                        customTouchConnectListener.setTouchLock(false);
+                        customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
+
                     }
 
                     if(checkPage())
@@ -127,7 +148,8 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                 data.refreshData();
                 nodifyViewObserver();
                 mediaSoundManager.start(R.raw.send_cancel);
-                customTouchConnectListener.setTouchLock(false);
+                customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
+
             }
         } else {
             ((BrailleLearningActivity)context).runOnUiThread(new Runnable() { // onError가 호출되었을 경우
@@ -140,7 +162,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                     mediaSoundManager.start(R.raw.retry);
                 }
             });
-            customTouchConnectListener.setTouchLock(false);
+            customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         }
     }
 
@@ -318,7 +340,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void mediaPlayerStop() {
-        customTouchConnectListener.setTouchLock(false);
+        customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
     }
 
 
@@ -329,6 +351,25 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
     public void exit(){
         speechRecognitionMoudle.stop();
         controlListener.exit();
+    }
+
+
+    /**
+     * 권한 설정에 동의하였을 경우
+     */
+    @Override
+    public void onPermissionUseAgree() {
+        permissionCheckModule.permissionSettingMove();
+    }
+
+
+    /**
+     * 권한 설정에 동의하지 않았을 경우
+     */
+    @Override
+    public void onPermissionUseDisagree() {
+        permissionCheckModule.cancelPermissionGuide();
+        refreshData();
     }
 
 }

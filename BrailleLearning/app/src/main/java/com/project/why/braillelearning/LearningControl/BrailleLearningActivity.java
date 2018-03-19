@@ -7,13 +7,10 @@ import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
-import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
-import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.EnumConstant.Menu;
 import com.project.why.braillelearning.LearningView.BasicView;
 import com.project.why.braillelearning.LearningView.ViewObservers;
 import com.project.why.braillelearning.Menu.MenuInformationActivity;
@@ -39,11 +36,6 @@ public class BrailleLearningActivity extends Activity implements ControlListener
         super.onCreate(savedInstanceState);
         activityManagerSingleton.addArrayList(this);
         Intent i = getIntent();
-//        Menu menuName = (Menu) i.getSerializableExtra("MENUNAME");
-//        object = getBrailleInformationObject(menuName);
-//        jsonFileName = object.getJsonFileName();
-//        brailleLearningType =  object.getBrailleLearningType();
-//        databaseTableName =  object.getDatabaseTableName();
         jsonFileName = (Json) i.getSerializableExtra("JSONFILENAME");
         brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
         databaseTableName = (Database) i.getSerializableExtra("DATABASENAME");
@@ -159,18 +151,6 @@ public class BrailleLearningActivity extends Activity implements ControlListener
 
         overridePendingTransition(R.anim.fade, R.anim.hold);
         setContentView(view);
-    }
-
-
-    /**
-     * menu에 따라 결정되는 점자 정보 class를 얻는 함수
-     * @param menuName : 선택된 메뉴 이름
-     * @return : 점자 학습 정보 class 리턴
-     */
-    private GettingInformation getBrailleInformationObject(Menu menuName){
-        BrailleInformationFactory brailleInformationFactory = new BrailleFactory();
-        GettingInformation object = brailleInformationFactory.getInformationObject(menuName);
-        return object;
     }
 
 

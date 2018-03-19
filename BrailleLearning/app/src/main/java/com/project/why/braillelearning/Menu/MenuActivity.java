@@ -1,41 +1,29 @@
 package com.project.why.braillelearning.Menu;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.PermissionChecker;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.LearningControl.SpecialFunctionListener;
-import com.project.why.braillelearning.LearningModel.SpecialFunctionManager;
+import com.project.why.braillelearning.EnumConstant.TouchLock;
+import com.project.why.braillelearning.SpecialFunction.SpecialFunctionListener;
+import com.project.why.braillelearning.SpecialFunction.SpecialFunctionManager;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
@@ -47,7 +35,8 @@ import com.project.why.braillelearning.LearningControl.BrailleLearningActivity;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.Module.ImageResizeModule;
-import com.project.why.braillelearning.Module.PermissionCheckModule;
+import com.project.why.braillelearning.Permission.PermissionCheckCallbackListener;
+import com.project.why.braillelearning.Permission.PermissionCheckModule;
 import com.project.why.braillelearning.R;
 
 import java.util.ArrayList;
@@ -55,8 +44,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static android.view.View.GONE;
 
 
 /**
@@ -67,7 +54,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     private LinearLayout layout, bottomGuideLayout;
     private int PageNumber=0; // 메뉴 위치를 알기위한 변수
     private int specialViewSize;
-    private ImageView MenuImageView, kakaoImageView, specialBackgroundView, specialImageView, permissionGuideImageView;
+    private ImageView MenuImageView, kakaoImageView, specialBackgroundView, specialImageView;
     private ArrayList<BottomCircle> bottomGuideCircleArray = new ArrayList<>();
     private MenuTreeManager menuTreeManager; // 메뉴 트리 manager
     private ImageResizeModule imageResizeModule;
@@ -95,7 +82,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         checkFirstRun();
         initSpecialImageView();
         initSpecialFunctionManager(BrailleLearningType.MENU);
-
         permissionCheckModule = new PermissionCheckModule(this, layout);
     }
 
@@ -139,6 +125,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         onStopSound();
         pauseTouchEvent();
         onSpecialFunctionViewOff();
+        permissionCheckModule.stopPermissionGuide();
     }
 
 
@@ -492,48 +479,24 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         Menu menuName = menuTreeManager.getMenuName(tempMenuAddressDeque);
         boolean usePermission = menuName.getUsePermission();
         if(usePermission == true){
-            if(permissionCheckModule.checkPermission() == PermissionCheckModule.PERMISSION_ALLOWED){
-                enterBrailleLearning();
-            } else {
+            int checkPermissionResult = permissionCheckModule.checkPermission();
+            if(checkPermissionResult == PermissionCheckModule.PERMISSION_NOT_CHECKED){
                 menuAddressDeque.removeLast();
                 NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-            }
-//
-//            SharedPreferences pref = getSharedPreferences("settingCheck", MODE_PRIVATE);
-//            String state = pref.getString("TRUE", "FALSE");
-//            if(state == "TRUE" || state.equals("TRUE")){
-//                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                    menuAddressDeque.removeLast();
-//                    NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-//                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getPackageName()));
-//                    startActivity(intent);
-//                } else
-//                    enterBrailleLearning();
-//            } else {
-//                menuAddressDeque.removeLast();
-//                NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-//                permissionCheckModule.startPermissionGuide();
-//                //setPermissionGuide();
-//            }
+                customTouchConnectListener.setTouchLock(TouchLock.PERMISSION_CHECK_LOCK);
+                permissionCheckModule.startPermissionGuide(checkPermissionResult);
+                permissionCheckModule.setPermissionCheckCallbackListener(new PermissionCheckCallbackListener() {
+                    @Override
+                    public void permissionCancel() {
+                        customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
+                        permissionCheckModule.cancelPermissionGuide();
+                        refreshData();
+                    }
+                });
+            } else
+                enterBrailleLearning();
         } else
           enterBrailleLearning();
-    }
-
-
-    /**
-     * 권한 안내
-     */
-    private void setPermissionGuide(){
-        //여기해야함 이벤트 어케처리할건지?
-        if(permissionGuideImageView == null){
-            permissionGuideImageView = (ImageView) findViewById(R.id.permissionGuideImageView);
-            permissionGuideImageView.getLayoutParams().height = (int)(Global.DisplayY*0.6);
-            permissionGuideImageView.getLayoutParams().width = (int)(Global.DisplayY*0.6) * 2;
-        }
-
-        specialBackgroundView.setVisibility(View.VISIBLE);
-        permissionGuideImageView.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.check_permission, permissionGuideImageView.getLayoutParams().width, permissionGuideImageView.getLayoutParams().height));
-        permissionGuideImageView.setVisibility(View.VISIBLE);
     }
 
 
@@ -785,6 +748,31 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         onSpecialFunctionViewOff();
         int specialType = --specialFunctionIndex;
         specialFunctionManager.checkFunction(specialType);
+    }
+
+
+    /**
+     * 권한 설정에 동의하였을 경우
+     */
+    @Override
+    public void onPermissionUseAgree() {
+        customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
+        permissionCheckModule.allowedPermission();
+
+        FingerFunctionType type = FingerFunctionType.ENTER;
+        mediaSoundManager.start(type);
+        menuAddressDeque.addLast(0);
+        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
+        enterBrailleLearning();
+    }
+
+    /**
+     * 권한 설정에 동의하지 않았을 경우
+     */
+    @Override
+    public void onPermissionUseDisagree() {
+        permissionCheckModule.cancelPermissionGuide();
+        refreshData();
     }
 
 

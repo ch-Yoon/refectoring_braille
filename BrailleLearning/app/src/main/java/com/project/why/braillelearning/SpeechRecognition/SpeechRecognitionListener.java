@@ -1,4 +1,4 @@
-package com.project.why.braillelearning.LearningControl;
+package com.project.why.braillelearning.SpeechRecognition;
 
 import java.util.ArrayList;
 

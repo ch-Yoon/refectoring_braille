@@ -2,6 +2,8 @@ package com.project.why.braillelearning.CustomTouch;
 
 import android.view.MotionEvent;
 
+import com.project.why.braillelearning.EnumConstant.TouchLock;
+
 /**
  * Created by hyuck on 2018-01-18.
  * activity와 customTouchEvent가 연결되기 위한 interface
@@ -12,6 +14,5 @@ public interface CustomTouchConnectListener {
     void onResume();
     void onPause();
     void touchEvent(MotionEvent event);
-    void setTouchLock(boolean touchLock);
-
+    void setTouchLock(TouchLock lockType);
 }

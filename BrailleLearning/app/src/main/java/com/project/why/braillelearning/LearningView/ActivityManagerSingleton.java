@@ -1,7 +1,6 @@
 package com.project.why.braillelearning.LearningView;
 
 import android.app.Activity;
-
 import java.util.ArrayList;
 
 /**

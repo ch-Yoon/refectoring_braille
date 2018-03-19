@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+
+import com.project.why.braillelearning.Global;
+
 import java.util.List;
 
 /**
@@ -68,6 +71,7 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
      */
     public void checkPermissions(){
         if (!checkAccessibilityPermissions()) {
+            Global.blindPermissionCheck = true;
             context.startActivity(new Intent(context, AccessibilityInfoActivity.class));
         }
     }

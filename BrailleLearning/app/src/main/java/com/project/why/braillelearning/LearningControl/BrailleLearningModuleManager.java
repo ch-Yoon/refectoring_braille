@@ -1,7 +1,6 @@
 package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
-
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;

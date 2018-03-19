@@ -1,4 +1,4 @@
-package com.project.why.braillelearning.LearningControl;
+package com.project.why.braillelearning.SpeechRecognition;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -28,6 +28,7 @@ public class SpeechRecognitionModule implements SpeechRecognizeListener, MediaPl
         SpeechRecognizerManager.getInstance().initializeLibrary(context); // SDK 초기화
         this.listener = listener;
         mediaSoundManager = new MediaSoundManager(context);
+
     }
 
     /**

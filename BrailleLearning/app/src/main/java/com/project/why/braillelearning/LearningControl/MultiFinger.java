@@ -106,7 +106,7 @@ public class MultiFinger{
 
 
         if(mediaSoundManager.checkTTSPlaying() == true) {
-            if(touchLock == false)
+            //if(touchLock == false)
                 type = FingerFunctionType.NONE;
         }
 

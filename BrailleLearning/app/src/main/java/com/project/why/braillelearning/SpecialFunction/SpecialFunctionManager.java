@@ -1,8 +1,8 @@
-package com.project.why.braillelearning.LearningModel;
+package com.project.why.braillelearning.SpecialFunction;
 
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.SpecialFunctionType;
-import com.project.why.braillelearning.LearningControl.SpecialFunctionListener;
+import com.project.why.braillelearning.LearningModel.SpecialFunctionData;
 import com.project.why.braillelearning.R;
 
 import java.util.ArrayList;

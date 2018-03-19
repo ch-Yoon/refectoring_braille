@@ -43,8 +43,6 @@ public class BottomCircle {
         int circleWidth = circleImageView.getLayoutParams().width;
         int circleHeight = circleImageView.getLayoutParams().height;
 
-
-;
         if(nowPage == true)
             setCircleImage(imageResizeModule.getDrawableImage(R.drawable.bigcircle, circleWidth, circleHeight));
         else

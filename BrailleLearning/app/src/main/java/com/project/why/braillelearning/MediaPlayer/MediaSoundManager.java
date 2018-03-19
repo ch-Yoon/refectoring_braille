@@ -2,7 +2,6 @@ package com.project.why.braillelearning.MediaPlayer;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.view.accessibility.AccessibilityManager;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.DotType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
@@ -10,8 +9,6 @@ import com.project.why.braillelearning.R;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
-
-import static android.content.Context.ACCESSIBILITY_SERVICE;
 
 /**
  * Created by hyuck on 2017-11-08.

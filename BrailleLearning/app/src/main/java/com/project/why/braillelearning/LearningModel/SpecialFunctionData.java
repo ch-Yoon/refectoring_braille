@@ -16,7 +16,7 @@ public class SpecialFunctionData {
     private int soundId;
     private SpecialFunctionType specialFunctionType;
 
-    SpecialFunctionData(int drawableId, int soundId, SpecialFunctionType specialFunctionType){
+    public SpecialFunctionData(int drawableId, int soundId, SpecialFunctionType specialFunctionType){
         this.drawableId = drawableId;
         this.soundId = soundId;
         this.specialFunctionType = specialFunctionType;

@@ -1,4 +1,4 @@
-package com.project.why.braillelearning.LearningControl;
+package com.project.why.braillelearning.SpecialFunction;
 
 /**
  * Created by hyuck on 2018-02-06.

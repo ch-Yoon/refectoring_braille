@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.project.why.braillelearning.EnumConstant.TouchLock;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchEvent;
@@ -209,7 +210,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
      */
     private void initTouchEvent(){
         customTouchConnectListener = new CustomTouchEvent(this, this);
-        customTouchConnectListener.setTouchLock(true);
+        customTouchConnectListener.setTouchLock(TouchLock.MENU_GUIDE_LOCK);
         connectTouchEvent();
     }
 
@@ -444,6 +445,13 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
 
     @Override
     public void onStartSpecialFunction() {
+    }
 
+    @Override
+    public void onPermissionUseAgree() {
+    }
+
+    @Override
+    public void onPermissionUseDisagree() {
     }
 }

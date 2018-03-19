@@ -3,6 +3,8 @@ package com.project.why.braillelearning.CustomTouch;
 import android.content.Context;
 import android.view.MotionEvent;
 
+import com.project.why.braillelearning.EnumConstant.TouchLock;
+
 /**
  * Created by hyuck on 2018-01-21.
  * CustomTouchEvent를 상속받은 touch class
@@ -27,8 +29,9 @@ public class CustomLearningTouchEvent extends CustomTouchEvent {
      */
     @Override
     protected void basicOneFingerTouch(MotionEvent event){
-        if(specialFunctionState == false) {
-            if(touchLock == false) {
+        if(lockType == TouchLock.UNLOCK){
+        //if(specialFunctionState == false && permissionCheck == false) {
+          //  if(touchLock == false) {
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_UP:
                         multiFinger = false;
@@ -47,7 +50,7 @@ public class CustomLearningTouchEvent extends CustomTouchEvent {
                         }
                         break;
                 }
-            }
+          //  }
         } else
             super.basicOneFingerTouch(event);
     }
@@ -62,17 +65,18 @@ public class CustomLearningTouchEvent extends CustomTouchEvent {
      */
     @Override
     protected  void blindOneFIngerTouch(MotionEvent event) {
-        if (specialFunctionState == false) {
+        if(lockType == TouchLock.UNLOCK) {
+        //if (specialFunctionState == false && permissionCheck == false) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
                     multiFinger = false;
                     hoverError = false;
 
-                    if(touchLock == false) {
+               //     if(touchLock == false) {
                         fingerCoordinate.setDownCoordinate(event, ONE_FINGER);
                         customLearningTouchListener.onStopSound();
                         customLearningTouchListener.onOneFingerMoveFunction(fingerCoordinate);
-                    }
+        //            }
                     break;
                 case MotionEvent.ACTION_HOVER_MOVE:
                     fingerCoordinate.setDownCoordinate(event, ONE_FINGER);

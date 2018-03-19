@@ -6,6 +6,8 @@ import android.view.accessibility.AccessibilityManager;
 import com.project.why.braillelearning.Accessibility.AccessibilityEventListener;
 import com.project.why.braillelearning.Accessibility.AccessibilityEventSingleton;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
+import com.project.why.braillelearning.EnumConstant.TouchLock;
+import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
 import com.project.why.braillelearning.LearningControl.MultiFinger;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
@@ -23,7 +25,7 @@ import static android.content.Context.ACCESSIBILITY_SERVICE;
  * 해당 클래스에서 손가락 1개, 2개, 3개 이상을 구분하고, touch 좌표값을 이용하여 제스처를 분석한다.
  * 분석된 제스처와 AccessibilityEventSingleton으로부터 수신된 double tab은 CustomTouchEventListener를 통해 연결된 class로 송신한다.
  */
-public class CustomTouchEvent implements CustomTouchConnectListener, AccessibilityEventListener, MediaPlayerStopCallbackListener {
+public class CustomTouchEvent implements CustomTouchConnectListener, AccessibilityEventListener{
     protected int ONE_FINGER = FingerFunctionType.ONE_FINGER.getNumber(); // 손가락 1개
     protected int TWO_FINGER = FingerFunctionType.TWO_FINGER.getNumber(); // 손가락 2개
     protected FingerCoordinate fingerCoordinate;
@@ -33,8 +35,8 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     private long actionDownTime = 0;
     private long actionUpTime = 0;
     private int touchCount = 0;
-    private TimerTask blindTimerTask, basicTimerTask, specialFunctionTimerTask;
-    private Timer blindTimer, basicTimer, specialFunctionTimer;
+    private TimerTask blindTimerTask, basicTimerTask, specialFunctionTimerTask, permissionCheckTimerTask;
+    private Timer blindTimer, basicTimer, specialFunctionTimer, permissionCheckTimer;
     private AccessibilityManager am;
     protected AccessibilityEventSingleton accessibilityEventSingleton;
     private Context context;
@@ -44,8 +46,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     private MultiFinger multiFingerModule;
     private ActivityManagerSingleton activityManager;
     private int specialFunctionTime = 0;
-    protected boolean touchLock = false;
-    protected boolean specialFunctionState = false;
+    protected TouchLock lockType = TouchLock.UNLOCK;
 
     public CustomTouchEvent(Context context, CustomTouchEventListener customTouchEventListener){
         this.context = context;
@@ -78,6 +79,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
         initializeBlindPerson();
         mediaSoundManager.setMediaPlayerStopCallbackListener(null);
         specialFunctionWaitThreadStop();
+        setTouchLock(TouchLock.UNLOCK);
     }
 
 
@@ -116,8 +118,10 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
         blindMode = am.isTouchExplorationEnabled();
 
         if(blindMode == true) {
-            if(accessibilityEventSingleton != null)
-                accessibilityEventSingleton.checkPermissions();
+            if(accessibilityEventSingleton != null) {
+                if(Global.blindPermissionCheck == false)
+                    accessibilityEventSingleton.checkPermissions();
+            }
             else
                 setBlindPerson();
         }
@@ -125,13 +129,13 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
 
 
     /**
-     * 다른 class에서 음성인식을 실행할 경우, 제스처를 막기 위해 존재하는 메소드
-     * 해당 메소드에 true 값이 전달되면, 뒤로가기 제스처를 제외한 모든 제스처는 무시한다.
-     * @param touchLock true(제스처 잠금), false(제스처 잠금 해제)
+     * 다른 class에서 음성인식을 실행할 경우, 제스처를 막기 위해 존재하는 함수
+     * lockType에 따라 무시되는 제스처가 다르다.
+     * @param lockType : UNLOCK, SPEECH_RECOGNITION_LOCK, SPECIAL_FUNCTION_LOCK, PERMISSION_CHECK_LOCK, MENU_GUIDE_LOCK
      */
     @Override
-    public void setTouchLock(boolean touchLock){
-        this.touchLock = touchLock;
+    public void setTouchLock(TouchLock lockType) {
+        this.lockType = lockType;
     }
 
 
@@ -189,7 +193,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                 }
             } else {
                 maxFingerExceed = true; //손가락이 3개이상 터치되었을 때
-                if(specialFunctionState == false && touchLock == false)
+                if(lockType == TouchLock.UNLOCK)
                     mediaSoundManager.start(R.raw.jesture_info);
             }
         }
@@ -242,7 +246,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                 basicDoubleTabCheckThreadMaking();
                 touchCount++;
                 multiFinger = false;
-                if(specialFunctionState == false)
+                if(lockType == TouchLock.UNLOCK)
                     customTouchEventListener.onFocusRefresh();
                 break;
             case MotionEvent.ACTION_UP:
@@ -250,12 +254,14 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                     touchCount++;
                     if (4 <= touchCount) {
                         basicDoubleTabCheckThreadStop();
-                        if(specialFunctionState == false)
-                            customTouchEventListener.onOneFingerFunction(fingerCoordinate);
-                        else {
+
+                        if(lockType == TouchLock.SPECIAL_FUNCTION_LOCK){
                             specialFunctionWaitThreadStop();
                             customTouchEventListener.onStartSpecialFunction();
-                        }
+                        } else if(lockType == TouchLock.PERMISSION_CHECK_LOCK)
+                            customTouchEventListener.onPermissionUseAgree();
+                        else
+                            customTouchEventListener.onOneFingerFunction(fingerCoordinate);
                     }
                 }
                 break;
@@ -311,14 +317,14 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                 hoverError = false;
                 blindDoubleTabCheckThreadStop();
                 accessibilityEventSingleton.setFocusState(true);
-                if(specialFunctionState == false)
+                if(lockType == TouchLock.UNLOCK)
                     customTouchEventListener.onFocusRefresh();
                 break;
             case MotionEvent.ACTION_DOWN:
                 multiFinger = false;
                 hoverError = false;
                 blindDoubleTabCheckThreadStop();
-                if(specialFunctionState == false && touchLock == false)
+                if(lockType == TouchLock.UNLOCK)
                     customTouchEventListener.onStopSound();
                 actionDownTime = event.getEventTime();
                 fingerCoordinate.setHoverDownCoordinate(event, ONE_FINGER + 1);
@@ -362,9 +368,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
             blindTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    if(specialFunctionState == false)
-                        customTouchEventListener.onOneFingerFunction(fingerCoordinate);
-                    else {
+                    if(lockType == TouchLock.SPECIAL_FUNCTION_LOCK){
                         activityManager.getNowActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -372,7 +376,9 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                                 customTouchEventListener.onStartSpecialFunction();
                             }
                         });
-                    }
+                    } else
+                        customTouchEventListener.onOneFingerFunction(fingerCoordinate);
+
                     blindDoubleTabCheckThreadStop();
                     initActionTime();
                 }
@@ -420,7 +426,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     private void twoFingerDown(MotionEvent event, int pointer_Count){
         multiFinger = true;
 
-        if(specialFunctionState == false && touchLock == false)
+        if(lockType == TouchLock.UNLOCK)
             customTouchEventListener.onStopSound();
 
         if(blindMode == true)
@@ -446,26 +452,27 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
             fingerCoordinate.setHoverUpCoordinate(event, pointer_Count);
 
         FingerFunctionType type;
-        if(specialFunctionState == true || touchLock == true)
+        if(lockType != TouchLock.UNLOCK)
             type = multiFingerModule.getFingerFunctionType(fingerCoordinate, true);
         else
             type = multiFingerModule.getFingerFunctionType(fingerCoordinate, false);
 
         if(type == FingerFunctionType.BACK) {
-            if (specialFunctionState == true) {
+            if(lockType == TouchLock.SPECIAL_FUNCTION_LOCK){
                 specialFunctionWaitThreadStop();
                 customTouchEventListener.onSpecialFunctionDisable();
+            } else if(lockType == TouchLock.PERMISSION_CHECK_LOCK){
+                setTouchLock(TouchLock.UNLOCK);
+                customTouchEventListener.onPermissionUseDisagree();
             } else
                 customTouchEventListener.onTwoFingerFunction(type);
         } else {
-            if(touchLock == false){
-                if(type == FingerFunctionType.SPECIAL)
+            if(type == FingerFunctionType.SPECIAL){
+                if(lockType == TouchLock.UNLOCK || lockType == TouchLock.SPECIAL_FUNCTION_LOCK)
                     onSpecialFunctionReady();
-                else {
-                    if (specialFunctionState == false){
-                        customTouchEventListener.onTwoFingerFunction(type);
-                    }
-                }
+            } else {
+                if(lockType == TouchLock.UNLOCK)
+                    customTouchEventListener.onTwoFingerFunction(type);
             }
         }
     }
@@ -475,23 +482,18 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
      * 특수기능 사용을 위해 준비상태에 돌입하는 함수
      * 해당 함수가 발동되면, 화면에 특수기능 사용을 위한 view와 음성 안내 멘트가 출력된다.
      * 특수기능 사용을 위한 안내멘트가 종료되면 안내멘트 종료를 알기 위한 listener를 mediaSoundManager에 등록한다.
+     * mediaSoundManager로부터 음성 file 중지 callback 함수가 불리면 특수기능 대기시간 3초를 위한 wait thread를 호출한다.
      */
     private void onSpecialFunctionReady(){
         specialFunctionWaitThreadStop();
-        specialFunctionState = true;
+        setTouchLock(TouchLock.SPECIAL_FUNCTION_LOCK);
         customTouchEventListener.onSpecialFunctionGuide();
-        mediaSoundManager.setMediaPlayerStopCallbackListener(this);
-    }
-
-
-    /**
-     * mediaPlayerStop callback 함수
-     * 음성파일이 종료되면 발동되는 함수. 특수기능 안내멘트 종료후 발동된다.
-     * 특수기능 start를 위해 3초간의 대기를 하는 스레드를 생성하는 함수를 호출한다.
-     */
-    @Override
-    public void mediaPlayerStop() {
-        specialFunctionWaitThreadStart();
+        mediaSoundManager.setMediaPlayerStopCallbackListener(new MediaPlayerStopCallbackListener() {
+            @Override
+            public void mediaPlayerStop() {
+                specialFunctionWaitThreadStart();
+            }
+        });
     }
 
 
@@ -500,7 +502,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
      * 3초간의 대기 시간 안에 더블 탭이 발동되지 않으면 특수기능은 실행하지 않는다.
      */
     private void specialFunctionWaitThreadStart(){
-        if(specialFunctionState == true) {
+        if(lockType == TouchLock.SPECIAL_FUNCTION_LOCK) {
             if (specialFunctionTimerTask == null) {
                 specialFunctionTimerTask = new TimerTask() {
                     @Override
@@ -508,13 +510,15 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                         activityManager.getNowActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (specialFunctionTime == 3) {
-                                    specialFunctionTime = 0;
-                                    specialFunctionWaitThreadStop();
-                                    customTouchEventListener.onSpecialFunctionDisable();
-                                } else {
-                                    specialFunctionTime++;
-                                    mediaSoundManager.start(R.raw.clock);
+                                if(mediaSoundManager.getMediaPlaying() == false) {
+                                    if (specialFunctionTime == 3) {
+                                        specialFunctionTime = 0;
+                                        specialFunctionWaitThreadStop();
+                                        customTouchEventListener.onSpecialFunctionDisable();
+                                    } else {
+                                        specialFunctionTime++;
+                                        mediaSoundManager.start(R.raw.clock);
+                                    }
                                 }
                             }
                         });
@@ -531,7 +535,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
      * 특수기능 실행을 위해 3초간의 대기를 하는 스레드를 초기화 하는 함수
      */
     private void specialFunctionWaitThreadStop(){
-        specialFunctionState = false;
+        lockType = TouchLock.UNLOCK;
         specialFunctionTime = 0;
 
 
