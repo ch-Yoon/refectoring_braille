@@ -5,10 +5,10 @@ android {
     buildToolsVersion "26.0.0"
     defaultConfig {
         applicationId "com.project.why.braillelearning"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

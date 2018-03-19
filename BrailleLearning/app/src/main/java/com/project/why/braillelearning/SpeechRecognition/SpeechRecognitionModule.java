@@ -134,7 +134,6 @@ public class SpeechRecognitionModule implements SpeechRecognizeListener, MediaPl
             listener.speechRecogntionResult(null);
         else
             stop = false;
-
     }
 
 
