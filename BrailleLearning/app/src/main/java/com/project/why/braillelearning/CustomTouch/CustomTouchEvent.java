@@ -368,19 +368,26 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
             blindTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    if(lockType == TouchLock.SPECIAL_FUNCTION_LOCK){
-                        activityManager.getNowActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                specialFunctionWaitThreadStop();
-                                customTouchEventListener.onStartSpecialFunction();
-                            }
-                        });
-                    } else
-                        customTouchEventListener.onOneFingerFunction(fingerCoordinate);
+                    activityManager.getNowActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(lockType == TouchLock.SPECIAL_FUNCTION_LOCK){
+                                activityManager.getNowActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        specialFunctionWaitThreadStop();
+                                        customTouchEventListener.onStartSpecialFunction();
+                                    }
+                                });
+                            } else if(lockType == TouchLock.PERMISSION_CHECK_LOCK){
+                                customTouchEventListener.onPermissionUseAgree();
+                            } else
+                                customTouchEventListener.onOneFingerFunction(fingerCoordinate);
 
-                    blindDoubleTabCheckThreadStop();
-                    initActionTime();
+                            blindDoubleTabCheckThreadStop();
+                            initActionTime();
+                        }
+                    });
                 }
             };
             blindTimer = new Timer();

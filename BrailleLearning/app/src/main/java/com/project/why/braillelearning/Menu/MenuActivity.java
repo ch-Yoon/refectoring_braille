@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -104,6 +105,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     @Override
     protected void onResume(){
         super.onResume();
+        Log.d("menuactivity","onResume"+"");
         refreshData();
         initKakaoLogo();
         connectTouchEvent();
@@ -628,6 +630,9 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
                 image.setCallback(null);
             }
             MenuImageView.setImageDrawable(null);
+            Log.d("menuactivity","menuImageView != null");
+        } else if(MenuImageView == null){
+            Log.d("menuactivity","menuImageView == null");
         }
 
         for(int i=0 ; i<bottomGuideCircleArray.size() ; i++){
