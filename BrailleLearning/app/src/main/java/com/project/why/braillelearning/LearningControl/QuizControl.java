@@ -83,20 +83,23 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     protected void refreshData(){
-        if(previousPageNumber != pageNumber){
-            previousPageNumber = pageNumber;
-            progress = false;
-        }
-
         if(0 <= pageNumber && pageNumber < quizBrailleDataArrayList.size()){
+            if(previousPageNumber != pageNumber){
+                previousPageNumber = pageNumber;
+                progress = false;
+            }
+
             quizData = quizBrailleDataArrayList.get(pageNumber);
-            data = quizData;
             if(quizData != null) {
                 if(progress == false)
                     mediaSoundManager.start(quizData.getQuizRawId());
                 else
                     mediaSoundManager.start(result, pageNumber, quizData.getRawId());
             }
+        } else if(quizBrailleDataArrayList.size() <= pageNumber){
+            pageNumber--;
+            mediaSoundManager.allStop();
+            mediaSoundManager.start(R.raw.last_page);
         }
     }
 
@@ -107,7 +110,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
     @Override
     public void nodifyObservers() {
         refreshData();
-        if(data != null){
+        if(quizData != null){
             String letterName;
             if(progress == false)
                 letterName = quizData.getQuizLettername();
@@ -124,8 +127,8 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
      */
     @Override
     public void onOneFingerMoveFunction(FingerCoordinate fingerCoordinate) {
-        if (data != null)
-            oneFingerFunction.oneFingerFunction(data.getBrailleMatrix(), fingerCoordinate);
+        if (quizData != null)
+            oneFingerFunction.oneFingerFunction(quizData.getBrailleMatrix(), fingerCoordinate);
     }
 
 
@@ -206,5 +209,15 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
     public void onPermissionUseDisagree() {
         permissionCheckModule.cancelPermissionGuide();
         refreshData();
+    }
+
+
+    /**
+     * 나만의 단어장 저장 함수
+     * 현재 화면의 점자 정보를 dbManager로 전달
+     */
+    @Override
+    public void onSaveMynote() {
+        dbManager.saveMyNote(quizData.getLetterName(), quizData.getStrBrailleMatrix(), quizData.getAssistanceLetterName(), quizData.getRawId());
     }
 }

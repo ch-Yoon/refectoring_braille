@@ -31,6 +31,10 @@ import static android.view.View.INVISIBLE;
  * Created by EH515 on 2018-03-16.
  */
 
+/**
+ * 권한 여부를 사용자에게 안내하는 class
+ * 해당 class로 사용자에게 권한 설정 안내를 하거나 권한 설정 확인을 한다.
+ */
 public class PermissionCheckModule {
     public static final int PERMISSION_ALLOWED = 0;
     public static final int PERMISSION_NOT_ALLOWED = 1;

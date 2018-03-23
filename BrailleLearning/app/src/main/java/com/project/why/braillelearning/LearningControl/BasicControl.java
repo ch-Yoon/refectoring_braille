@@ -160,7 +160,6 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
      */
     @Override
     public void onPause() {
-        //customTouchConnectListener.setTouchLock(false);
         customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         mediaSoundManager.stop();
         pauseTouchEvent();

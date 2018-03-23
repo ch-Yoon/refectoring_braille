@@ -11,7 +11,7 @@ import com.project.why.braillelearning.EnumConstant.Json;
 
 
 /**
- * 학습 모듈 관리 class
+ * 학습 모듈 관리 factory class
  * 학습메뉴에 맞는 학습 모듈을 return한다
  */
 public class BrailleLearningModuleManager implements BrailleLearningModuleFactory{
