@@ -178,8 +178,7 @@ public class AccessibilityInfoActivity extends Activity {
                 @Override
                 public void run() {
                     threadStop();
-                    startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                    finish();
+                    startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), 1);
                 }
             };
             mTimer = new Timer();
@@ -187,6 +186,23 @@ public class AccessibilityInfoActivity extends Activity {
         }
     }
 
+    /**
+     * 사용방법 가이드 activity 종료 후 호출 함수
+     * 사용방법을 모두 들었다면 학습 view와 control 연결
+     * 사용방법을 모두 듣지 않고 뒤로가기를 했다면 현재 activity 종료
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            Intent i = new Intent(this, BrailleLearningLoading.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        }
+    }
 
     /**
      * 쓰레드 종료 함수

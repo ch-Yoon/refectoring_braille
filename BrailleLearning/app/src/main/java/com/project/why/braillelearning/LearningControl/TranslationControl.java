@@ -128,8 +128,6 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
                 pageNumber = brailleDataArrayList.size() - 1;
             nodifyObservers();
         }
-        else
-            mediaSoundManager.start("brailletranslation_fail");
     }
 
 

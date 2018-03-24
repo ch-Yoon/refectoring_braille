@@ -6,6 +6,8 @@ import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningModel.Dot;
 import com.project.why.braillelearning.LearningModel.BrailleData;
 import com.project.why.braillelearning.LearningModel.JsonBrailleData;
+import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
+import com.project.why.braillelearning.R;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -20,6 +22,7 @@ import java.util.StringTokenizer;
  * 최대 7칸까지 번역되도록 제한함
  */
 public class BrailleTranslationModule {
+    private MediaSoundManager mediaSoundManager;
     private final int INITIAL = 0;
     private final int VOWEL = 1;
     private final int FINAL = 2;
@@ -38,6 +41,7 @@ public class BrailleTranslationModule {
     private CustomStringTokenizerModule customStringTokenizer = new CustomStringTokenizerModule(); // 문자열 분해를 위한 customTokenizer
 
     public BrailleTranslationModule(Context context) {
+        mediaSoundManager = new MediaSoundManager(context);
         initialBrailleDataArray = getJsonBrailleData(context, Json.INITIAL);
         vowelBrailleDataArray = getJsonBrailleData(context, Json.VOWEL);
         finalBrailleDataArray = getJsonBrailleData(context, Json.FINAL);
@@ -80,13 +84,18 @@ public class BrailleTranslationModule {
         for(int i=0 ; i<textArray.size() ; i++){
             String targetText = textArray.get(i);
             result = startTextToBraille(targetText);
-            if(result == false) // 번역 실패
+            if(result == false) {// 번역 실패
+                mediaSoundManager.start(R.raw.brailletranslation_fail);
                 return null;
+            }
         }
 
-        if(result == true) // 번역 성공
-            return setTranslationMatrix(text); //brailledata에 점자 정보 가공
-        else
+        if(result == true) {// 번역 성공
+            BrailleData brailleData = setTranslationMatrix(text);
+            if(brailleData == null)
+                mediaSoundManager.start(R.raw.translation_legnth_long_fail);
+            return brailleData;
+        } else
             return null;
     }
 

@@ -26,7 +26,7 @@ public class BrailleLearningLoading extends Activity {
     private TimerTask loadingTimer;
     private Timer timer; // 애니메이션을 위한 시간 timer
     private int menuImageSize; // menuimagesize
-    private final int timerTaskTime = 2000;
+    private final int TimerTaskTime = 2000;
     private ImageResizeModule imageResizeModule;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
 
@@ -122,7 +122,7 @@ public class BrailleLearningLoading extends Activity {
             }
         };
         timer = new Timer();
-        timer.schedule(loadingTimer,timerTaskTime);
+        timer.schedule(loadingTimer,TimerTaskTime);
     }
 
 
