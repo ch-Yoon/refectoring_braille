@@ -37,7 +37,7 @@ public class MultiFinger{
             double finger_gapY[] = new double[fingerCount]; // 첫번째와 두번째 손가락의 downY 좌표와 upY좌표의 격차
             int drag_countX = 0; // 좌측 이동인지 우측 이동인지를 확인하기 위한 변수
             int drag_countY = 0; // 뒤로가기인지 특수기능인지를 확인하기 위한 변수
-            double dragSpace = Global.displayX * (0.2); // 화면전환 범위는 해상도 가로축의 20%
+            double dragSpace = Global.displayX * (0.1); // 화면전환 범위는 해상도 가로축의 10%
             int downX[] = fingerCoordinate.getDownX();
             int downY[] = fingerCoordinate.getDownY();
             int upX[] = fingerCoordinate.getUpX();

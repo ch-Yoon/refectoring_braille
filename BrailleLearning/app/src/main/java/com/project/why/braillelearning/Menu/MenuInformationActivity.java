@@ -121,7 +121,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
         screenAlwaysOnDisable();
         aniTimerStop();
         recycleImage();
-        recylceRogo();
+        recycleRogo();
         stopSound();
         pauseTouchEvent();
     }
@@ -367,7 +367,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     /**
      * 카카오 로고 메모리 해제 함수
      */
-    private void recylceRogo(){
+    private void recycleRogo(){
         if(logoImgaeview != null){
             Drawable image = logoImgaeview.getDrawable();
             if(image instanceof BitmapDrawable){
@@ -393,6 +393,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
                 setResult(RESULT_CANCELED);
                 activityManagerSingleton.nowActivityFinish();
                 savePreferences();
+                mediaSoundManager.start(R.raw.tutorial_finish);
             }
             else {
                 mediaSoundManager.start(FingerFunctionType.ENTER);
@@ -406,8 +407,10 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
 
                 if (state == "FALSE" || state.equals("FALSE"))
                     activityManagerSingleton.allActivityFinish();
-                else
+                else {
                     activityManagerSingleton.nowActivityFinish();
+                    mediaSoundManager.start(R.raw.tutorial_finish);
+                }
 
             } else {
                 setResult(RESULT_CANCELED);

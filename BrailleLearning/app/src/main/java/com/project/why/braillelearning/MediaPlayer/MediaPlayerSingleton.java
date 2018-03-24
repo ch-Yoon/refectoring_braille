@@ -249,7 +249,7 @@ public class MediaPlayerSingleton implements TextToSpeechListener {
      */
     private boolean checkMediaShield(){
         if(queue.peek() == null) {
-            int gestureId[] = {R.raw.enter, R.raw.back, R.raw.right, R.raw.left, R.raw.empty, R.raw.alldelete, R.raw.speechrecognition_start};
+            int gestureId[] = {R.raw.enter, R.raw.back, R.raw.right, R.raw.left, R.raw.empty, R.raw.alldelete, R.raw.speechrecognition_start, R.raw.tutorial_finish};
             for (int i = 0; i < gestureId.length; i++) {
                 if (shieldId == gestureId[i])
                     return true;
