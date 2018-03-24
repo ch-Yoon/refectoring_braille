@@ -24,12 +24,12 @@ import java.util.ArrayList;
  */
 public class TranslationControl extends BasicControl implements SpeechRecognitionListener {
     private BrailleTranslationModule brailleTranslationModule;
-    private SpeechRecognitionModule speechRecognitionMoudle;
+    private SpeechRecognitionModule speechRecognitionModule;
 
     TranslationControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
         brailleTranslationModule = new BrailleTranslationModule(context);
-        speechRecognitionMoudle = new SpeechRecognitionModule(context, this);
+        speechRecognitionModule = new SpeechRecognitionModule(context, this);
     }
 
 
@@ -55,7 +55,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
     public void onPause() {
         customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         mediaSoundManager.stop();
-        speechRecognitionMoudle.pause();
+        speechRecognitionModule.pause();
         pauseTouchEvent();
     }
 
@@ -80,7 +80,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
             });
         } else {
             customTouchConnectListener.setTouchLock(TouchLock.SPEECH_RECOGNITION_LOCK);
-            speechRecognitionMoudle.start();
+            speechRecognitionModule.start();
         }
     }
 
@@ -138,7 +138,7 @@ public class TranslationControl extends BasicControl implements SpeechRecognitio
      */
     @Override
     public void exit(){
-        speechRecognitionMoudle.stop();
+        speechRecognitionModule.stop();
         controlListener.exit();
     }
 

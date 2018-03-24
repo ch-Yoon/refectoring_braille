@@ -5,7 +5,7 @@ package com.project.why.braillelearning;
  */
 
 public class Global {
-    public static int DisplayX; // 화면의 가로
-    public static int DisplayY; // 화면의 세로
+    public static int displayX; // 화면의 가로
+    public static int displayY; // 화면의 세로
     public static boolean blindPermissionCheck = false;
 }

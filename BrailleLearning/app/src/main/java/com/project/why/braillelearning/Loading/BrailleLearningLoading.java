@@ -22,11 +22,11 @@ import java.util.TimerTask;
  * application 로딩화면 activity
  */
 public class BrailleLearningLoading extends Activity {
-    private ImageView Loading_Animation_imageview; // 애니메이션 imageview
-    private TimerTask LoadingTimer;
+    private ImageView loading_Animation_imageview; // 애니메이션 imageview
+    private TimerTask loadingTimer;
     private Timer timer; // 애니메이션을 위한 시간 timer
-    private int MenuImageSize; // menuimagesize
-    private final int TimerTaskTime = 2000;
+    private int menuImageSize; // menuimagesize
+    private final int timerTaskTime = 2000;
     private ImageResizeModule imageResizeModule;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
 
@@ -36,7 +36,7 @@ public class BrailleLearningLoading extends Activity {
         imageResizeModule = new ImageResizeModule(getResources());
         activityManagerSingleton.addArrayList(this);
         setContentView(R.layout.activity_braille_learning_loading);
-        Loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
+        loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
         setLoadingImage();
 
     }
@@ -77,8 +77,8 @@ public class BrailleLearningLoading extends Activity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Global.DisplayX = size.x; // Display의 가로값. Global변수에 저장하여 상시 사용
-        Global.DisplayY = size.y; // Display의 세로값. Global변수에 저장하여 상시 사용
+        Global.displayX = size.x; // Display의 가로값. Global변수에 저장하여 상시 사용
+        Global.displayY = size.y; // Display의 세로값. Global변수에 저장하여 상시 사용
     }
 
 
@@ -86,10 +86,10 @@ public class BrailleLearningLoading extends Activity {
      * 이미지 size setting 함수
      */
     private void setMenuImageSize(){
-        MenuImageSize = (int)(Global.DisplayY*0.2); // imageview의 width와 height는 2:1 비율
-        Loading_Animation_imageview.getLayoutParams().height = MenuImageSize;
-        Loading_Animation_imageview.getLayoutParams().width = MenuImageSize*2;
-        Loading_Animation_imageview.requestLayout();
+        menuImageSize = (int)(Global.displayY*0.2); // imageview의 width와 height는 2:1 비율
+        loading_Animation_imageview.getLayoutParams().height = menuImageSize;
+        loading_Animation_imageview.getLayoutParams().width = menuImageSize*2;
+        loading_Animation_imageview.requestLayout();
     }
 
 
@@ -108,7 +108,7 @@ public class BrailleLearningLoading extends Activity {
      * 로딩화면 시간 체크 스레드 함수
      */
     private void Timer_Start(){
-        LoadingTimer = new TimerTask() {
+        loadingTimer = new TimerTask() {
             @Override
             public void run() {
                 runOnUiThread(new Runnable() {
@@ -122,7 +122,7 @@ public class BrailleLearningLoading extends Activity {
             }
         };
         timer = new Timer();
-        timer.schedule(LoadingTimer,TimerTaskTime);
+        timer.schedule(loadingTimer,timerTaskTime);
     }
 
 
@@ -135,9 +135,9 @@ public class BrailleLearningLoading extends Activity {
             timer = null;
         }
 
-        if(LoadingTimer != null){
-            LoadingTimer.cancel();
-            LoadingTimer = null;
+        if(loadingTimer != null){
+            loadingTimer.cancel();
+            loadingTimer = null;
         }
     }
 
@@ -146,9 +146,9 @@ public class BrailleLearningLoading extends Activity {
      * 애니메이션 이미지 셋팅 함수
      */
     private void setLoadingImage(){
-        if(Loading_Animation_imageview == null)
-            Loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
-        Loading_Animation_imageview.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.loadingimage, MenuImageSize*2, MenuImageSize));
+        if(loading_Animation_imageview == null)
+            loading_Animation_imageview = (ImageView) findViewById(R.id.braiilelearningloading_imageview);
+        loading_Animation_imageview.setImageDrawable(imageResizeModule.getDrawableImage(R.drawable.loadingimage, menuImageSize*2, menuImageSize));
     }
 
 
@@ -167,13 +167,13 @@ public class BrailleLearningLoading extends Activity {
      * 이미지 메모리 해제 함수
      */
     private void recycleImage(){
-        if(Loading_Animation_imageview != null) {
-            Drawable image = Loading_Animation_imageview.getDrawable();
+        if(loading_Animation_imageview != null) {
+            Drawable image = loading_Animation_imageview.getDrawable();
             if(image instanceof BitmapDrawable){
                 ((BitmapDrawable)image).getBitmap().recycle();
                 image.setCallback(null);
             }
-            Loading_Animation_imageview.setImageDrawable(null);
+            loading_Animation_imageview.setImageDrawable(null);
         }
     }
 }

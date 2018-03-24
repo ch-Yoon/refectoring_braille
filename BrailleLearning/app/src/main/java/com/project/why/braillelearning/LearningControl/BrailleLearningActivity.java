@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
-import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
@@ -24,7 +23,6 @@ import com.project.why.braillelearning.R;
  */
 public class BrailleLearningActivity extends Activity implements ControlListener {
     private static final int MENU_INFO = 0;
-    private GettingInformation object;
     private Control learningModule;
     private ViewObservers learningView;
     private Json jsonFileName;

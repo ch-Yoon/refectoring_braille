@@ -33,7 +33,7 @@ import java.util.ArrayList;
  * 선생님과의 대화 중 학생 모드 class
  */
 public class StudentControl extends BasicControl implements SpeechRecognitionListener {
-    private SpeechRecognitionModule speechRecognitionMoudle;
+    private SpeechRecognitionModule speechRecognitionModule;
     private String studentServerURL = "http://13.125.23.151/student.php";
     private String roomNumber = "";
     private boolean checkTask = false;
@@ -41,7 +41,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
 
     StudentControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
-        speechRecognitionMoudle = new SpeechRecognitionModule(context, this);
+        speechRecognitionModule = new SpeechRecognitionModule(context, this);
     }
 
 
@@ -66,7 +66,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
     public void onPause() {
         customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         mediaSoundManager.stop();
-        speechRecognitionMoudle.pause();
+        speechRecognitionModule.pause();
         pauseTouchEvent();
     }
 
@@ -131,7 +131,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
             });
         } else {
             customTouchConnectListener.setTouchLock(TouchLock.SPEECH_RECOGNITION_LOCK);
-            speechRecognitionMoudle.start();
+            speechRecognitionModule.start();
         }
     }
 
@@ -312,7 +312,7 @@ public class StudentControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void exit(){
-        speechRecognitionMoudle.stop();
+        speechRecognitionModule.stop();
         controlListener.exit();
     }
 

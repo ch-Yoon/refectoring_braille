@@ -16,8 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 import com.project.why.braillelearning.EnumConstant.TouchLock;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
@@ -190,7 +188,7 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
      */
     private void initImageView(){ // 이미지 size setting
         information_ImageView = (ImageView) findViewById(R.id.information_imageview);
-        widthSize = (int)(Global.DisplayY*0.7); // imageview의 width는 세로 높이의 90%
+        widthSize = (int)(Global.displayY*0.7); // imageview의 width는 세로 높이의 90%
         heightSize = (int)(widthSize*0.8); //imageView의 height는 width의 80%
         information_ImageView.getLayoutParams().height = heightSize;
         information_ImageView.getLayoutParams().width = widthSize;

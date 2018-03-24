@@ -76,7 +76,7 @@ public class FingerCoordinate {
         if(x < 0 || y < 0)
             return true;
         else {
-            double tolerance = Global.DisplayX * (0.3); // 화면전환 범위는 해상도 가로축의 20%
+            double tolerance = Global.displayX * (0.3);
             if(tolerance < upX[0] - x )
                 return true;
             else if(tolerance < upY[0] - y )

@@ -34,7 +34,7 @@ public class BasicView extends View implements ViewObservers {
     private String letterName;
     private Dot[][] brailleMatrix;
     private ImageView logoView;
-    private ImageView background, specialview;
+    private ImageView background, specialView;
     private ImageResizeModule imageResizeModule;
 
     public BasicView(Context context){
@@ -61,17 +61,17 @@ public class BasicView extends View implements ViewObservers {
         }
         setTextName();
         setKakaoLogo();
-        setSpecialview();
+        setSpecialView();
     }
 
 
     @Override
     public void onSpecialFunctionEnable(int drawable) {
         background.setVisibility(VISIBLE);
-        specialview.setVisibility(VISIBLE);
+        specialView.setVisibility(VISIBLE);
 
         recycleSpecialImage();
-        specialview.setImageDrawable(imageResizeModule.getDrawableImage(drawable, Global.DisplayX / 3, Global.DisplayX / 3));
+        specialView.setImageDrawable(imageResizeModule.getDrawableImage(drawable, Global.displayX / 3, Global.displayX / 3));
         invalidate();
     }
 
@@ -79,12 +79,12 @@ public class BasicView extends View implements ViewObservers {
     @Override
     public void onSpecialFunctionDisable(){
         background.setVisibility(INVISIBLE);
-        specialview.setVisibility(INVISIBLE);
+        specialView.setVisibility(INVISIBLE);
         recycleSpecialImage();
     }
 
 
-    private void setSpecialview(){
+    private void setSpecialView(){
         if(background == null) {
             background = new ImageView(context);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
@@ -99,8 +99,8 @@ public class BasicView extends View implements ViewObservers {
             background.setVisibility(INVISIBLE);
         }
 
-        if(specialview == null) {
-            specialview = new ImageView(context);
+        if(specialView == null) {
+            specialView = new ImageView(context);
 
             FrameLayout.LayoutParams lp2 = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -108,13 +108,13 @@ public class BasicView extends View implements ViewObservers {
                     Gravity.CENTER
             );
 
-            lp2.width = Global.DisplayX / 3;
-            lp2.height = Global.DisplayX / 3;
+            lp2.width = Global.displayX / 3;
+            lp2.height = Global.displayX / 3;
 
-            specialview.setLayoutParams(lp2);
-            specialview.requestLayout();
-            ((FrameLayout) this.getParent()).addView(specialview);
-            specialview.setVisibility(INVISIBLE);
+            specialView.setLayoutParams(lp2);
+            specialView.requestLayout();
+            ((FrameLayout) this.getParent()).addView(specialView);
+            specialView.setVisibility(INVISIBLE);
         }
     }
 
@@ -184,7 +184,7 @@ public class BasicView extends View implements ViewObservers {
                 float coordinate_X = brailleMatrix[i][j].getX();
                 float coordinate_Y = brailleMatrix[i][j].getY();
                 int dotType = brailleMatrix[i][j].getDotType();
-                float radius = brailleMatrix[i][j].getViewAreaRidus();
+                float radius = brailleMatrix[i][j].getViewAreaRadius();
                 int color = getColor(dotType);
                 paint.setColor(color);
                 canvas.drawCircle(coordinate_X, coordinate_Y, radius, paint); // 점자 그리기
@@ -263,18 +263,18 @@ public class BasicView extends View implements ViewObservers {
         }
 
         recycleSpecialImage();
-        ((FrameLayout) this.getParent()).removeView(specialview);
-        specialview = null;
+        ((FrameLayout) this.getParent()).removeView(specialView);
+        specialView = null;
     }
 
     private void recycleSpecialImage(){
-        if(specialview != null){
-            Drawable image = specialview.getDrawable();
+        if(specialView != null){
+            Drawable image = specialView.getDrawable();
             if(image instanceof BitmapDrawable){
                 ((BitmapDrawable)image).getBitmap().recycle();
                 image.setCallback(null);
             }
-            specialview.setImageDrawable(null);
+            specialView.setImageDrawable(null);
         }
     }
 }

@@ -12,15 +12,15 @@ import java.util.ArrayList;
  * image id, soundid, menu name을 갖고 있으며, 다수의 자식노드를 갖음.
  */
 public class TreeNode {
-    private int ImageId; // image data id
-    private int SoundId; // sound data id
-    private TreeNode ParentTreeNode; // 부모노드
-    private ArrayList<TreeNode> ChildTreeNodeArray; // 자식노드 Array
+    private int imageId; // image data id
+    private int soundId; // sound data id
+    private TreeNode parentTreeNode; // 부모노드
+    private ArrayList<TreeNode> childTreeNodeArray; // 자식노드 Array
     private Menu menuName;
 
     TreeNode(){
-        ParentTreeNode = null;
-        ChildTreeNodeArray = null;
+        parentTreeNode = null;
+        childTreeNodeArray = null;
         menuName = null;
     }
 
@@ -40,10 +40,10 @@ public class TreeNode {
 
         ChildTreeNode.setParentTreeNode(this); // 자식노드의 부모노드를 현재노드로 설정
 
-        if(ChildTreeNodeArray == null)
-            ChildTreeNodeArray = new ArrayList<>();
+        if(childTreeNodeArray == null)
+            childTreeNodeArray = new ArrayList<>();
 
-        ChildTreeNodeArray.add(ChildTreeNode); // 현재 노드의 자식노드 Array에 자식노드 등록
+        childTreeNodeArray.add(ChildTreeNode); // 현재 노드의 자식노드 Array에 자식노드 등록
 
         return ChildTreeNode; // 등록한 자식노드 반환
     }
@@ -52,24 +52,24 @@ public class TreeNode {
         this.menuName = menuName;
     }
 
-    public void setImageId(int ImageId){
-        this.ImageId = ImageId;
+    public void setImageId(int imageId){
+        this.imageId = imageId;
     }
 
-    public void setSoundId(int SoundId){
-        this.SoundId = SoundId;
+    public void setSoundId(int soundId){
+        this.soundId = soundId;
     }
 
     public int getImageId(){
-        return ImageId;
+        return imageId;
     }
 
     public int getSoundId(){
-        return SoundId;
+        return soundId;
     }
 
     public void setParentTreeNode(TreeNode ParentTreeNode){
-        this.ParentTreeNode = ParentTreeNode;
+        this.parentTreeNode = ParentTreeNode;
     }
 
     /**
@@ -78,8 +78,8 @@ public class TreeNode {
      * @return
      */
     public TreeNode getChildTreeNode(int index){
-        if(ChildTreeNodeArray != null)
-            return ChildTreeNodeArray.get(index);
+        if(childTreeNodeArray != null)
+            return childTreeNodeArray.get(index);
         else
             return null;
     }
@@ -93,10 +93,10 @@ public class TreeNode {
      * @return
      */
     public int getChildTreeNodeListSize(){
-        if(ChildTreeNodeArray == null)
+        if(childTreeNodeArray == null)
             return 0;
         else
-            return ChildTreeNodeArray.size();
+            return childTreeNodeArray.size();
     }
 
 

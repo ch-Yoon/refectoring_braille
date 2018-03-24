@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * 퀴즈 메뉴를 위한 class
  */
 public class QuizControl extends BasicControl implements SpeechRecognitionListener {
-    private SpeechRecognitionModule speechRecognitionMoudle;
+    private SpeechRecognitionModule speechRecognitionModule;
     private ArrayList<QuizBrailleData> quizBrailleDataArrayList = new ArrayList<>();
     private QuizBrailleData quizData;
     private boolean progress = false;
@@ -30,7 +30,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
 
     QuizControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
-        speechRecognitionMoudle = new SpeechRecognitionModule(context, this);
+        speechRecognitionModule = new SpeechRecognitionModule(context, this);
         setRandomQuizBrailleData();
     }
 
@@ -41,7 +41,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
     public void onPause() {
         customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         mediaSoundManager.stop();
-        speechRecognitionMoudle.pause();
+        speechRecognitionModule.pause();
         pauseTouchEvent();
     }
 
@@ -188,7 +188,7 @@ public class QuizControl extends BasicControl implements SpeechRecognitionListen
             });
         } else {
             customTouchConnectListener.setTouchLock(TouchLock.SPEECH_RECOGNITION_LOCK);
-            speechRecognitionMoudle.start();
+            speechRecognitionModule.start();
         }
     }
 

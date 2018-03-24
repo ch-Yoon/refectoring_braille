@@ -98,8 +98,8 @@ public class BottomCircle {
                 Gravity.CENTER
         );
 
-        lp.width = (int) (Global.DisplayY * 0.03);
-        lp.height = (int) (Global.DisplayY * 0.03);
+        lp.width = (int) (Global.displayY * 0.03);
+        lp.height = (int) (Global.displayY * 0.03);
         circleImageView.setLayoutParams(lp);
         circleImageView.setImageDrawable(null);
         circleImageView.setVisibility(GONE);

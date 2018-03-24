@@ -32,14 +32,14 @@ import java.util.ArrayList;
  */
 
 public class TeacherControl extends BasicControl implements SpeechRecognitionListener, MediaPlayerStopCallbackListener {
-    private SpeechRecognitionModule speechRecognitionMoudle;
+    private SpeechRecognitionModule speechRecognitionModule;
     private boolean sendCheck = false;
     private String teacherServerURL = "http://13.125.23.151/teacher.php";
     private String room = "0";
 
     TeacherControl(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType, ControlListener controlListener){
         super(context, jsonFileName, databaseFileName, brailleLearningType, controlListener);
-        speechRecognitionMoudle = new SpeechRecognitionModule(context, this);
+        speechRecognitionModule = new SpeechRecognitionModule(context, this);
     }
 
 
@@ -50,7 +50,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
     public void onPause() {
         customTouchConnectListener.setTouchLock(TouchLock.UNLOCK);
         mediaSoundManager.stop();
-        speechRecognitionMoudle.pause();
+        speechRecognitionModule.pause();
         pauseTouchEvent();
     }
 
@@ -103,7 +103,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
         } else {
             if (checkInputBraille()) {
                 customTouchConnectListener.setTouchLock(TouchLock.SPEECH_RECOGNITION_LOCK);
-                speechRecognitionMoudle.start();
+                speechRecognitionModule.start();
             } else
                 mediaSoundManager.start(R.raw.teacher_no_input);
         }
@@ -124,7 +124,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
                     data.setLetterName(letterName);
                     data.refreshData();
                     nodifyViewObserver();
-                    speechRecognitionMoudle.start(data.getRawId());
+                    speechRecognitionModule.start(data.getRawId());
                 } else {
                     sendCheck = false;
                     boolean check = checkAnswer(text);
@@ -349,7 +349,7 @@ public class TeacherControl extends BasicControl implements SpeechRecognitionLis
      */
     @Override
     public void exit(){
-        speechRecognitionMoudle.stop();
+        speechRecognitionModule.stop();
         controlListener.exit();
     }
 

@@ -15,8 +15,8 @@ import com.project.why.braillelearning.LearningModel.Dot;
  * 점자의 행, 열, 점자의 크기, 터치 영역을 설정함
  */
 public class DataConversionModule {
-    private float BigCircleRadiusRatio;
-    private float MiniCircleRadiusRatio;
+    private float bigCircleRadiusRatio;
+    private float miniCircleRadiusRatio;
     private float touchAreaRidus;
 
     public DataConversionModule(){}
@@ -32,29 +32,29 @@ public class DataConversionModule {
     private void initBrailleRatio(Database databaseFileName) {
         switch(databaseFileName){
             case BASIC:
-                BigCircleRadiusRatio = (float) 0.1;
-                MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
+                bigCircleRadiusRatio = (float) 0.1;
+                miniCircleRadiusRatio = bigCircleRadiusRatio / 5;
                 break;
             default:
-                BigCircleRadiusRatio = (float) 0.042; //
-                MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
+                bigCircleRadiusRatio = (float) 0.042; //
+                miniCircleRadiusRatio = bigCircleRadiusRatio / 5;
                 break;
         }
-        touchAreaRidus = Global.DisplayY * BigCircleRadiusRatio;
+        touchAreaRidus = Global.displayY * bigCircleRadiusRatio;
     }
 
     private void initBrailleRatio(BrailleLearningType brailleLearningType) {
         switch(brailleLearningType){
             case BASIC:
-                BigCircleRadiusRatio = (float) 0.1;
-                MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
+                bigCircleRadiusRatio = (float) 0.1;
+                miniCircleRadiusRatio = bigCircleRadiusRatio / 5;
                 break;
             default:
-                BigCircleRadiusRatio = (float) 0.042; //
-                MiniCircleRadiusRatio = BigCircleRadiusRatio / 5;
+                bigCircleRadiusRatio = (float) 0.042; //
+                miniCircleRadiusRatio = bigCircleRadiusRatio / 5;
                 break;
         }
-        touchAreaRidus = Global.DisplayY * BigCircleRadiusRatio;
+        touchAreaRidus = Global.displayY * bigCircleRadiusRatio;
     }
 
     public String getConversionQuizRawId(Dot brailleMatrix[][], int quizCount){
@@ -276,9 +276,9 @@ public class DataConversionModule {
                 }
 
                 brailleMatrix[i][j] = new Dot();
-                brailleMatrix[i][j].setTouchAreaRidus(touchAreaRidus);
-                brailleMatrix[i][j].setBigCircleRidus(getViewAreaRidus(true));
-                brailleMatrix[i][j].setSmallCircleRidus(getViewAreaRidus(false));
+                brailleMatrix[i][j].setTouchAreaRadius(touchAreaRidus);
+                brailleMatrix[i][j].setBigCircleRadius(getViewAreaRidus(true));
+                brailleMatrix[i][j].setSmallCircleRadius(getViewAreaRidus(false));
                 brailleMatrix[i][j].setTarget(target);
                 brailleMatrix[i][j].setDotType(dotType);
                 brailleMatrix[i][j].setX(getCoordinate_X(j));
@@ -296,7 +296,7 @@ public class DataConversionModule {
      * @return : 1 - (점자 원의 크기 * ((전체 열-1) - 현재 열) + 점자의 반지름) = 점자의 세로 좌표
      */
     public float getCoordinate_Y(int COL, int nowCol){
-        return Global.DisplayY * (1 - ((2 * BigCircleRadiusRatio * ((COL-1) - nowCol)) + BigCircleRadiusRatio));
+        return Global.displayY * (1 - ((2 * bigCircleRadiusRatio * ((COL-1) - nowCol)) + bigCircleRadiusRatio));
     }
 
 
@@ -306,7 +306,7 @@ public class DataConversionModule {
      * @return : 점자의 띄어쓰기 + 점자 원의 크기 * 열(점자 갯수) + 점자의 반지름 = 점자의 가로 좌표
      */
     public float getCoordinate_X(int row){
-        return Global.DisplayY * ((2 * BigCircleRadiusRatio * row) + BigCircleRadiusRatio);
+        return Global.displayY * ((2 * bigCircleRadiusRatio * row) + bigCircleRadiusRatio);
     }
 
 
@@ -317,8 +317,8 @@ public class DataConversionModule {
      */
     private float getViewAreaRidus(boolean target){
         if(target == true)
-            return Global.DisplayY*BigCircleRadiusRatio;
+            return Global.displayY*bigCircleRadiusRatio;
         else
-            return Global.DisplayY*MiniCircleRadiusRatio;
+            return Global.displayY*miniCircleRadiusRatio;
     }
 }

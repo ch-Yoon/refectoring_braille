@@ -16,26 +16,26 @@ public class ImageResizeModule {
      *
      */
 
-    private Resources Res;
+    private Resources res;
 
     public ImageResizeModule(Resources res){
-        this.Res = res;
+        this.res = res;
     }
 
     // Drawable 형태의 이미지를 얻는 메소드
     public Drawable getDrawableImage(int raw_id, int width, int height){
-        return new BitmapDrawable(Res, getBitmapImage(raw_id, width, height));
+        return new BitmapDrawable(res, getBitmapImage(raw_id, width, height));
     }
 
     // Bitmap형태의 이미지를 resize하여 반환받는 메소드
     public Bitmap getBitmapImage(int res_id, int width, int height){
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true; // 실제로 이미지를 로드하지 않음
-        BitmapFactory.decodeResource(Res, res_id, options);
+        BitmapFactory.decodeResource(res, res_id, options);
         options.inSampleSize = getInSampleSize(options, width, height);
         options.inJustDecodeBounds = false; // 이미지를 실제로 로드
 
-        return BitmapFactory.decodeResource(Res, res_id, options);
+        return BitmapFactory.decodeResource(res, res_id, options);
     }
 
     // 이미지 용량을 몇배로 줄일건지 결정하는 함수

@@ -6,6 +6,7 @@ package com.project.why.braillelearning.EnumConstant;
 
 /**
  * Menu의 이름들을 정의해논 enum
+ * TRUE는 음성인식이 사용되는 메뉴, FALSE는 음성인식이 사용되지 않는 메뉴
  * TUTORIAL : 사용설명서
  * BASIC : 기초과정
  * MASTER : 숙련과정

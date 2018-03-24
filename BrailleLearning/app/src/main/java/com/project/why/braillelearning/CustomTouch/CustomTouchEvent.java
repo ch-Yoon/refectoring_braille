@@ -89,11 +89,13 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     private void setBlindPerson(){
         blindMode = am.isTouchExplorationEnabled();
         if(blindMode == true) {
-            if(accessibilityEventSingleton == null) {
-                accessibilityEventSingleton = AccessibilityEventSingleton.getInstance();
-                accessibilityEventSingleton.setContext(context);
-                accessibilityEventSingleton.setAccessibilityEventListener(this);
-                checkBlindPerson();
+            if(Global.blindPermissionCheck == false) {
+                if (accessibilityEventSingleton == null) {
+                    accessibilityEventSingleton = AccessibilityEventSingleton.getInstance();
+                    accessibilityEventSingleton.setContext(context);
+                    accessibilityEventSingleton.setAccessibilityEventListener(this);
+                    checkBlindPerson();
+                }
             }
         }
     }

@@ -2,7 +2,6 @@ package com.project.why.braillelearning.LearningControl;
 
 import android.content.Context;
 import android.view.MotionEvent;
-
 import com.project.why.braillelearning.CustomTouch.CustomLearningTouchEvent;
 import com.project.why.braillelearning.CustomTouch.CustomLearningTouchListener;
 import com.project.why.braillelearning.CustomTouch.CustomTouchConnectListener;
@@ -21,7 +20,6 @@ import com.project.why.braillelearning.LearningView.ViewObservers;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.MynoteDB.DBManager;
 import com.project.why.braillelearning.R;
-
 import java.util.ArrayList;
 
 /**

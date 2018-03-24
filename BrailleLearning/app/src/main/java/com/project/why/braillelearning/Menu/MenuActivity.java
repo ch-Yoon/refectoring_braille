@@ -16,8 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
@@ -42,7 +40,6 @@ import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.Permission.PermissionCheckCallbackListener;
 import com.project.why.braillelearning.Permission.PermissionCheckModule;
 import com.project.why.braillelearning.R;
-
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -56,14 +53,13 @@ import java.util.TimerTask;
  */
 public class MenuActivity extends Activity implements CustomTouchEventListener, SpecialFunctionListener{
     private LinearLayout layout, bottomGuideLayout;
-    private int PageNumber; // 메뉴 위치를 알기위한 변수
     private int specialViewSize;
     private ImageView MenuImageView, kakaoImageView, specialBackgroundView, specialImageView;
     private ArrayList<BottomCircle> bottomGuideCircleArray = new ArrayList<>();
     private MenuTreeManager menuTreeManager; // 메뉴 트리 manager
     private ImageResizeModule imageResizeModule;
     private Deque<Integer> menuAddressDeque; // 메뉴 탐색을 위한 주소 경로를 담는 Deque
-    private int NowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
+    private int nowMenuListSize = 0; // 현재 위치한 메뉴 리스트의 길이를 저장하는 변수
     private MediaSoundManager mediaSoundManager;
     private CustomTouchConnectListener customTouchConnectListener;
     private ActivityManagerSingleton activityManagerSingleton = ActivityManagerSingleton.getInstance();
@@ -86,11 +82,11 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         } else {
             setContentView(R.layout.activity_braille_learning_menu);
             activityManagerSingleton.addArrayList(this);
-            InitMenuImageView();
+            initMenuImageView();
             initLayout();
-            InitModule();
+            initModule();
             initTouchEvent();
-            InitMenuTree();
+            initMenuTree();
             checkFirstRun();
             initSpecialImageView();
             initSpecialFunctionManager(BrailleLearningType.MENU);
@@ -149,12 +145,12 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     /**
      * 메뉴 tree init 함수
      */
-    private void InitMenuTree(){
+    private void initMenuTree(){
         menuTreeManager = new MenuTreeManager();
         if(menuAddressDeque == null) {
             menuAddressDeque = new LinkedList<>();
-            menuAddressDeque.addLast(PageNumber);
-            NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
+            menuAddressDeque.addLast(0);
+            nowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
         }
     }
 
@@ -162,7 +158,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     /**
      * activity에서 사용되는 module init 함수
      */
-    private void InitModule(){
+    private void initModule(){
         permissionCheckModule = new PermissionCheckModule(this, layout);
         imageResizeModule = new ImageResizeModule(getResources());
         mediaSoundManager = new MediaSoundManager(this);
@@ -173,10 +169,10 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     /**
      * 메뉴 초기화 함수
      */
-    private void InitMenuImageView(){
+    private void initMenuImageView(){
         MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
-        MenuImageView.getLayoutParams().width = (int) (Global.DisplayY * 0.45);
-        MenuImageView.getLayoutParams().height = (int) (Global.DisplayY * 0.45);
+        MenuImageView.getLayoutParams().width = (int) (Global.displayY * 0.45);
+        MenuImageView.getLayoutParams().height = (int) (Global.displayY * 0.45);
         MenuImageView.requestLayout();
 
         bottomGuideLayout = (LinearLayout)findViewById(R.id.buttomcircleguide_layout);
@@ -209,7 +205,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         specialBackgroundView.setVisibility(View.INVISIBLE);
 
         specialImageView = (ImageView) findViewById(R.id.specialimageview);
-        specialViewSize = (int)(Global.DisplayX*0.3);
+        specialViewSize = (int)(Global.displayX*0.3);
         specialImageView.getLayoutParams().height = specialViewSize;
         specialImageView.getLayoutParams().width = specialViewSize;
         specialImageView.requestFocus();
@@ -284,7 +280,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         FingerFunctionType type = FingerFunctionType.ENTER;
         mediaSoundManager.start(type);
         menuAddressDeque.addLast(0);
-        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
+        nowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
         refreshData();
     }
 
@@ -301,7 +297,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
                 beforeMenu();
                 break;
             case RIGHT: // 오른쪽 메뉴
-                if(menuAddressDeque.peekLast()+1 == NowMenuListSize) {
+                if(menuAddressDeque.peekLast()+1 == nowMenuListSize) {
                     mediaSoundManager.allStop();
                     mediaSoundManager.start(R.raw.last_page);
                 } else {
@@ -431,9 +427,9 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
      */
     private void refreshBottomGuideCircleImage(){
         int bottomCircleArraySize = bottomGuideCircleArray.size();
-        if (bottomCircleArraySize < NowMenuListSize)
+        if (bottomCircleArraySize < nowMenuListSize)
             addBottomGuideCircleImage();
-        else if (NowMenuListSize < bottomCircleArraySize)
+        else if (nowMenuListSize < bottomCircleArraySize)
             recycleRemainderCircleImage(bottomCircleArraySize);
 
         setBottomGuideCircleImage();
@@ -449,7 +445,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
             bottomGuideCircleArray.add(bottomCircle);
             bottomGuideLayout.addView(bottomCircle.getCircleImageView());
 
-            if(NowMenuListSize == bottomGuideCircleArray.size())
+            if(nowMenuListSize == bottomGuideCircleArray.size())
                 break;
         }
     }
@@ -460,7 +456,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
      * @param bottomCircleArraySize 현재 동그라미 이미지 array size
      */
     private void recycleRemainderCircleImage(int bottomCircleArraySize){
-        for(int i = NowMenuListSize ; i<bottomCircleArraySize ; i++){
+        for(int i = nowMenuListSize ; i<bottomCircleArraySize ; i++){
             BottomCircle bottomCircle = bottomGuideCircleArray.get(i);
             bottomCircle.recycleCircleImage();
         }
@@ -472,7 +468,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
      */
     private void setBottomGuideCircleImage(){
         int nowPage = menuAddressDeque.getLast();
-        for(int i=0 ; i<NowMenuListSize ; i++){
+        for(int i=0 ; i<nowMenuListSize ; i++){
             BottomCircle circle = bottomGuideCircleArray.get(i);
             if(i == nowPage)
                 circle.setNowPage(true);
@@ -516,7 +512,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
             int checkPermissionResult = permissionCheckModule.checkPermission();
             if(checkPermissionResult == PermissionCheckModule.PERMISSION_NOT_CHECKED){
                 menuAddressDeque.removeLast();
-                NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
+                nowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
                 customTouchConnectListener.setTouchLock(TouchLock.PERMISSION_CHECK_LOCK);
                 permissionCheckModule.startPermissionGuide(checkPermissionResult);
                 permissionCheckModule.setPermissionCheckCallbackListener(new PermissionCheckCallbackListener() {
@@ -541,7 +537,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     private void enterBrailleLearning(){
         focusThreadStop();
         menuAddressDeque.removeLast();
-        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
+        nowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
 
         Menu menuName = menuTreeManager.getMenuName(menuAddressDeque);
 
@@ -692,7 +688,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     private void beforeMenu(){
         menuAddressDeque.removeLast();
         if (!menuAddressDeque.isEmpty())
-            NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
+            nowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
         refreshData();
     }
 
@@ -796,7 +792,7 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
         FingerFunctionType type = FingerFunctionType.ENTER;
         mediaSoundManager.start(type);
         menuAddressDeque.addLast(0);
-        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
+        nowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque); // 현재 메뉴 리스트 숫자 리셋
         enterBrailleLearning();
     }
 

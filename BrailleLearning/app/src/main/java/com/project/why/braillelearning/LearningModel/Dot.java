@@ -9,10 +9,10 @@ package com.project.why.braillelearning.LearningModel;
  * 점의 터치 좌푯값, drawing 좌푯값, x와 y좌푯값, 돌출유무, 점자 번호 정보를 갖고 있음
  */
 public class Dot {
-    private float touchAreaRidus;
-    private float bigCircleRidus;
-    private float smallCircleRidus;
-    private float viewAreaRidus;
+    private float touchAreaRadius;
+    private float bigCircleRadius;
+    private float smallCircleRadius;
+    private float viewAreaRadius;
     private float x;
     private float y;
     private boolean target = false;
@@ -26,28 +26,28 @@ public class Dot {
      * @param copyDot : 다른 곳에서 만들어진 dot class
      */
     public Dot(Dot copyDot){
-        this.touchAreaRidus = copyDot.getTouchAreaRidus();
-        this.viewAreaRidus = copyDot.getViewAreaRidus();
+        this.touchAreaRadius = copyDot.getTouchAreaRadius();
+        this.viewAreaRadius = copyDot.getViewAreaRadius();
         this.x = copyDot.getX();
         this.y = copyDot.getY();
         this.target = copyDot.getTarget();
         this.dotType = copyDot.getDotType();
     }
 
-    public void setTouchAreaRidus(float touchAreaRidus) {
-        this.touchAreaRidus = touchAreaRidus;
+    public void setTouchAreaRadius(float touchAreaRadius) {
+        this.touchAreaRadius = touchAreaRadius;
     }
 
-    private void setViewAreaRidus(float viewAreaRidus) {
-        this.viewAreaRidus = viewAreaRidus;
+    private void setViewAreaRadius(float viewAreaRadius) {
+        this.viewAreaRadius = viewAreaRadius;
     }
 
-    public void setBigCircleRidus(float ridus){
-        this.bigCircleRidus = ridus;
+    public void setBigCircleRadius(float Radius){
+        this.bigCircleRadius = Radius;
     }
 
-    public void setSmallCircleRidus(float ridus){
-        this.smallCircleRidus = ridus;
+    public void setSmallCircleRadius(float Radius){
+        this.smallCircleRadius = Radius;
     }
 
     public void setX(float x) {
@@ -61,9 +61,9 @@ public class Dot {
     public void setTarget(boolean target) {
         this.target = target;
         if(target == true)
-            setViewAreaRidus(bigCircleRidus);
+            setViewAreaRadius(bigCircleRadius);
         else
-            setViewAreaRidus(smallCircleRidus);
+            setViewAreaRadius(smallCircleRadius);
     }
 
     public void changeTarget(){
@@ -93,12 +93,12 @@ public class Dot {
         return dotType;
     }
 
-    public float getViewAreaRidus() {
-        return viewAreaRidus;
+    public float getViewAreaRadius() {
+        return viewAreaRadius;
     }
 
-    public float getTouchAreaRidus() {
-        return touchAreaRidus;
+    public float getTouchAreaRadius() {
+        return touchAreaRadius;
     }
 
 
@@ -108,7 +108,7 @@ public class Dot {
      * @return true(해당됨), false(해당되지 않음)
      */
     public boolean checkSatisfyArea_Y(float y){
-        if(this.y - touchAreaRidus <= y && y <= this.y + touchAreaRidus)
+        if(this.y - touchAreaRadius <= y && y <= this.y + touchAreaRadius)
             return true;
         else
             return false;
@@ -121,7 +121,7 @@ public class Dot {
      * @return true(해당됨), false(해당되지 않음)
      */
     public boolean checkSatisfyArea_X(float x){
-        if(this.x - touchAreaRidus <= x && x <= this.x + touchAreaRidus)
+        if(this.x - touchAreaRadius <= x && x <= this.x + touchAreaRadius)
             return true;
         else
             return false;

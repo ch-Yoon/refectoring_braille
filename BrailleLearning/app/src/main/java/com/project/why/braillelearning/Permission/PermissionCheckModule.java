@@ -85,8 +85,8 @@ public class PermissionCheckModule {
                     Gravity.CENTER
             );
 
-            guideLayoutParam.width = (int) (Global.DisplayY * 0.65) * 2;
-            guideLayoutParam.height = (int) (Global.DisplayY * 0.65);
+            guideLayoutParam.width = (int) (Global.displayY * 0.65) * 2;
+            guideLayoutParam.height = (int) (Global.displayY * 0.65);
             permissionGuideImage.setLayoutParams(guideLayoutParam);
             ((FrameLayout) view.getParent()).addView(permissionGuideImage);
             permissionGuideImage.setVisibility(INVISIBLE);

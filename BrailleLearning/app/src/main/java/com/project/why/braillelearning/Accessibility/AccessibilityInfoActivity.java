@@ -10,13 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.Loading.BrailleLearningLoading;
 import com.project.why.braillelearning.R;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -111,7 +108,7 @@ public class AccessibilityInfoActivity extends Activity {
 
                             } else {
                                 int height = guideTextView.getMeasuredHeight();
-                                if (height <= Global.DisplayY * 0.9) {
+                                if (height <= Global.displayY * 0.9) {
                                     if (baseHeight != height) {
                                         baseHeight = height;
 

@@ -8,7 +8,6 @@ import com.kakao.sdk.newtoneapi.SpeechRecognizerManager;
 import com.project.why.braillelearning.MediaPlayer.MediaPlayerStopCallbackListener;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.R;
-
 import java.util.ArrayList;
 
 /**

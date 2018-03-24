@@ -1,7 +1,6 @@
 package com.project.why.braillelearning.CustomTouch;
 
 import android.view.MotionEvent;
-
 import com.project.why.braillelearning.EnumConstant.TouchLock;
 
 /**
