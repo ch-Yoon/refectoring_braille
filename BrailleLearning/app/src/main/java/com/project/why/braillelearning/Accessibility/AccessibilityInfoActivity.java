@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.Global;
+import com.project.why.braillelearning.Loading.BrailleLearningLoading;
 import com.project.why.braillelearning.R;
 
 import java.util.Timer;
@@ -31,26 +32,33 @@ public class AccessibilityInfoActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accessibility_info);
-        activityManagerSingleton.addArrayList(this);
-        guideTextView = (TextView) findViewById(R.id.accessibility_info_textview);
-        guideTextView.setOnHoverListener(new View.OnHoverListener() {
-            @Override
-            public boolean onHover(View v, MotionEvent event) {
-                switch(event.getAction()){
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                        focusRequest();
-                        threadMaking();
-                        break;
-                    case MotionEvent.ACTION_HOVER_EXIT:
-                        threadStop();
-                        break;
+        if(savedInstanceState != null) {
+            Intent i = new Intent(this, BrailleLearningLoading.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        } else {
+            setContentView(R.layout.activity_accessibility_info);
+            activityManagerSingleton.addArrayList(this);
+            guideTextView = (TextView) findViewById(R.id.accessibility_info_textview);
+            guideTextView.setOnHoverListener(new View.OnHoverListener() {
+                @Override
+                public boolean onHover(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_HOVER_ENTER:
+                            focusRequest();
+                            threadMaking();
+                            break;
+                        case MotionEvent.ACTION_HOVER_EXIT:
+                            threadStop();
+                            break;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
-
+            });
+        }
     }
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {

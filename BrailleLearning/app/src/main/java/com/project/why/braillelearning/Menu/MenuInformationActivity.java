@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.project.why.braillelearning.EnumConstant.TouchLock;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
@@ -26,6 +27,7 @@ import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.FingerFunctionType;
 import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.LearningControl.FingerCoordinate;
+import com.project.why.braillelearning.Loading.BrailleLearningLoading;
 import com.project.why.braillelearning.MediaPlayer.MediaSoundManager;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
@@ -58,16 +60,23 @@ public class MenuInformationActivity extends Activity implements CustomTouchEven
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_information);
-        activityManagerSingleton.addArrayList(this);
-        Intent i = getIntent();
-        brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
-        mediaSoundManager = new MediaSoundManager(this);
-        setLayout();
-        initImageView();
-        initAniDrawableId();
-        setFullScreen();
-        initTouchEvent();
+        if(savedInstanceState != null) {
+            Intent i = new Intent(this, BrailleLearningLoading.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        } else {
+            setContentView(R.layout.activity_menu_information);
+            activityManagerSingleton.addArrayList(this);
+            Intent i = getIntent();
+            brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
+            mediaSoundManager = new MediaSoundManager(this);
+            setLayout();
+            initImageView();
+            initAniDrawableId();
+            setFullScreen();
+            initTouchEvent();
+        }
     }
 
     @Override

@@ -71,4 +71,9 @@ public class ActivityManagerSingleton {
     public Activity getNowActivity(){
         return activityArrayList.get(activityArrayList.size()-1);
     }
+
+
+    public int getSize(){
+        return activityArrayList.size();
+    }
 }

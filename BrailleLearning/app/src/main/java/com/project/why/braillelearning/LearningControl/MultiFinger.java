@@ -105,17 +105,16 @@ public class MultiFinger{
         }
 
 
-        if(mediaSoundManager.checkTTSPlaying() == true) {
-            //if(touchLock == false)
-                type = FingerFunctionType.NONE;
-        }
-
-        if(type == FingerFunctionType.BACK)
-            mediaSoundManager.start(type);
+        if(mediaSoundManager.checkTTSPlaying() == true)
+           type = FingerFunctionType.NONE;
         else {
-            if(mediaSoundManager.getMenuInfoPlaying() == false) {
-                if(touchLock == false)
-                    mediaSoundManager.start(type);
+            if (type == FingerFunctionType.BACK)
+                mediaSoundManager.start(type);
+            else {
+                if (mediaSoundManager.getMenuInfoPlaying() == false) {
+                    if (touchLock == false)
+                        mediaSoundManager.start(type);
+                }
             }
         }
 

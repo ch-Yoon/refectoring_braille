@@ -2,15 +2,10 @@ package com.project.why.braillelearning.Loading;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,9 +14,6 @@ import com.project.why.braillelearning.Global;
 import com.project.why.braillelearning.Menu.MenuActivity;
 import com.project.why.braillelearning.Module.ImageResizeModule;
 import com.project.why.braillelearning.R;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Timer;
 import java.util.TimerTask;
 

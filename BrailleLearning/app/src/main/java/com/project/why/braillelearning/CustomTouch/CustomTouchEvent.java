@@ -379,7 +379,7 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
                                         customTouchEventListener.onStartSpecialFunction();
                                     }
                                 });
-                            } else if(lockType == TouchLock.PERMISSION_CHECK_LOCK){
+                            } else if(lockType == TouchLock.PERMISSION_CHECK_LOCK) {
                                 customTouchEventListener.onPermissionUseAgree();
                             } else
                                 customTouchEventListener.onOneFingerFunction(fingerCoordinate);

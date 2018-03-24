@@ -13,6 +13,7 @@ import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.LearningView.BasicView;
 import com.project.why.braillelearning.LearningView.ViewObservers;
+import com.project.why.braillelearning.Loading.BrailleLearningLoading;
 import com.project.why.braillelearning.Menu.MenuInformationActivity;
 import com.project.why.braillelearning.R;
 
@@ -34,12 +35,19 @@ public class BrailleLearningActivity extends Activity implements ControlListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityManagerSingleton.addArrayList(this);
-        Intent i = getIntent();
-        jsonFileName = (Json) i.getSerializableExtra("JSONFILENAME");
-        brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
-        databaseTableName = (Database) i.getSerializableExtra("DATABASENAME");
-        startMenuInfo();
+        if(savedInstanceState != null) {
+            Intent i = new Intent(this, BrailleLearningLoading.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        } else {
+            activityManagerSingleton.addArrayList(this);
+            Intent i = getIntent();
+            jsonFileName = (Json) i.getSerializableExtra("JSONFILENAME");
+            brailleLearningType = (BrailleLearningType) i.getSerializableExtra("BRAILLELEARNINGTYPE");
+            databaseTableName = (Database) i.getSerializableExtra("DATABASENAME");
+            startMenuInfo();
+        }
     }
 
 

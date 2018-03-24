@@ -16,6 +16,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.BrailleInformationFactory;
 import com.project.why.braillelearning.BrailleInformationFactory.GettingInformation;
@@ -23,6 +25,7 @@ import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
 import com.project.why.braillelearning.EnumConstant.TouchLock;
+import com.project.why.braillelearning.Loading.BrailleLearningLoading;
 import com.project.why.braillelearning.SpecialFunction.SpecialFunctionListener;
 import com.project.why.braillelearning.SpecialFunction.SpecialFunctionManager;
 import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
@@ -53,7 +56,7 @@ import java.util.TimerTask;
  */
 public class MenuActivity extends Activity implements CustomTouchEventListener, SpecialFunctionListener{
     private LinearLayout layout, bottomGuideLayout;
-    private int PageNumber=0; // 메뉴 위치를 알기위한 변수
+    private int PageNumber; // 메뉴 위치를 알기위한 변수
     private int specialViewSize;
     private ImageView MenuImageView, kakaoImageView, specialBackgroundView, specialImageView;
     private ArrayList<BottomCircle> bottomGuideCircleArray = new ArrayList<>();
@@ -75,18 +78,30 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_braille_learning_menu);
-        activityManagerSingleton.addArrayList(this);
-        InitMenu();
-        initLayout();
-        initTouchEvent();
-        checkFirstRun();
-        initSpecialImageView();
-        initSpecialFunctionManager(BrailleLearningType.MENU);
-        permissionCheckModule = new PermissionCheckModule(this, layout);
+        if(savedInstanceState != null) {
+            Intent i = new Intent(this, BrailleLearningLoading.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        } else {
+            setContentView(R.layout.activity_braille_learning_menu);
+            activityManagerSingleton.addArrayList(this);
+            InitMenuImageView();
+            initLayout();
+            InitModule();
+            initTouchEvent();
+            InitMenuTree();
+            checkFirstRun();
+            initSpecialImageView();
+            initSpecialFunctionManager(BrailleLearningType.MENU);
+        }
     }
 
 
+    /**
+     * 화면에 포커스가 잡힐 때 전체화면 설정하는 함수
+     * @param hasFocus
+     */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -132,23 +147,40 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
 
 
     /**
-     * 메뉴 초기화 함수
+     * 메뉴 tree init 함수
      */
-    private void InitMenu(){
-        MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
-        MenuImageView.getLayoutParams().width = (int)(Global.DisplayY*0.8);
-        MenuImageView.getLayoutParams().height = (int)(Global.DisplayY*0.45);
+    private void InitMenuTree(){
+        menuTreeManager = new MenuTreeManager();
+        if(menuAddressDeque == null) {
+            menuAddressDeque = new LinkedList<>();
+            menuAddressDeque.addLast(PageNumber);
+            NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
+        }
+    }
 
-        MenuImageView.requestLayout();
-        bottomGuideLayout = (LinearLayout)findViewById(R.id.buttomcircleguide_layout);
+
+    /**
+     * activity에서 사용되는 module init 함수
+     */
+    private void InitModule(){
+        permissionCheckModule = new PermissionCheckModule(this, layout);
         imageResizeModule = new ImageResizeModule(getResources());
         mediaSoundManager = new MediaSoundManager(this);
-        menuTreeManager = new MenuTreeManager();
-        menuAddressDeque = new LinkedList<>();
-        menuAddressDeque.addLast(PageNumber);
-        NowMenuListSize = menuTreeManager.getMenuListSize(menuAddressDeque);
-        menuFocus = (ImageView) findViewById(R.id.menufocus_imageview);
         accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+    }
+
+
+    /**
+     * 메뉴 초기화 함수
+     */
+    private void InitMenuImageView(){
+        MenuImageView = (ImageView) findViewById(R.id.braillelearningmenu_imageview);
+        MenuImageView.getLayoutParams().width = (int) (Global.DisplayY * 0.45);
+        MenuImageView.getLayoutParams().height = (int) (Global.DisplayY * 0.45);
+        MenuImageView.requestLayout();
+
+        bottomGuideLayout = (LinearLayout)findViewById(R.id.buttomcircleguide_layout);
+        menuFocus = (ImageView) findViewById(R.id.menufocus_imageview);
         setFullScreen();
     }
 
@@ -630,9 +662,6 @@ public class MenuActivity extends Activity implements CustomTouchEventListener, 
                 image.setCallback(null);
             }
             MenuImageView.setImageDrawable(null);
-            Log.d("menuactivity","menuImageView != null");
-        } else if(MenuImageView == null){
-            Log.d("menuactivity","menuImageView == null");
         }
 
         for(int i=0 ; i<bottomGuideCircleArray.size() ; i++){
