@@ -35,8 +35,8 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     private long actionDownTime = 0;
     private long actionUpTime = 0;
     private int touchCount = 0;
-    private TimerTask blindTimerTask, basicTimerTask, specialFunctionTimerTask, permissionCheckTimerTask;
-    private Timer blindTimer, basicTimer, specialFunctionTimer, permissionCheckTimer;
+    private TimerTask blindTimerTask, basicTimerTask, specialFunctionTimerTask;
+    private Timer blindTimer, basicTimer, specialFunctionTimer;
     private AccessibilityManager am;
     protected AccessibilityEventSingleton accessibilityEventSingleton;
     private Context context;
@@ -89,14 +89,12 @@ public class CustomTouchEvent implements CustomTouchConnectListener, Accessibili
     private void setBlindPerson(){
         blindMode = am.isTouchExplorationEnabled();
         if(blindMode == true) {
-//            if(Global.blindPermissionCheck == false) {
-                if (accessibilityEventSingleton == null) {
-                    accessibilityEventSingleton = AccessibilityEventSingleton.getInstance();
-                    accessibilityEventSingleton.setContext(context);
-                    accessibilityEventSingleton.setAccessibilityEventListener(this);
-                    checkBlindPerson();
-                }
-   //         }
+            if (accessibilityEventSingleton == null) {
+                accessibilityEventSingleton = AccessibilityEventSingleton.getInstance();
+                accessibilityEventSingleton.setContext(context);
+                accessibilityEventSingleton.setAccessibilityEventListener(this);
+                checkBlindPerson();
+            }
         }
     }
 

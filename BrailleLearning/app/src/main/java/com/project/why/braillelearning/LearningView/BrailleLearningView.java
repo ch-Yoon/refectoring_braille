@@ -28,7 +28,7 @@ import com.project.why.braillelearning.R;
  * 점자를 화면에 출력하는 view class
  * observer로 관찰하는 brailleData를 활용하여 화면에 점자를 그림
  */
-public class BasicView extends View implements ViewObservers {
+public class BrailleLearningView extends View implements ViewObservers {
     private Context context;
     private TextView textName;
     private String letterName;
@@ -37,7 +37,7 @@ public class BasicView extends View implements ViewObservers {
     private ImageView background, specialView;
     private ImageResizeModule imageResizeModule;
 
-    public BasicView(Context context){
+    public BrailleLearningView(Context context){
         super(context);
         this.context = context;
         imageResizeModule = new ImageResizeModule(getResources());

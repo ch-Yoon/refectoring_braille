@@ -19,6 +19,7 @@ public class BrailleDataManager {
     private Database databaseFileName;
     private BrailleLearningType brailleLearningType;
 
+
     public BrailleDataManager(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType){
         this.context = context;
         this.jsonFileName = jsonFileName;

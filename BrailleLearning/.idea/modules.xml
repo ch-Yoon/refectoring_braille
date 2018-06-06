@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BrailleLearning.iml" filepath="$PROJECT_DIR$/BrailleLearning.iml" />
-      <module fileurl="file://C:\Users\hyuck\Desktop\git\refectoring_braille\BrailleLearning\BrailleLearning.iml" filepath="C:\Users\hyuck\Desktop\git\refectoring_braille\BrailleLearning\BrailleLearning.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\hyuck\Desktop\git\refectoring_braille\BrailleLearning\app\app.iml" filepath="C:\Users\hyuck\Desktop\git\refectoring_braille\BrailleLearning\app\app.iml" />
     </modules>
   </component>
 </project>

@@ -76,8 +76,7 @@ public class BasicControl implements Control, CustomLearningTouchListener, Speci
      */
     private ArrayList<BrailleData> getBrailleDataArray(Context context, Json jsonFileName, Database databaseFileName, BrailleLearningType brailleLearningType) {
         BrailleDataManager brailleDataManager = new BrailleDataManager(context, jsonFileName, databaseFileName, brailleLearningType);
-        GettingBraille gettingBraille = brailleDataManager.
-                getBrailleArrayList();
+        GettingBraille gettingBraille = brailleDataManager.getBrailleArrayList();
 
         if(gettingBraille != null)
             return gettingBraille.getBrailleDataArray();

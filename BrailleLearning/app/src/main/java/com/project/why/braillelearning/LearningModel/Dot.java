@@ -20,7 +20,6 @@ public class Dot {
 
     public Dot(){}
 
-
     /**
      * Dot가 매개변수로 넘어왔을 때, 깊은복사를 위한 생성자
      * @param copyDot : 다른 곳에서 만들어진 dot class

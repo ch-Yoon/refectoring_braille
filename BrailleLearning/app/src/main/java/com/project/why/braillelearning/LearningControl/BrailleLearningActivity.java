@@ -10,7 +10,7 @@ import com.project.why.braillelearning.LearningView.ActivityManagerSingleton;
 import com.project.why.braillelearning.EnumConstant.BrailleLearningType;
 import com.project.why.braillelearning.EnumConstant.Database;
 import com.project.why.braillelearning.EnumConstant.Json;
-import com.project.why.braillelearning.LearningView.BasicView;
+import com.project.why.braillelearning.LearningView.BrailleLearningView;
 import com.project.why.braillelearning.LearningView.ViewObservers;
 import com.project.why.braillelearning.Loading.BrailleLearningLoading;
 import com.project.why.braillelearning.Menu.MenuInformationActivity;
@@ -133,7 +133,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
      * 점자 학습 모듈을 setting하는 함수
      */
     private void initBrailleControl(){
-        BrailleLearningModuleFactory brailleLearningModuleManager = new BrailleLearningModuleManager(this, this, jsonFileName, databaseTableName, brailleLearningType);
+        GettingLearningModule brailleLearningModuleManager = new BrailleLearningModuleFactory(this, this, jsonFileName, databaseTableName, brailleLearningType);
         learningModule = brailleLearningModuleManager.getLearningModule();
     }
 
@@ -142,7 +142,7 @@ public class BrailleLearningActivity extends Activity implements ControlListener
      * 점자 화면 view를 setting하는 함수
      */
     private void initBrailleView(){
-        BasicView basicView = new BasicView(this);
+        BrailleLearningView basicView = new BrailleLearningView(this);
         learningView = basicView;
         learningModule.addObservers(learningView);    // view를 learning module observer로 등록
         View view = learningView.getView();

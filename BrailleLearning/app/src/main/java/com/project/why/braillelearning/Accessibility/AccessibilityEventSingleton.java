@@ -17,7 +17,7 @@ import java.util.List;
  * AccessibilityCheckService로부터 수신받은 touch 값을 분석하여, DoubleTab 판정이 날 경우, Activity로 Event를 push한다.
  */
 
-public class AccessibilityEventSingleton implements AccessibilityCheckListener{
+public class AccessibilityEventSingleton {
     private static final int TYPE_TOUCH_INTERACTION_START = 1048576; // 사용자가 화면을 터치하기 시작했을 때의 이벤트 상수값
     private static final int TYPE_TOUCH_INTERACTION_END = 2097152; // 사용자가 화면 터치를 종료하였을 떄의 이벤트 상수값
     private static final AccessibilityEventSingleton ourInstance = new AccessibilityEventSingleton();
@@ -85,7 +85,6 @@ public class AccessibilityEventSingleton implements AccessibilityCheckListener{
      * 1048576, 2097152를 제외한 다른 event가 발생될 경우, 터치 판정을 위한 모든 값을 초기화한다.
      * @param event : accessibilityEvent(터치 외 광범위한 event)
      */
-    @Override
     public void pushEvent(AccessibilityEvent event) {
         if(accessibilityEventListener != null) {
             Log.d("accessibilityEvent","event type : "+event.getEventType());
