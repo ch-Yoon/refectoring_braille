@@ -37,7 +37,8 @@
 
 ## 제스쳐 기능
 ![image](https://user-images.githubusercontent.com/20294749/55058959-f5cf9900-50b0-11e9-99b7-9d4fa942136e.png)
-- Single Tab, Double Tab, Left Drag, Right Drag, Up Drag, Down Drag 
+- Single Tab, Double Tab, Left Drag, Right Drag, Up Drag, Down Drag 구현
+
  
 ## 시각장애인과 이야기하여 도출된 요구사항
 <img src="https://user-images.githubusercontent.com/20294749/52536131-c8958880-2d99-11e9-88db-44fb560c22a1.png" width=500>
