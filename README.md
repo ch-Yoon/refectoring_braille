@@ -21,34 +21,11 @@
 - 산학협동 산업기술대전 한국산업기술시험원장상 : 2017. 10. 18
 - 제 2회 P2P & 캡스톤 경진대회 최우수상 : 2017. 03. 15
 
-## 시연동영상
-
-[![Watch the video](https://user-images.githubusercontent.com/20294749/52535521-d8f63500-2d92-11e9-80d8-1b67dbcbd304.png)](https://www.youtube.com/watch?v=-YME1Dlb4iU&t=45s)
-
-# 내용
-## 점자 정보 구성
-![image](https://user-images.githubusercontent.com/20294749/55057610-0120c580-50ad-11e9-9a4b-d6920defb96f.png)
-- 점자 중 돌출 점은 1로, 비 돌출 점은 0으로 설정
-- 가령, 초성 기역의 경우 {{0, 1}, {0, 0}, {0, 0}}으로 표현
-- 점자 정보는 "010000" 문자열로 Json file에 구성하여 프로젝트에 탑재
-
-![image](https://user-images.githubusercontent.com/20294749/55058465-5e1d7b00-50af-11e9-8ca7-e446c656b4ef.png)
-- Json File에 담긴 정보와 display의 좌표를 계산하여 각 점의 속성 설정
-
-## 제스쳐 기능
-![image](https://user-images.githubusercontent.com/20294749/55058959-f5cf9900-50b0-11e9-99b7-9d4fa942136e.png)
-- Single Tab, Double Tab, Left Drag, Right Drag, Up Drag, Down Drag 구현
-
- 
 ## 시각장애인과 이야기하여 도출된 요구사항
 <img src="https://user-images.githubusercontent.com/20294749/52536131-c8958880-2d99-11e9-88db-44fb560c22a1.png" width=500>
 
-### 도출된 요구사항 구현
-![image](https://user-images.githubusercontent.com/20294749/55059623-bf931900-50b2-11e9-9829-79aa729b5101.png)
-- Touch Event의 좌표 기반으로 점자 좌표 탐색 후 이벤트 처리 구현
-  
-## 전체 메뉴 구조
-<img src="https://user-images.githubusercontent.com/20294749/54074204-fc00ff80-42d2-11e9-8423-3f93c14d2c96.png" width=500>
+## 시연동영상
+[![Watch the video](https://user-images.githubusercontent.com/20294749/52535521-d8f63500-2d92-11e9-80d8-1b67dbcbd304.png)](https://www.youtube.com/watch?v=-YME1Dlb4iU&t=45s)
 
 ## 관련 URL
 - [Goole Play Store](https://play.google.com/store/apps/details?id=com.project.why.braillelearning)
@@ -61,4 +38,54 @@
 
 - [라디오에서 소개된 '봄'](http://m.ablenews.co.kr/news/newscontent.aspx?categorycode=0048&newscode=004820180810114039868693&fbclid=IwAR3wQnA_qrGKtOoOhN72QNnzDuvOZMewX77VqWRHDNnkU7kWCz3ympS8eG0)
 
+
+# 내용
+
+## 점자 정보 구성
+![image](https://user-images.githubusercontent.com/20294749/55057610-0120c580-50ad-11e9-9a4b-d6920defb96f.png)
+- 점자 중 돌출 점은 1로, 비 돌출 점은 0으로 설정
+- 가령, 초성 기역의 경우 {{0, 1}, {0, 0}, {0, 0}}으로 표현
+- 점자 정보는 "010000" 문자열로 Json file에 구성하여 프로젝트에 탑재
+
+![image](https://user-images.githubusercontent.com/20294749/55058465-5e1d7b00-50af-11e9-8ca7-e446c656b4ef.png)
+- Json File에 담긴 정보와 display의 좌표를 계산하여 각 점의 속성 설정
+
+## 점자 읽기 기능 
+![image](https://user-images.githubusercontent.com/20294749/55059623-bf931900-50b2-11e9-9829-79aa729b5101.png)
+- Touch Event의 좌표 기반으로 점자 좌표 탐색 후 이벤트 처리 구현
+  - 돌출 점자 - 강한 진동 및 점자 번호 남성 음성으로 재생
+  - 비 돌출 점자 - 약한 진동 및 점자 번호 여성 음성으로 재생
+  - 구분선 - 약한 진동 및 종소리 재생
+  - 경고선 – 약한 진동 및 경고음 재생
+ 
+## 제스쳐 기능
+![image](https://user-images.githubusercontent.com/20294749/55058959-f5cf9900-50b0-11e9-99b7-9d4fa942136e.png)
+- Single Tab, Double Tab, Left Drag, Right Drag, Up Drag, Down Drag 구현
+
+## 전체 메뉴 구조
+<img src="https://user-images.githubusercontent.com/20294749/54074204-fc00ff80-42d2-11e9-8423-3f93c14d2c96.png" width=500>
+
+- 한 화면에 한 개의 메뉴만 존재하도록 구성
+
+- 총 6개의 대 메뉴와 하위 메뉴들이 존재    
+
+- n개의 자식 node를 갖는 트리구조로 메뉴 구현     
+
+## 점자 번역
+![image](https://user-images.githubusercontent.com/20294749/55062900-2cf67800-50ba-11e9-9c1e-42f6a604d696.png)
+- 음성 인식 모듈로부터 사용자의 음성 인식 문장을 수신
+  - 음성인식 된 문장에서 공백을 제거
+  - 약자 및 약어로 규정된 한글 단어를 기반으로 문장을 재귀식으로 분해
+  - “그리고 얼굴” -> “그리고얼굴” -> “그리고”, “얼”, “굴” 시나리오로 구성
+  - 분해 된 단어들이 담긴 List return
+- 문장 분해 모듈을 통해 문장을 단어들로 분해 
+- List의 앞쪽부터 순차적으로 점자와 매칭
+- “그리고” 와 “얼”은 약자 및 약어 점자와 바로 매칭
+- “굴”의 경우 약자 및 약어가 아니므로 음소 단위로 분해하며 확인. 
+- 총 3단계로 분해하며 점자와 매칭
+  - 초성+모음, 종성(“구”, “ㄹ”)으로 분해하여 매칭 시도
+  - 실패 시 초성, 모음+종성(“ㄱ”, “울”)로 분해하여 매칭 시도
+  - 실패 시 초성, 모음, 종성(“ㄱ”, “ㅜ”, “ㄹ”)로 분해하여 매칭
+  - “굴”의 경우 초성, 모음+종성(“ㄱ”, “울”)에서 매칭 성공. 
+- 완성된 점자 행렬 return
 
