@@ -25,16 +25,36 @@
 
 [![Watch the video](https://user-images.githubusercontent.com/20294749/52535521-d8f63500-2d92-11e9-80d8-1b67dbcbd304.png)](https://www.youtube.com/watch?v=-YME1Dlb4iU&t=45s)
 
-## 내용
+# 내용
+## 점자 정보 구성
 ![image](https://user-images.githubusercontent.com/20294749/55057610-0120c580-50ad-11e9-9a4b-d6920defb96f.png)
 - 점자 중 돌출 점은 1로, 비 돌출 점은 0으로 설정
 - 가령, 초성 기역의 경우 {{0, 1}, {0, 0}, {0, 0}}으로 표현
-- 이 점자 정보는 "010000" 문자열로 Json file에 구성하였고, 프로젝트에 탑재하여 문자열을 행렬로 변환하여 
+- 점자 정보는 "010000" 문자열로 Json file에 구성하여 프로젝트에 탑재
 
+![image](https://user-images.githubusercontent.com/20294749/55058465-5e1d7b00-50af-11e9-8ca7-e446c656b4ef.png)
+- Json File에 담긴 정보와 display의 좌표를 계산하여 각 점의 속성 설정
+
+## 제스쳐 기능
+![image](https://user-images.githubusercontent.com/20294749/55058959-f5cf9900-50b0-11e9-99b7-9d4fa942136e.png)
+- Single Tab, Double Tab, Left Drag, Right Drag, Up Drag, Down Drag 
+ 
 ## 시각장애인과 이야기하여 도출된 요구사항
 <img src="https://user-images.githubusercontent.com/20294749/52536131-c8958880-2d99-11e9-88db-44fb560c22a1.png" width=500>
 
-
+### 도출된 요구사항 구현
+![image](https://user-images.githubusercontent.com/20294749/55059623-bf931900-50b2-11e9-9829-79aa729b5101.png)
+- Touch Event의 좌표 기반으로 점자 좌표 탐색 후 이벤트 처리 구현
+- ACTION_DOWN 및 ACTION_MOVE 좌표로 점자 좌표 탐색
+- 점자 터치 영역(빨간 네모박스)안에 포함 될 시 이벤트 발생되도록 구현
+- 돌출 점자, 비 돌출 점자, 구분선, 경고벽에 따라 이벤트를 처리
+  - 돌출 점자 - 강한 진동 및 점자 번호 남성 음성으로 재생
+  - 비 돌출 점자 - 약한 진동 및 점자 번호 여성 음성으로 재생
+  - 구분선 - 약한 진동 및 종소리 재생
+  - 경고선 – 약한 진동 및 경고음 재생
+  - 각종 Sound는 자체 토크 백 모듈에게 Sound File id를 push
+  - 진동은 Vibrator 객체 사용하여 구현
+  
 ## 전체 메뉴 구조
 <img src="https://user-images.githubusercontent.com/20294749/54074204-fc00ff80-42d2-11e9-8423-3f93c14d2c96.png" width=500>
 
