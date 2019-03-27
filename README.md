@@ -25,8 +25,15 @@
 
 [![Watch the video](https://user-images.githubusercontent.com/20294749/52535521-d8f63500-2d92-11e9-80d8-1b67dbcbd304.png)](https://www.youtube.com/watch?v=-YME1Dlb4iU&t=45s)
 
+## 내용
+![image](https://user-images.githubusercontent.com/20294749/55057610-0120c580-50ad-11e9-9a4b-d6920defb96f.png)
+- 점자 중 돌출 점은 1로, 비 돌출 점은 0으로 설정
+- 가령, 초성 기역의 경우 {{0, 1}, {0, 0}, {0, 0}}으로 표현
+- 이 점자 정보는 "010000" 문자열로 Json file에 구성하였고, 프로젝트에 탑재하여 문자열을 행렬로 변환하여 
+
 ## 시각장애인과 이야기하여 도출된 요구사항
 <img src="https://user-images.githubusercontent.com/20294749/52536131-c8958880-2d99-11e9-88db-44fb560c22a1.png" width=500>
+
 
 ## 전체 메뉴 구조
 <img src="https://user-images.githubusercontent.com/20294749/54074204-fc00ff80-42d2-11e9-8423-3f93c14d2c96.png" width=500>
