@@ -46,15 +46,6 @@
 ### 도출된 요구사항 구현
 ![image](https://user-images.githubusercontent.com/20294749/55059623-bf931900-50b2-11e9-9829-79aa729b5101.png)
 - Touch Event의 좌표 기반으로 점자 좌표 탐색 후 이벤트 처리 구현
-- ACTION_DOWN 및 ACTION_MOVE 좌표로 점자 좌표 탐색
-- 점자 터치 영역(빨간 네모박스)안에 포함 될 시 이벤트 발생되도록 구현
-- 돌출 점자, 비 돌출 점자, 구분선, 경고벽에 따라 이벤트를 처리
-  - 돌출 점자 - 강한 진동 및 점자 번호 남성 음성으로 재생
-  - 비 돌출 점자 - 약한 진동 및 점자 번호 여성 음성으로 재생
-  - 구분선 - 약한 진동 및 종소리 재생
-  - 경고선 – 약한 진동 및 경고음 재생
-  - 각종 Sound는 자체 토크 백 모듈에게 Sound File id를 push
-  - 진동은 Vibrator 객체 사용하여 구현
   
 ## 전체 메뉴 구조
 <img src="https://user-images.githubusercontent.com/20294749/54074204-fc00ff80-42d2-11e9-8423-3f93c14d2c96.png" width=500>
