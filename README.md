@@ -21,9 +21,11 @@
 - 산학협동 산업기술대전 한국산업기술시험원장상 : 2017. 10. 18
 - 제 2회 P2P & 캡스톤 경진대회 최우수상 : 2017. 03. 15
 
-## 소개
-- 시연 동영상    
+## 시각장애인과 이야기하여 도출된 요구사항
 
+<img src="https://user-images.githubusercontent.com/20294749/52536131-c8958880-2d99-11e9-88db-44fb560c22a1.png" width=500>
+
+## 시연 동영상    
 [![Watch the video](https://user-images.githubusercontent.com/20294749/52535521-d8f63500-2d92-11e9-80d8-1b67dbcbd304.png)](https://www.youtube.com/watch?v=-YME1Dlb4iU&t=45s)
 
 ## 관련 URL
@@ -40,16 +42,15 @@
 
 # 내용
 
-## 시각장애인과 이야기하여 도출된 요구사항
-<img src="https://user-images.githubusercontent.com/20294749/52536131-c8958880-2d99-11e9-88db-44fb560c22a1.png" width=500>
-
 ## 점자 정보 구성
 - 점자 중 돌출 점은 1로, 비 돌출 점은 0으로 설정
 - 가령, 초성 기역의 경우 {{0, 1}, {0, 0}, {0, 0}}으로 표현
-- 점자 정보는 "010000" 문자열로 Json file에 구성하여 프로젝트에 탑재
+- 점자 정보는 "010000" 문자열로 Json file에 구성하여 프로젝트에 탑재   
+
 ![image](https://user-images.githubusercontent.com/20294749/55057610-0120c580-50ad-11e9-9a4b-d6920defb96f.png)
 
-- Json File에 담긴 정보와 display의 좌표를 계산하여 각 점의 속성 설정
+- Json File에 담긴 정보와 display의 좌표를 계산하여 각 점의 속성 설정   
+
 ![image](https://user-images.githubusercontent.com/20294749/55058465-5e1d7b00-50af-11e9-8ca7-e446c656b4ef.png)
 
 ## 점자 읽기 기능 
