@@ -22,11 +22,9 @@
 - 제 2회 P2P & 캡스톤 경진대회 최우수상 : 2017. 03. 15
 
 ## 소개
-- 시연 동영상
-[![Watch the video](https://user-images.githubusercontent.com/20294749/52535521-d8f63500-2d92-11e9-80d8-1b67dbcbd304.png)](https://www.youtube.com/watch?v=-YME1Dlb4iU&t=45s)
+- 시연 동영상    
 
-- 기능 소개
-![image](https://user-images.githubusercontent.com/20294749/55133078-c29c1100-5167-11e9-998b-7d98047ee47d.png)
+[![Watch the video](https://user-images.githubusercontent.com/20294749/52535521-d8f63500-2d92-11e9-80d8-1b67dbcbd304.png)](https://www.youtube.com/watch?v=-YME1Dlb4iU&t=45s)
 
 ## 관련 URL
 - [Goole Play Store](https://play.google.com/store/apps/details?id=com.project.why.braillelearning)
